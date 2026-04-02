@@ -81,32 +81,32 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SETUP-01 | — | Pending |
-| SETUP-02 | — | Pending |
-| SETUP-03 | — | Pending |
-| SETUP-04 | — | Pending |
-| SRCH-01 | — | Pending |
-| SRCH-02 | — | Pending |
-| SRCH-03 | — | Pending |
-| SRCH-04 | — | Pending |
-| SRCH-05 | — | Pending |
-| CART-01 | — | Pending |
-| CART-02 | — | Pending |
-| CART-03 | — | Pending |
-| PREF-01 | — | Pending |
-| PREF-02 | — | Pending |
-| PREF-03 | — | Pending |
-| PREF-04 | — | Pending |
-| PREF-05 | — | Pending |
-| PREF-06 | — | Pending |
-| LLM-01 | — | Pending |
-| LLM-02 | — | Pending |
+| SETUP-01 | Phase 1 | Pending |
+| SETUP-02 | Phase 1 | Pending |
+| SETUP-03 | Phase 1 | Pending |
+| SETUP-04 | Phase 1 | Pending |
+| SRCH-01 | Phase 2 | Pending |
+| SRCH-02 | Phase 2 | Pending |
+| SRCH-03 | Phase 2 | Pending |
+| SRCH-04 | Phase 2 | Pending |
+| SRCH-05 | Phase 2 | Pending |
+| CART-01 | Phase 2 | Pending |
+| CART-02 | Phase 2 | Pending |
+| CART-03 | Phase 2 | Pending |
+| PREF-01 | Phase 3 | Pending |
+| PREF-02 | Phase 3 | Pending |
+| PREF-03 | Phase 3 | Pending |
+| PREF-04 | Phase 3 | Pending |
+| PREF-05 | Phase 3 | Pending |
+| PREF-06 | Phase 3 | Pending |
+| LLM-01 | Phase 2 | Pending |
+| LLM-02 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 20 total
-- Mapped to phases: 0
-- Unmapped: 20 ⚠️
+- Mapped to phases: 20
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-02*
-*Last updated: 2026-04-02 after initial definition*
+*Last updated: 2026-04-02 after roadmap creation*
