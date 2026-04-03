@@ -2,20 +2,20 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-last_updated: "2026-04-03T08:29:53.348Z"
+status: planning
+last_updated: "2026-04-03T08:29:23.348Z"
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
-  percent: 75
+  completed_plans: 4
+  percent: 50
 ---
 
 # State: Fenn Cart
 
-**Last updated:** 2026-04-03
-**Updated by:** execute-phase (02-01)
+**Last updated:** 2026-04-02
+**Updated by:** roadmapper (initial creation)
 
 ---
 
@@ -23,24 +23,24 @@ progress:
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
-**Current focus:** Phase 02 — core-loop
+**Current focus:** Phase 01 — foundation-and-auth
 
 ---
 
 ## Current Position
 
-Phase: 02 (core-loop) — EXECUTING
-Plan: 2 of 4
+Phase: 01 (foundation-and-auth) — COMPLETE
+Plan: 4 of 4 (all plans complete)
 **Phase:** 2
-**Plan:** 02-01 complete, 02-02 next
-**Status:** Executing Phase 02
+**Plan:** Not started
+**Status:** Ready to plan
 **Blocker:** None
 
 **Progress:**
 
-[████████░░] 75%
-[Phase 1] [x] Foundation and Auth
-[Phase 2] [ ] Core Loop (1/4 plans done)
+[█████░░░░░] 50%
+[Phase 1] [ ] Foundation and Auth
+[Phase 2] [ ] Core Loop
 [Phase 3] [ ] Preference System
 [Phase 4] [ ] Multi-Provider LLM and Settings
 [Phase 5] [ ] Hardening and Distribution
@@ -61,7 +61,7 @@ Plan: 2 of 4
 | 01-foundation-and-auth | 02 | — | — | — |
 | 01-foundation-and-auth | 03 | 17min | 2 | 15 |
 | 01-foundation-and-auth | 04 | 12min | 2 | 7 |
-| 02-core-loop | 01 | 8min | 2 | 8 |
+| Phase 02-core-loop P01 | 8min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -81,8 +81,6 @@ Plan: 2 of 4
 | Fernet key loaded at call time | Loaded from /data/app.key at call time not module import — allows tests to patch KEY_PATH without import-time side effects |
 | OAuth client registration guarded by credentials | register_kroger_oauth() only called when both Kroger credentials present — app starts cleanly in unconfigured state |
 | Tour page is standalone | No base.html extension — users arrive via OAuth redirect, nav shell not available/needed |
-| app/schemas/ separate from app/models/ | Keeps Pydantic-only type contracts distinct from SQLModel table models — avoids circular imports |
-| filter.fulfillment=csp (lowercase) | Correct Kroger API parameter for curbside-pickup-eligible products — NOT curbside |
 
 ### Architecture Constraints (carry forward)
 
@@ -112,9 +110,9 @@ Plan: 2 of 4
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 02-01 — shared Pydantic schemas, CartSession/CartItem SQLModel tables, Alembic migration 0002, and search_products()/add_to_cart() Kroger API functions.
+**What was done last:** Completed Plan 04 — Kroger OAuth PKCE flow with Fernet token encryption, proactive silent refresh, and quick tour page. Phase 01 complete.
 
-**What comes next:** Plan 02-02 — LLM matching service using Instructor+LiteLLM with ProductCandidate and MatchResult schemas from app.schemas.shopping.
+**What comes next:** Phase 02 — Core Loop (product matching, shopping list input, cart building). Use get_valid_access_token(db) from app/services/oauth_manager.py for authenticated Kroger API calls.
 
 **Context to re-establish:** Read 01-01-SUMMARY.md, 01-03-SUMMARY.md, 01-04-SUMMARY.md. OAuth tokens encrypted in SQLite. AppConfig.wizard_complete=True guards main app routes.
 

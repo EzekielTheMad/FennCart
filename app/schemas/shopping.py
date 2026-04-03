@@ -50,8 +50,8 @@ class ConfirmedItem(BaseModel):
 
     upc: str
     description: str
-    brand: str
-    size: str
+    brand: str = ""
+    size: str = ""
     quantity: int = 1
     price: Optional[float] = None
     thumbnail_url: Optional[str] = None
