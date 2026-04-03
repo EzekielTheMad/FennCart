@@ -47,7 +47,7 @@ Plans:
   3. By default, only uncertain or low-confidence matches appear for manual review; high-confidence matches are auto-selected
   4. User can toggle to full review mode and see all matched items before confirming
   5. User can confirm selections and have those items added to their Kroger cart, with a local session record of what was added
-**Plans:** 4 plans
+**Plans:** 0/4 plans executed
 Plans:
 - [ ] 02-01-PLAN.md — Data layer: Pydantic schemas, SQLModel cart tables, Alembic migration, Kroger API extensions
 - [ ] 02-02-PLAN.md — LLM matching: parse_shopping_list and match_products via Instructor + LiteLLM
@@ -97,7 +97,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and Auth | 4/4 | Complete   | 2026-04-03 |
-| 2. Core Loop | 0/4 | Planning complete | - |
+| 2. Core Loop | 0/4 | Planned    |  |
 | 3. Preference System | 0/? | Not started | - |
 | 4. Multi-Provider LLM and Settings | 0/? | Not started | - |
 | 5. Hardening and Distribution | 0/? | Not started | - |
