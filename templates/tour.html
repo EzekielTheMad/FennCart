@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FennCart — You're ready to shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lCLaNG4g7rvSMiMiSe7CnzMwKNUAMi4IFsqDjUhT6LMFIVaFQWiZLyDGdET" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-slate-950 min-h-screen">
+
+    <div class="max-w-2xl mx-auto py-16 px-4">
+
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-semibold text-slate-100">You're ready to shop</h1>
+            <p class="text-slate-400 mt-2">Here's how FennCart works.</p>
+        </div>
+
+        <!-- Tip 1 -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-4">
+            <h2 class="text-lg font-semibold text-slate-100 mb-2">Paste your list</h2>
+            <p class="text-slate-400">
+                Type or paste a rough grocery list -- "milk, eggs, that pasta Jen likes" -- and FennCart will
+                find matching products at your Fry's.
+            </p>
+        </div>
+
+        <!-- Tip 2 -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-4">
+            <h2 class="text-lg font-semibold text-slate-100 mb-2">Review and confirm</h2>
+            <p class="text-slate-400">
+                Uncertain matches surface for your review. High-confidence picks are auto-selected so you only
+                see what needs a decision.
+            </p>
+        </div>
+
+        <!-- Tip 3 -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-4">
+            <h2 class="text-lg font-semibold text-slate-100 mb-2">Upload receipts to train preferences</h2>
+            <p class="text-slate-400">
+                Coming in a future update: upload Fry's receipts to teach FennCart your brand preferences
+                automatically.
+            </p>
+        </div>
+
+        <div class="text-center mt-6">
+            <a
+                href="/shopping"
+                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded text-lg inline-block"
+            >
+                Start shopping
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>

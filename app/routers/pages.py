@@ -28,3 +28,8 @@ async def history(request: Request):
 @router.get("/settings")
 async def settings(request: Request):
     return templates.TemplateResponse("pages/settings.html", {"request": request, "active_page": "settings"})
+
+
+@router.get("/tour")
+async def tour(request: Request):
+    return templates.TemplateResponse("tour.html", {"request": request})

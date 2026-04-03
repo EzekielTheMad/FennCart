@@ -13,20 +13,24 @@
 
     {% if error %}
     <div class="bg-red-950 border border-red-800 rounded p-3 mb-4">
-        <p class="text-red-400 text-sm">{{ error }}</p>
-        <p class="text-red-400 text-xs mt-1">
-            Authorization failed. This usually means the redirect URI doesn't match what's registered
-            in your Kroger developer app. Check <code>BASE_URL</code> in your environment.
-        </p>
+        <p class="text-red-400 text-sm mt-2">{{ error }}</p>
+        <div class="mt-3">
+            <a href="/auth/kroger/start" class="text-red-300 underline hover:text-red-200 text-sm">Try again</a>
+        </div>
     </div>
     {% endif %}
 
-    <a
-        href="/auth/kroger/login"
-        class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition-colors"
-        @click="loading = true"
-    >
-        <span x-show="!loading">Authorize with Kroger</span>
-        <span x-show="loading">Waiting for authorization...</span>
-    </a>
+    <div x-show="!loading">
+        <a
+            href="/auth/kroger/start"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-block"
+            @click="loading = true"
+        >
+            Authorize with Kroger
+        </a>
+    </div>
+
+    <div x-show="loading" class="text-slate-400 text-sm mt-2">
+        Waiting for authorization...
+    </div>
 </div>
