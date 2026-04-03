@@ -51,6 +51,10 @@ def _get_missing_vars(settings) -> list[str]:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+    from app.services.oauth_manager import register_kroger_oauth
+    settings = get_settings()
+    if settings.kroger_client_id and settings.kroger_client_secret:
+        register_kroger_oauth()
     yield
 
 
