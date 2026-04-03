@@ -84,6 +84,12 @@ try:
 except ImportError:
     pass  # Created by Plan 01-04
 
+try:
+    from app.routers import shopping
+    app.include_router(shopping.router)
+except ImportError:
+    pass  # Created by Plan 02-03
+
 
 @app.get("/health")
 async def health():
