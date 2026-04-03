@@ -66,7 +66,7 @@ Additional typographic patterns specific to Phase 2:
 - **Product name in card:** `text-base font-semibold text-slate-100` (Label weight, Body size)
 - **Product price:** `text-sm font-semibold text-slate-100`
 - **Product size/unit:** `text-sm font-normal text-slate-400`
-- **Confidence warning text:** `text-xs font-normal text-amber-400` — amber-400 (`#fbbf24`) used exclusively for the low-confidence label. Not a new semantic color: it appears only within the confidence flag; no 10% allocation shift.
+- **Confidence warning text:** `text-sm font-normal text-amber-400` — amber-400 (`#fbbf24`) used exclusively for the low-confidence label. Not a new semantic color: it appears only within the confidence flag; no 10% allocation shift.
 - **Compact table row item name:** `text-sm font-normal text-slate-100`
 - **Estimated total:** `text-xl font-semibold text-slate-100`
 
@@ -120,7 +120,7 @@ All colors are Tailwind utility classes referencing the default palette. No cust
 | Textarea | `bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-base p-4 w-full min-h-[160px] resize-y` — resizable vertically, min 160px |
 | Textarea placeholder | `Start typing your list — one item per line. For example: milk, 2% • eggs, a dozen • that pasta Jen likes` |
 | Live preview region | HTMX partial swap into `#list-preview` on 400ms debounced input. Shows structured items (name, quantity, notes) as `bg-slate-800 rounded p-3` pill list |
-| Preview item format | Name in `text-sm font-semibold text-slate-100` + quantity in `text-xs text-slate-400 ml-2` |
+| Preview item format | Name in `text-sm font-semibold text-slate-100` + quantity in `text-sm text-slate-400 ml-2` |
 | Submit button | Full-width `bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold py-3 px-4 rounded-lg` |
 | Submit button label | `Build my cart` |
 | Submit disabled state | Disabled while list is empty (fewer than 2 non-whitespace characters) |
@@ -156,7 +156,7 @@ All colors are Tailwind utility classes referencing the default palette. No cust
 | Product name | `text-base font-semibold text-slate-100` |
 | Product size/unit | `text-sm text-slate-400` |
 | Product price | `text-sm font-semibold text-slate-100` |
-| Confidence warning | `inline-flex items-center gap-1 text-xs text-amber-400` + amber dot `w-2 h-2 bg-amber-400 rounded-full` — `Uncertain match` |
+| Confidence warning | `inline-flex items-center gap-1 text-sm text-amber-400` + amber dot `w-2 h-2 bg-amber-400 rounded-full` — `Uncertain match` |
 | Swap button | `text-sm text-slate-400 hover:text-slate-100 underline` — `Choose a different product` |
 | Swap dropdown | Alpine.js `x-show` disclosure, `bg-slate-800 border border-slate-700 rounded-lg shadow-lg` — lists 3-5 alternatives as clickable rows; HTMX partial swap on selection |
 | Swap alternative row | `flex items-center gap-3 p-3 hover:bg-slate-700 cursor-pointer rounded` |
