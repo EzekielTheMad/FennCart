@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FennCart — Missing Configuration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="max-w-lg w-full bg-white rounded-lg shadow-md p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-4">FennCart Setup Required</h1>
+        <p class="text-gray-600 mb-6">
+            FennCart requires Kroger API credentials to run. The following environment
+            variables are missing:
+        </p>
+        <ul class="bg-red-50 border border-red-200 rounded p-4 mb-6 space-y-1">
+            {% for var in missing_vars %}
+            <li class="text-red-700 font-mono text-sm">{{ var }}</li>
+            {% endfor %}
+        </ul>
+        <div class="space-y-3 text-sm text-gray-600">
+            <p><strong>How to fix:</strong></p>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Visit <a href="https://developer.kroger.com" class="text-blue-600 underline">developer.kroger.com</a> to create a developer account and get your API credentials.</li>
+                <li>Copy <code class="bg-gray-100 px-1 rounded">.env.example</code> to <code class="bg-gray-100 px-1 rounded">.env</code> and fill in your credentials.</li>
+                <li>Restart the container with <code class="bg-gray-100 px-1 rounded">docker compose up</code>.</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
