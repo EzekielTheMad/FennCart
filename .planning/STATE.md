@@ -61,7 +61,7 @@ Plan: 2 of 4
 | 01-foundation-and-auth | 02 | — | — | — |
 | 01-foundation-and-auth | 03 | 17min | 2 | 15 |
 | 01-foundation-and-auth | 04 | 12min | 2 | 7 |
-| Phase 02-core-loop P02 | 3min | 2 tasks | 4 files |
+| 02-core-loop | 01 | 8min | 2 | 8 |
 
 ## Accumulated Context
 
@@ -81,6 +81,8 @@ Plan: 2 of 4
 | Fernet key loaded at call time | Loaded from /data/app.key at call time not module import — allows tests to patch KEY_PATH without import-time side effects |
 | OAuth client registration guarded by credentials | register_kroger_oauth() only called when both Kroger credentials present — app starts cleanly in unconfigured state |
 | Tour page is standalone | No base.html extension — users arrive via OAuth redirect, nav shell not available/needed |
+| app/schemas/ separate from app/models/ | Keeps Pydantic-only type contracts distinct from SQLModel table models — avoids circular imports |
+| filter.fulfillment=csp (lowercase) | Correct Kroger API parameter for curbside-pickup-eligible products — NOT curbside |
 
 ### Architecture Constraints (carry forward)
 
@@ -110,9 +112,9 @@ Plan: 2 of 4
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 04 — Kroger OAuth PKCE flow with Fernet token encryption, proactive silent refresh, and quick tour page. Phase 01 complete.
+**What was done last:** Completed Plan 02-01 — shared Pydantic schemas, CartSession/CartItem SQLModel tables, Alembic migration 0002, and search_products()/add_to_cart() Kroger API functions.
 
-**What comes next:** Phase 02 — Core Loop (product matching, shopping list input, cart building). Use get_valid_access_token(db) from app/services/oauth_manager.py for authenticated Kroger API calls.
+**What comes next:** Plan 02-02 — LLM matching service using Instructor+LiteLLM with ProductCandidate and MatchResult schemas from app.schemas.shopping.
 
 **Context to re-establish:** Read 01-01-SUMMARY.md, 01-03-SUMMARY.md, 01-04-SUMMARY.md. OAuth tokens encrypted in SQLite. AppConfig.wizard_complete=True guards main app routes.
 
