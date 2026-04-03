@@ -9,7 +9,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation and Auth** - Running Docker container with stable schema, credentials wizard, and working Kroger OAuth PKCE with silent token refresh
+- [x] **Phase 1: Foundation and Auth** - Running Docker container with stable schema, credentials wizard, and working Kroger OAuth PKCE with silent token refresh (completed 2026-04-03)
 - [ ] **Phase 2: Core Loop** - End-to-end list-to-cart flow: paste list, LLM matches products, review, confirm, items added to Kroger cart
 - [ ] **Phase 3: Preference System** - Receipt PDF upload and parsing, living preference profile, preference-compensated product matching, NL and manual preference editing
 - [ ] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration
@@ -29,12 +29,12 @@
   3. User can complete the Kroger OAuth PKCE flow — click Authorize, get redirected to Kroger, grant access, and land back in the app with a valid session
   4. App silently refreshes an expired Kroger access token without requiring user re-authentication (within the 6-month refresh window)
   5. App refuses to start and shows a clear error if Kroger developer credentials are absent from the environment
-**Plans:** 2/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 - [x] 01-01-PLAN.md — Project skeleton: Docker, config, database, models, Alembic
-- [ ] 01-02-PLAN.md — App shell: nav sidebar, missing config page, placeholder pages, test scaffold
+- [x] 01-02-PLAN.md — App shell: nav sidebar, missing config page, placeholder pages, test scaffold
 - [x] 01-03-PLAN.md — Setup wizard steps 1-3: LLM validation, Kroger credentials, store search
-- [ ] 01-04-PLAN.md — OAuth PKCE flow, token encryption, silent refresh, quick tour
+- [x] 01-04-PLAN.md — OAuth PKCE flow, token encryption, silent refresh, quick tour
 **UI hint**: yes
 
 ### Phase 2: Core Loop
@@ -91,7 +91,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation and Auth | 2/4 | In Progress|  |
+| 1. Foundation and Auth | 4/4 | Complete   | 2026-04-03 |
 | 2. Core Loop | 0/? | Not started | - |
 | 3. Preference System | 0/? | Not started | - |
 | 4. Multi-Provider LLM and Settings | 0/? | Not started | - |

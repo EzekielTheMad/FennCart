@@ -11,7 +11,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **SETUP-01**: User can complete a guided first-run wizard (LLM API key, Kroger developer credentials, Kroger OAuth login, store selection)
 - [x] **SETUP-02**: User can select their Fry's/Kroger store location via zip code search
-- [ ] **SETUP-03**: User can authenticate with Kroger via OAuth PKCE flow within the web UI
+- [x] **SETUP-03**: User can authenticate with Kroger via OAuth PKCE flow within the web UI
 - [x] **SETUP-04**: App silently refreshes Kroger access tokens using stored refresh token (6-month validity)
 
 ### Product Search & Matching
@@ -83,7 +83,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | SETUP-01 | Phase 1 | Complete |
 | SETUP-02 | Phase 1 | Complete |
-| SETUP-03 | Phase 1 | Pending |
+| SETUP-03 | Phase 1 | Complete |
 | SETUP-04 | Phase 1 | Complete |
 | SRCH-01 | Phase 2 | Pending |
 | SRCH-02 | Phase 2 | Pending |
