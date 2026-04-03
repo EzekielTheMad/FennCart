@@ -12,23 +12,23 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Guided first-run setup wizard (LLM API key, Kroger developer credentials, Kroger OAuth login, store selection) — Validated in Phase 1: Foundation and Auth
+- [x] Natural language shopping list input (paste, type, or dictate) — Validated in Phase 2: Core Loop
+- [x] LLM-powered product matching against Kroger Products API — Validated in Phase 2: Core Loop
+- [x] Smart review flow: exceptions-only by default, full review table toggle — Validated in Phase 2: Core Loop
+- [x] Cart building via Kroger Cart API with explicit user confirmation — Validated in Phase 2: Core Loop
+- [x] Kroger OAuth flow handled within the web UI — Validated in Phase 1: Foundation and Auth
+- [x] Curbside pickup fulfillment filtering — Validated in Phase 2: Core Loop
+- [x] SQLite persistence via Docker volume — Validated in Phase 1: Foundation and Auth
 
 ### Active
 
-- [ ] Guided first-run setup wizard (LLM API key, Kroger developer credentials, Kroger OAuth login, store selection)
-- [ ] Natural language shopping list input (paste, type, or dictate)
-- [ ] LLM-powered product matching against Kroger Products API, ranked by user preferences
+- [ ] LLM-powered product matching ranked by user preferences (preference system in Phase 3)
 - [ ] Receipt PDF upload and parsing to build/update preference profile over time
 - [ ] Living preference profile that learns from receipt history and weights recurring purchases vs one-off substitutions
 - [ ] Natural language preference updates ("we switched to oat milk", "stop buying Kroger brand yogurt")
 - [ ] Manual preference editing UI for direct control
-- [ ] Smart review flow: exceptions-only by default (auto-match high confidence items), full review table toggle
-- [ ] Cart building via Kroger Cart API with explicit user confirmation before adding
 - [ ] Multi-provider LLM support (Claude, OpenAI, local models) with provider selector
-- [ ] SQLite persistence via Docker volume (preferences, receipt history, shopping history)
-- [ ] Kroger OAuth flow handled within the web UI (redirect-based auth)
-- [ ] Curbside pickup fulfillment filtering (only show items available for curbside)
 
 ### Out of Scope
 
