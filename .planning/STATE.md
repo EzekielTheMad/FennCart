@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-last_updated: "2026-04-03T08:40:13.244Z"
+status: verifying
+last_updated: "2026-04-03T08:53:57.114Z"
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
-  completed_plans: 7
-  percent: 88
+  completed_plans: 8
+  percent: 100
 ---
 
 # State: Fenn Cart
@@ -32,12 +32,12 @@ progress:
 Phase: 02 (core-loop) — Plan 3 of 3 complete
 **Phase:** 2
 **Plan:** 3 of 3 — COMPLETE
-**Status:** Phase 02 complete — ready for Phase 03
+**Status:** Phase complete — ready for verification
 **Blocker:** None
 
 **Progress:**
 
-[█████████░] 88%
+[██████████] 100%
 [Phase 1] [ ] Foundation and Auth
 [Phase 2] [ ] Core Loop
 [Phase 3] [ ] Preference System
@@ -62,6 +62,7 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 | 01-foundation-and-auth | 04 | 12min | 2 | 7 |
 | Phase 02-core-loop P01 | 8min | 2 tasks | 8 files |
 | Phase 02-core-loop P03 | 6min | 3 tasks | 10 files |
+| Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 | Router-local Jinja2Templates | Each router instantiates Jinja2Templates locally to avoid circular import from app.main |
 | Server-side session for match state | Starlette session persists match_data + candidates across multi-step HTMX shopping flow |
 | 0.8 confidence threshold | CartService.partition_matches splits items into review cards vs auto-matched compact table |
+| Mock at module boundary (app.services.cart_service.*) | Patch at module level so CartService unit tests isolate service logic without touching Kroger or LLM |
+| Patch app.routers.shopping.get_valid_access_token | Router-level patch avoids OAuth storage for testing expired-token path independently |
 
 ### Architecture Constraints (carry forward)
 
@@ -113,11 +116,11 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 02-03 — CartService, shopping router (5 endpoints), and 7 Jinja2 templates for the complete list-to-cart HTMX flow. Phase 02 complete.
+**What was done last:** Completed Plan 02-04 — test suite for Phase 2 (82 tests passing). CartService unit tests (confidence partitioning, pipeline, dedup, persistence) and shopping flow integration tests (all 5 /shopping/* endpoints). All 9 Phase 2 requirement IDs have passing tests.
 
 **What comes next:** Phase 03 — Preference System (receipt PDF parsing, brand preference learning, pass preferences dict to CartService.process_list).
 
-**Context to re-establish:** Read 02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md. CartService.process_list accepts preferences=None hook. AppConfig.store_id holds the Kroger location. Starlette session stores match_data + candidates between requests.
+**Context to re-establish:** Read 02-01-SUMMARY.md through 02-04-SUMMARY.md. CartService.process_list accepts preferences=None hook. AppConfig.store_id holds the Kroger location. Starlette session stores match_data + candidates between requests. Mock pattern: patch app.services.cart_service.* at module level for unit tests; patch app.routers.shopping.get_valid_access_token for token path tests.
 
 ---
 *State initialized: 2026-04-02*
