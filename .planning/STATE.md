@@ -3,12 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-04-03T00:11:36.382Z"
+last_updated: "2026-04-03T00:37:58.353Z"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 4
-  completed_plans: 0
+  completed_plans: 2
+  percent: 50
 ---
 
 # State: Fenn Cart
@@ -29,29 +30,35 @@ progress:
 ## Current Position
 
 Phase: 01 (foundation-and-auth) — EXECUTING
-Plan: 1 of 4
+Plan: 3 of 4
 **Phase:** 1 — Foundation and Auth
-**Plan:** None started
+**Plan:** 03 completed (01-03-PLAN.md)
 **Status:** Executing Phase 01
 **Blocker:** None
 
 **Progress:**
 
-```
+[█████░░░░░] 50%
 [Phase 1] [ ] Foundation and Auth
 [Phase 2] [ ] Core Loop
 [Phase 3] [ ] Preference System
 [Phase 4] [ ] Multi-Provider LLM and Settings
 [Phase 5] [ ] Hardening and Distribution
+
 ```
 
 ---
 
 ## Performance Metrics
 
-**Plans completed:** 0
-**Plans total:** TBD (plans not yet created)
+**Plans completed:** 2
+**Plans total:** 4
 **Phases completed:** 0/5
+
+| Phase | Plan | Duration | Tasks | Files |
+|-------|------|----------|-------|-------|
+| 01-foundation-and-auth | 01 | ~4min | 2 | 21 |
+| 01-foundation-and-auth | 03 | 17min | 2 | 15 |
 
 ---
 
@@ -67,6 +74,9 @@ Plan: 1 of 4
 | pdfplumber for receipt parsing | Superior table extraction for machine-generated PDFs; MIT licensed |
 | SQLite via SQLModel + aiosqlite | Zero-ops persistence; single container; WAL mode required for async safety |
 | LLM-01 placed in Phase 2 | LLM Service is required infrastructure for the core loop, not a standalone feature |
+| Wizard templates standalone (no base.html) | Wizard runs pre-auth before nav shell is available; CDN scripts loaded directly |
+| Test conftest patches async_session + DI | Middleware bypasses FastAPI DI; both layers must be patched for full test isolation |
+| Starlette 0.49.1 TemplateResponse new API | request is first param, no longer in context dict — applied throughout to avoid deprecation |
 
 ### Architecture Constraints (carry forward)
 
@@ -96,11 +106,11 @@ Plan: 1 of 4
 
 ## Session Continuity
 
-**What was done last:** Roadmap created from requirements and research. 20/20 v1 requirements mapped across Phases 1-4. Phase 5 is non-functional hardening with no requirement mappings.
+**What was done last:** Completed Plan 03 — setup wizard backend (steps 1-3: LLM validation, Kroger credential verification, store selection) with HTMX-driven endpoints, service modules, and test infrastructure.
 
-**What comes next:** Run `/gsd:plan-phase 1` to create the Phase 1 execution plan.
+**What comes next:** Plan 04 — Kroger OAuth PKCE flow (step 4 of the wizard), completing the wizard and enabling the main app flow.
 
-**Context to re-establish:** Read ROADMAP.md Phase 1 detail section and the research flags above before planning Phase 1.
+**Context to re-establish:** Read 01-01-SUMMARY.md and 01-03-SUMMARY.md. The step_oauth.html placeholder awaits /auth/kroger/login from Plan 04. AppConfig.wizard_step="store" is the expected DB state to trigger OAuth step.
 
 ---
 *State initialized: 2026-04-02*
