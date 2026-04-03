@@ -1,0 +1,15 @@
+fastapi[standard]==0.135.3
+uvicorn[standard]
+sqlmodel==0.0.37
+aiosqlite==0.22.1
+alembic==1.18.4
+litellm==1.83.0
+instructor==1.14.5
+httpx==0.28.1
+authlib==1.6.9
+cryptography
+pydantic-settings
+python-multipart
+python-dotenv
+jinja2
+pdfplumber==0.11.9

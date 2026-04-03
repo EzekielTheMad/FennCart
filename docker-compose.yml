@@ -1,0 +1,15 @@
+services:
+  fenncart:
+    image: fenncart:latest
+    build: .
+    ports:
+      - "${PORT:-8000}:8000"
+    volumes:
+      - fenncart_data:/data
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  fenncart_data:
+    name: fenncart_data
