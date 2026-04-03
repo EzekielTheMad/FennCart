@@ -254,7 +254,7 @@ The existing placeholder page is replaced with the full shopping list input UI.
 | Element | Copy / Specification |
 |---------|---------------------|
 | Page title (browser) | `Shopping — FennCart` |
-| Page heading | `What do you need?` — `text-2xl font-semibold text-slate-100 mb-2` |
+| Page heading | `What do you need?` — `text-xl font-semibold text-slate-100 mb-2` |
 | Subheading | `text-sm text-slate-400 mb-6` — `Paste your list below. One item per line works best, but natural language is fine.` |
 | Textarea placeholder | `milk, 2%\neggs, a dozen\nthat pasta Jen likes` (multiline placeholder) |
 | Live preview label | `text-sm font-semibold text-slate-300 mb-2` — `Parsed items` (shown only when list is non-empty) |
@@ -267,7 +267,7 @@ Rendered server-side and swapped in after LLM matching completes.
 
 | Element | Copy / Specification |
 |---------|---------------------|
-| Page heading (above zones) | `text-2xl font-semibold text-slate-100 mb-2` — `Review your matches` |
+| Page heading (above zones) | `text-xl font-semibold text-slate-100 mb-2` — `Review your matches` |
 | Subheading | `text-sm text-slate-400 mb-6` — `{N} items matched. Confirm to add them to your Fry's cart.` |
 | Review cards zone heading | `Review these matches` |
 | Auto-matched zone heading | `Auto-matched` |
@@ -374,6 +374,7 @@ CDN dependencies (unchanged from Phase 1):
 | Amber for confidence warnings (text-only, not a 4th allocation) | Claude's discretion — standard warning amber pattern; limited to inline text/badge |
 | Sticky bottom confirm bar | Claude's discretion — keeps CTA visible while scrolling a long review list |
 | Processing spinner (full content replacement) | Claude's discretion — all-at-once display decision means there is nothing to progressively show |
+| Page headings use Heading size (text-xl, 20px) not text-2xl | Typography fix — text-2xl (24px) was undeclared fifth size; replaced with declared Heading size |
 
 ---
 
