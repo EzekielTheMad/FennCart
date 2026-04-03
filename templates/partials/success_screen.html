@@ -1,0 +1,55 @@
+{#
+  success_screen.html — Post-add confirmation screen (CART-03).
+  Context vars: session (CartSession), items (list[ConfirmedItem]),
+                success_count (int), fail_count (int), error_msg (str)
+#}
+
+<div class="max-w-2xl mx-auto py-16 px-4 text-center">
+    <h1 class="text-3xl font-semibold text-slate-100 mb-2">Items added to your cart</h1>
+    <p class="text-base text-slate-400 mb-8">
+        {{ success_count }} items &bull; estimated ${{ "%.2f" | format(session.estimated_total or 0) }}
+    </p>
+
+    {# Partial failure warning (amber banner per UI-SPEC) #}
+    {% if fail_count > 0 %}
+    <div class="bg-amber-950 border border-amber-800 rounded p-3 text-sm text-amber-400 mb-6">
+        {{ fail_count }} of {{ success_count + fail_count }} items could not be added. Try re-adding from your cart history.
+    </div>
+    {% endif %}
+
+    {# Primary CTA — Fry's curbside pickup link #}
+    <a href="https://www.frysfood.com/cart"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg inline-block mb-6 min-h-[44px]">
+        Open Fry's curbside pickup
+    </a>
+    <br>
+
+    {# Secondary action — start a new list #}
+    <a href="/shopping" class="text-sm text-slate-400 hover:text-slate-100 underline">Start a new list</a>
+
+    {# Expandable added items detail (D-06) #}
+    <div x-data="{ showItems: false }" class="mt-8">
+        <button @click="showItems = !showItems"
+                type="button"
+                class="text-sm text-slate-400 hover:text-slate-100 cursor-pointer">
+            <span x-show="!showItems">Show added items</span>
+            <span x-show="showItems">Hide</span>
+        </button>
+
+        <div x-show="showItems" class="mt-4">
+            <table class="w-full text-sm">
+                {% for item in items %}
+                <tr class="border-b border-slate-700">
+                    <td class="py-2 text-slate-100 text-left">{{ item.description }}</td>
+                    <td class="py-2 text-slate-400">{{ item.size }}</td>
+                    <td class="py-2 text-slate-100 text-right">
+                        {% if item.price %}${{ "%.2f" | format(item.price) }}{% else %}—{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
