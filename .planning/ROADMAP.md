@@ -32,8 +32,8 @@
 **Plans:** 2/4 plans executed
 Plans:
 - [x] 01-01-PLAN.md — Project skeleton: Docker, config, database, models, Alembic
-- [x] 01-02-PLAN.md — App shell: nav sidebar, missing config page, placeholder pages, test scaffold
-- [ ] 01-03-PLAN.md — Setup wizard steps 1-3: LLM validation, Kroger credentials, store search
+- [ ] 01-02-PLAN.md — App shell: nav sidebar, missing config page, placeholder pages, test scaffold
+- [x] 01-03-PLAN.md — Setup wizard steps 1-3: LLM validation, Kroger credentials, store search
 - [ ] 01-04-PLAN.md — OAuth PKCE flow, token encryption, silent refresh, quick tour
 **UI hint**: yes
 

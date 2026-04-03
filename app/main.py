@@ -22,8 +22,9 @@ class SetupGuardMiddleware(BaseHTTPMiddleware):
         # Check for missing Kroger credentials (D-07: serve missing config page)
         if not settings.kroger_client_id or not settings.kroger_client_secret:
             return templates.TemplateResponse(
+                request,
                 "missing_config.html",
-                {"request": request, "missing_vars": _get_missing_vars(settings)},
+                {"missing_vars": _get_missing_vars(settings)},
             )
 
         # Check wizard completion (D-02: resumable wizard)

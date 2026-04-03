@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FennCart — Setup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lCLaNG4g7rvSMiMiSe7CnzMwKNUAMi4IFsqDjUhT6LMFIVaFQWiZLyDGdET" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-slate-950 min-h-screen flex flex-col items-center justify-center py-16">
+
+    <!-- Header -->
+    <div class="mb-12 text-center">
+        <h1 class="text-3xl font-semibold text-slate-100">FennCart</h1>
+        <p class="text-slate-400 text-sm mt-1">First-run setup</p>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="mb-10 flex items-center gap-0">
+        {% set steps = [
+            {"label": "LLM", "num": 1},
+            {"label": "Kroger", "num": 2},
+            {"label": "Store", "num": 3},
+            {"label": "Authorize", "num": 4}
+        ] %}
+        {% for step in steps %}
+            <!-- Step dot + label -->
+            <div class="flex flex-col items-center">
+                <div class="
+                    w-3 h-3 rounded-full
+                    {% if step.num < current_step %}bg-green-600
+                    {% elif step.num == current_step %}bg-slate-100
+                    {% else %}bg-slate-700{% endif %}
+                "></div>
+                <span class="text-xs text-slate-400 mt-1 w-14 text-center">{{ step.label }}</span>
+            </div>
+            <!-- Connector line (not after last step) -->
+            {% if not loop.last %}
+            <div class="w-16 h-px mb-4
+                {% if step.num < current_step %}bg-green-600{% else %}bg-slate-700{% endif %}
+            "></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Step Content (HTMX target) -->
+    <div id="wizard-step" class="w-full max-w-md px-4">
+        {% include step_template %}
+    </div>
+
+</body>
+</html>
