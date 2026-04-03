@@ -1,0 +1,32 @@
+<div id="wizard-step" class="bg-slate-800 rounded-lg border border-slate-700 p-8" x-data="{ loading: false }">
+    <h2 class="text-xl font-semibold text-slate-100 mb-2">Authorize FennCart with Kroger</h2>
+    <p class="text-slate-400 text-sm mb-6">
+        FennCart needs permission to add items to your Kroger cart. You'll be redirected to Kroger's login page,
+        then returned here automatically.
+    </p>
+
+    {% if store_name %}
+    <div class="bg-slate-700 border border-slate-600 rounded p-3 mb-6">
+        <p class="text-slate-300 text-sm">Store selected: <span class="font-semibold text-slate-100">{{ store_name }}</span></p>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="bg-red-950 border border-red-800 rounded p-3 mb-4">
+        <p class="text-red-400 text-sm">{{ error }}</p>
+        <p class="text-red-400 text-xs mt-1">
+            Authorization failed. This usually means the redirect URI doesn't match what's registered
+            in your Kroger developer app. Check <code>BASE_URL</code> in your environment.
+        </p>
+    </div>
+    {% endif %}
+
+    <a
+        href="/auth/kroger/login"
+        class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition-colors"
+        @click="loading = true"
+    >
+        <span x-show="!loading">Authorize with Kroger</span>
+        <span x-show="loading">Waiting for authorization...</span>
+    </a>
+</div>
