@@ -32,12 +32,14 @@ Standard 8-point scale. Only multiples of 4 are permitted.
 |-------|----|-------|
 | `space-1` | 4px | Icon-to-label gaps, tight inline gaps |
 | `space-2` | 8px | Compact intra-element spacing (tag padding, icon padding) |
-| `space-3` | 12px | Form field internal padding (py-3) |
+| `space-3` | 12px | **Exception — form field internal padding (`py-3`)** |
 | `space-4` | 16px | Standard element padding, card internal padding |
 | `space-6` | 24px | Section vertical spacing between grouped elements |
 | `space-8` | 32px | Major section separators |
 | `py-8 px-4` | 32px / 16px | Main content area — matches shopping.html established pattern |
 | `max-w-2xl mx-auto` | — | Content column width — matches shopping.html established pattern |
+
+**Exception — `space-3` (12px):** 12px is not in the standard {4, 8, 16, 24, 32, 48, 64} set but is retained for `py-3` on text inputs and the chat input field. Rationale: `py-2` (8px) makes single-line inputs feel cramped on the dark background at `text-base`; `py-4` (16px) makes them oversized relative to the surrounding card padding. 12px hits the ergonomic midpoint for input height without adding a new conceptual spacing unit — it is used exclusively for form field internal vertical padding and nowhere else.
 
 **Touch targets:** All interactive elements (buttons, checkboxes, tab triggers, delete icons) must have `min-h-[44px]` to meet 44px minimum touch target. Source: base.html nav items establish this pattern.
 
@@ -106,6 +108,8 @@ Contradiction cards (D-06) use amber-400 to match the "Uncertain match" badge es
 
 **Container:** Extends `base.html` with `{% set active_page = "preferences" %}`. Content area uses `max-w-2xl mx-auto py-8 px-4` matching shopping.html.
 
+**Primary focal point:** The Preferences List tab panel is the primary visual anchor of the page. It is the default active tab and the surface where all preference data lives — receipt upload and chat are entry methods that feed into it. The list panel occupies the full content column width and should feel like the destination, not a secondary view.
+
 ### Tab Structure (D-09 — Claude's discretion resolved)
 
 Three-tab layout using Alpine.js `x-data="{tab: 'list'}"`. Tabs sit at the top of the content area below the page heading. Default active tab: "Preferences" (list view).
@@ -168,7 +172,7 @@ Three-tab layout using Alpine.js `x-data="{tab: 'list'}"`. Tabs sit at the top o
 On edit trigger click, the row transforms into an editable form in-place via HTMX:
 - `hx-get="/preferences/{id}/edit-form"` swaps the row with an edit form partial
 - Edit form shows: product name input, brand input, category input, notes textarea
-- Actions: "Save" (green button) + "Cancel" (slate ghost button) in a `flex gap-2 mt-3`
+- Actions: "Save changes" (green button) + "Discard changes" (slate ghost button) in a `flex gap-2 mt-3`
 - On save: `hx-put="/preferences/{id}"` swaps back to the display row
 - On cancel: `hx-get="/preferences/{id}/row"` swaps back to the display row
 - Reason for inline over modal: fits the single-column narrow layout; modals add overlay complexity HTMX doesn't manage well
@@ -413,6 +417,8 @@ When preferences are loaded and passed to `match_products()`, the shopping revie
 | Chat preference discard | "Discard" | Short, clear; opposite of Apply |
 | Add manual preference | "+ Add preference manually" | Verb-first; "manually" distinguishes from other entry methods |
 | Bulk delete (confirm) | "Delete {N} preferences? This cannot be undone." | Irreversibility is stated clearly rather than implied |
+| Inline edit confirm | "Save changes" | Scoped verb + noun distinguishes from page-level save actions |
+| Inline edit abandon | "Discard changes" | Mirrors "Save changes" structurally; makes the consequence explicit |
 
 ### Status Labels
 
@@ -438,9 +444,9 @@ When preferences are loaded and passed to `match_products()`, the shopping revie
 | Partial Template | Endpoint | Target | Trigger |
 |-----------------|----------|--------|---------|
 | `partials/pref_list.html` | `GET /preferences/list?q=` | `#pref-list-container` | Search input 300ms debounce |
-| `partials/pref_row.html` | `GET /preferences/{id}/row` | `#pref-row-{id}` | Cancel inline edit |
+| `partials/pref_row.html` | `GET /preferences/{id}/row` | `#pref-row-{id}` | Discard inline edit |
 | `partials/pref_edit_form.html` | `GET /preferences/{id}/edit-form` | `#pref-row-{id}` | Edit trigger click |
-| `partials/pref_row.html` | `PUT /preferences/{id}` | `#pref-row-{id}` | Edit form save |
+| `partials/pref_row.html` | `PUT /preferences/{id}` | `#pref-row-{id}` | Edit form save changes |
 | `partials/receipt_upload_form.html` | N/A — initial render | N/A | Tab switch to Receipt Upload |
 | `partials/receipt_review.html` | `POST /preferences/upload` | `#receipt-panel` | File form submit |
 | `partials/receipt_contradictions.html` | Embedded in receipt_review.html | N/A | Rendered inline when contradictions exist |
@@ -479,9 +485,13 @@ When preferences are loaded and passed to `match_products()`, the shopping revie
 | Partial results with warnings (not reject) | Claude's discretion (D-03) | Error handling |
 | `beforeend` HTMX swap for chat | RESEARCH.md Pattern 6 | Interaction |
 | Contradiction amber banner | CONTEXT.md D-06 — flag-and-ask mandatory | Color / interaction |
+| `space-3` (12px) exception retained | UI-SPEC revision 2026-04-04 — input ergonomics at text-base | Spacing |
+| "Save changes" / "Discard changes" inline edit labels | UI-SPEC revision 2026-04-04 — checker flag on generic labels | Copywriting |
+| Preference list as primary focal point | UI-SPEC revision 2026-04-04 — checker visual anchor recommendation | Layout |
 
 ---
 
 *Phase: 03-preference-system*
 *UI-SPEC created: 2026-04-04*
+*UI-SPEC revised: 2026-04-04 — fixes: inline edit button labels (checker D1), space-3 exception documented (checker D5), focal point statement added (checker D2)*
 *Status: draft — awaiting gsd-ui-checker validation*
