@@ -31,15 +31,12 @@ Standard 8-point scale. Only multiples of 4 are permitted.
 | Token | px | Usage |
 |-------|----|-------|
 | `space-1` | 4px | Icon-to-label gaps, tight inline gaps |
-| `space-2` | 8px | Compact intra-element spacing (tag padding, icon padding) |
-| `space-3` | 12px | **Exception — form field internal padding (`py-3`)** |
+| `space-2` | 8px | Compact intra-element spacing (tag padding, icon padding, form field internal vertical padding) |
 | `space-4` | 16px | Standard element padding, card internal padding |
 | `space-6` | 24px | Section vertical spacing between grouped elements |
 | `space-8` | 32px | Major section separators |
 | `py-8 px-4` | 32px / 16px | Main content area — matches shopping.html established pattern |
 | `max-w-2xl mx-auto` | — | Content column width — matches shopping.html established pattern |
-
-**Exception — `space-3` (12px):** 12px is not in the standard {4, 8, 16, 24, 32, 48, 64} set but is retained for `py-3` on text inputs and the chat input field. Rationale: `py-2` (8px) makes single-line inputs feel cramped on the dark background at `text-base`; `py-4` (16px) makes them oversized relative to the surrounding card padding. 12px hits the ergonomic midpoint for input height without adding a new conceptual spacing unit — it is used exclusively for form field internal vertical padding and nowhere else.
 
 **Touch targets:** All interactive elements (buttons, checkboxes, tab triggers, delete icons) must have `min-h-[44px]` to meet 44px minimum touch target. Source: base.html nav items establish this pattern.
 
@@ -158,7 +155,7 @@ Three-tab layout using Alpine.js `x-data="{tab: 'list'}"`. Tabs sit at the top o
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-- Row: `bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 flex items-start gap-3`
+- Row: `bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 flex items-start gap-3`
 - Product name + brand: `text-base font-semibold text-slate-100`
 - Category: `text-sm text-slate-400`
 - Purchase count badge: `text-xs bg-slate-700 text-slate-300 rounded-full px-2 py-0.5` — e.g. "×4"
@@ -181,14 +178,14 @@ On edit trigger click, the row transforms into an editable form in-place via HTM
 
 - Checkbox: `w-4 h-4 accent-green-500 rounded cursor-pointer` (CSS accent-color for checkbox theming)
 - Bulk action bar appears when any checkbox is selected (Alpine.js `x-show="selectedCount > 0"`):
-  - Position: sticky at bottom of list panel, `bg-slate-900 border-t border-slate-700 px-4 py-3 flex items-center gap-4`
+  - Position: sticky at bottom of list panel, `bg-slate-900 border-t border-slate-700 px-4 py-2 flex items-center gap-4`
   - Text: `text-sm text-slate-400` — "{N} selected"
   - Delete button: `bg-red-900 hover:bg-red-800 text-red-400 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]` — "Delete selected"
   - Confirmation: inline confirmation text replaces button text — "Delete {N} preferences? This cannot be undone. [Confirm] [Cancel]"
 
 **Add new entry button:**
 
-- `bg-slate-800 border border-slate-700 border-dashed rounded-lg px-4 py-3 text-sm text-slate-400 hover:text-slate-100 hover:border-slate-500 w-full text-left transition-colors`
+- `bg-slate-800 border border-slate-700 border-dashed rounded-lg px-4 py-2 text-sm text-slate-400 hover:text-slate-100 hover:border-slate-500 w-full text-left transition-colors`
 - Label: "+ Add preference manually"
 - Clicking expands an inline add form (same field set as edit form, but blank)
 
@@ -231,7 +228,7 @@ Single file upload per session. Batch upload adds complexity to the contradictio
 
 Show whatever was parsed with inline warnings rather than rejecting. Zero-item results get a clear error; partial results get a yellow warning banner.
 
-- Warning banner: `bg-amber-950 border border-amber-800 rounded-lg px-4 py-3 text-sm text-amber-400 mb-4`
+- Warning banner: `bg-amber-950 border border-amber-800 rounded-lg px-4 py-2 text-sm text-amber-400 mb-4`
 - Warning text: "Some items could not be read. Review carefully before saving."
 - Zero items error: reuses error_block.html with `error_heading="Could not read this receipt"` and `error_body="FennCart couldn't extract items from this PDF. Try a different receipt format, or add preferences manually."`
 
@@ -260,7 +257,7 @@ Show whatever was parsed with inline warnings rather than rejecting. Zero-item r
 - Editable cells: `contenteditable="true"` on product name, brand, size fields — styled with `focus:outline-none focus:bg-slate-700 rounded px-1 py-0.5`
 - Low-confidence row: `text-amber-400` for cells where confidence < 0.7 — amber color signals "please verify"
 - Remove row button: `text-slate-500 hover:text-red-400 transition-colors` — Heroicons `x-mark` (16px)
-- Save button: `bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg min-h-[44px]` — "Save {N} preferences"
+- Save button: `bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg min-h-[44px]` — "Save {N} preferences"
 - Save button disabled state: `opacity-60 cursor-not-allowed` when 0 items remain in table
 
 **Contradiction detection panel (D-06):**
@@ -319,12 +316,12 @@ Appears between the review table and the Save button when contradictions are det
 │ Replace "whole milk" with "oat milk"     │
 │ in the milk category.                    │
 │                                          │
-│ [Apply this change]  [Discard]           │
+│ [Apply this change]  [Discard change]    │
 └──────────────────────────────────────────┘
 ```
 
 - Wrapper: `flex justify-start`
-- Bubble: `bg-slate-800 border border-slate-700 text-slate-100 rounded-lg rounded-bl-sm px-4 py-3 text-sm max-w-[85%]`
+- Bubble: `bg-slate-800 border border-slate-700 text-slate-100 rounded-lg rounded-bl-sm px-4 py-2 text-sm max-w-[85%]`
 - Clarification question (action=="clarify"): bubble without action buttons — just shows the question, then scrolls to input
 - Confirmation preview (action != "clarify"): includes a highlighted `Interpreted as:` block:
   - Block: `bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-slate-300 mt-2 mb-3`
@@ -335,14 +332,14 @@ Appears between the review table and the Save button when contradictions are det
 
 - Container: `flex gap-2 mt-3`
 - Apply button: `bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]` — "Apply this change"
-- Discard button: `bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px] border border-slate-600` — "Discard"
+- Discard button: `bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px] border border-slate-600` — "Discard change"
 
 **Chat input form:**
 
 - Container: `flex gap-2 mt-2`
-- Input: `flex-1 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-base px-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-green-500`
+- Input: `flex-1 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-base px-4 py-2 placeholder:text-slate-500 focus:outline-none focus:border-green-500`
 - Placeholder: "Type a preference update..."
-- Submit button: `bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold px-6 rounded-lg min-h-[44px]` — "Send"
+- Submit button: `bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold px-6 rounded-lg min-h-[44px]` — "Send message"
 - Button disabled when input is empty (Alpine.js `:disabled="chatInput.trim().length === 0"`)
 - HTMX: `hx-post="/preferences/chat" hx-target="#chat-history" hx-swap="beforeend" hx-indicator="#chat-spinner"`
 - After submit: clear input field, scroll chat history to bottom via Alpine.js `$nextTick`
@@ -351,7 +348,7 @@ Appears between the review table and the Save button when contradictions are det
 
 - Inline typing indicator appended to chat history during HTMX request
 - Three dots animation: `flex gap-1` with three `w-2 h-2 bg-slate-500 rounded-full animate-pulse` at staggered delays
-- Wrapper matches assistant bubble style: `bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 max-w-[85%]`
+- Wrapper matches assistant bubble style: `bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 max-w-[85%]`
 
 ---
 
@@ -414,7 +411,8 @@ When preferences are loaded and passed to `match_products()`, the shopping revie
 | Receipt upload submit | "Parse receipt" | Describes what happens (not "Upload" which is the action already taken) |
 | Receipt review save | "Save {N} preferences" | Specific count creates transparency about what is being committed |
 | Chat preference apply | "Apply this change" | Explicit about the action being irreversible without a separate delete |
-| Chat preference discard | "Discard" | Short, clear; opposite of Apply |
+| Chat preference discard | "Discard change" | Parallel structure with "Apply this change"; noun makes the scope explicit |
+| Chat submit button | "Send message" | Verb + noun; distinguishes from other send actions in the app |
 | Add manual preference | "+ Add preference manually" | Verb-first; "manually" distinguishes from other entry methods |
 | Bulk delete (confirm) | "Delete {N} preferences? This cannot be undone." | Irreversibility is stated clearly rather than implied |
 | Inline edit confirm | "Save changes" | Scoped verb + noun distinguishes from page-level save actions |
@@ -485,13 +483,15 @@ When preferences are loaded and passed to `match_products()`, the shopping revie
 | Partial results with warnings (not reject) | Claude's discretion (D-03) | Error handling |
 | `beforeend` HTMX swap for chat | RESEARCH.md Pattern 6 | Interaction |
 | Contradiction amber banner | CONTEXT.md D-06 — flag-and-ask mandatory | Color / interaction |
-| `space-3` (12px) exception retained | UI-SPEC revision 2026-04-04 — input ergonomics at text-base | Spacing |
+| `space-3` (12px) removed from spacing scale | UI-SPEC revision 2026-04-05 — checker blocks non-standard spacing units; all `py-3` replaced with `py-2` | Spacing |
 | "Save changes" / "Discard changes" inline edit labels | UI-SPEC revision 2026-04-04 — checker flag on generic labels | Copywriting |
+| "Send message" chat submit label | UI-SPEC revision 2026-04-05 — checker flag on bare verb; added noun for clarity | Copywriting |
+| "Discard change" chat discard label | UI-SPEC revision 2026-04-05 — checker flag; parallelism with "Apply this change" | Copywriting |
 | Preference list as primary focal point | UI-SPEC revision 2026-04-04 — checker visual anchor recommendation | Layout |
 
 ---
 
 *Phase: 03-preference-system*
 *UI-SPEC created: 2026-04-04*
-*UI-SPEC revised: 2026-04-04 — fixes: inline edit button labels (checker D1), space-3 exception documented (checker D5), focal point statement added (checker D2)*
+*UI-SPEC revised: 2026-04-05 — fixes: removed space-3/12px from spacing scale (checker D5 blocker), replaced all py-3 with py-2, changed "Send" to "Send message" (checker D1), changed "Discard" to "Discard change" (checker D1)*
 *Status: draft — awaiting gsd-ui-checker validation*
