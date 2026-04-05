@@ -10,7 +10,7 @@
 ## Phases
 
 - [x] **Phase 1: Foundation and Auth** - Running Docker container with stable schema, credentials wizard, and working Kroger OAuth PKCE with silent token refresh (completed 2026-04-03)
-- [x] **Phase 2: Core Loop** - End-to-end list-to-cart flow: paste list, LLM matches products, review, confirm, items added to Kroger cart (completed 2026-04-03)
+- [x] **Phase 2: Core Loop** - End-to-end list-to-cart flow: paste list, LLM matches products, review, confirm, items added to Kroger cart (completed 2026-04-03)
 - [ ] **Phase 3: Preference System** - Receipt PDF upload and parsing, living preference profile, preference-compensated product matching, NL and manual preference editing
 - [ ] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration
 - [ ] **Phase 5: Hardening and Distribution** - Minimal Docker image, Alembic migration verification, end-to-end test coverage, setup documentation, security pre-commit hooks
@@ -53,6 +53,7 @@ Plans:
 - [x] 02-02-PLAN.md — LLM matching: parse_shopping_list and match_products via Instructor + LiteLLM
 - [x] 02-03-PLAN.md — Cart service orchestration, shopping router, and all UI templates
 - [x] 02-04-PLAN.md — Integration and unit tests for all Phase 2 requirements
+
 **UI hint**: yes
 
 ### Phase 3: Preference System
@@ -76,7 +77,11 @@ Plans:
   1. User can navigate to a settings page and switch the active LLM provider between Claude, OpenAI, and a local Ollama endpoint without restarting the container
   2. User can enter or update the API key and model name for the selected provider and have the change take effect on the next shopping run
   3. Shopping runs succeed end-to-end after switching providers (same matching quality baseline)
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 04-01-PLAN.md — Backend foundation: AppConfig extension, Alembic migration, DB-authoritative LLM config reader, Ollama support
+- [ ] 04-02-PLAN.md — Settings hub: router, shell template, 4 section partials (LLM, Store, Account, Preferences)
+- [ ] 04-03-PLAN.md — Tests: unit tests for LLM config service, integration tests for all settings endpoints
 **UI hint**: yes
 
 ### Phase 5: Hardening and Distribution
@@ -99,7 +104,7 @@ Plans:
 | 1. Foundation and Auth | 4/4 | Complete   | 2026-04-03 |
 | 2. Core Loop | 4/4 | Complete   | 2026-04-03 |
 | 3. Preference System | 0/? | Not started | - |
-| 4. Multi-Provider LLM and Settings | 0/? | Not started | - |
+| 4. Multi-Provider LLM and Settings | 0/3 | Planning complete | - |
 | 5. Hardening and Distribution | 0/? | Not started | - |
 
 ---
@@ -133,4 +138,4 @@ Plans:
 
 ---
 *Created: 2026-04-02*
-*Last updated: 2026-04-03 after Phase 2 planning*
+*Last updated: 2026-04-05 after Phase 4 planning*
