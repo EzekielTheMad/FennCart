@@ -33,6 +33,7 @@ class CartService:
         llm_api_key: str,
         llm_provider: str = "anthropic",
         llm_model: str = "claude-3-haiku-20240307",
+        llm_ollama_base_url: Optional[str] = None,
     ):
         self.db = db
         self.location_id = location_id
@@ -41,6 +42,7 @@ class CartService:
         self.llm_api_key = llm_api_key
         self.llm_provider = llm_provider
         self.llm_model = llm_model
+        self.llm_ollama_base_url = llm_ollama_base_url
         # In-memory dedup cache keyed by item.name.lower().strip() (Pitfall 7 — TOS-safe, not persistent)
         self._search_cache: dict[str, list[dict]] = {}
 
@@ -60,6 +62,7 @@ class CartService:
             self.llm_api_key,
             self.llm_provider,
             self.llm_model,
+            base_url=self.llm_ollama_base_url,
         )
 
         # Step 2: search Kroger for each item, deduplicating within session
@@ -88,6 +91,7 @@ class CartService:
             self.llm_provider,
             self.llm_model,
             preferences=preferences,
+            base_url=self.llm_ollama_base_url,
         )
 
         return (match_result, candidates_dict)

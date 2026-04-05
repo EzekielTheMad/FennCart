@@ -10,6 +10,7 @@ from sqlalchemy import select
 
 from fastapi.templating import Jinja2Templates
 from app.config import get_settings
+from app.services.llm_config import get_active_llm_config
 
 templates = Jinja2Templates(directory="templates")
 from app.database import get_session
@@ -76,19 +77,22 @@ async def shopping_match(
 
     settings = get_settings()
 
-    # Get store_id from AppConfig
+    # Get store_id and LLM config from AppConfig (DB-authoritative, per D-10)
     result = await session.execute(select(AppConfig).where(AppConfig.id == 1))
     cfg = result.scalar_one_or_none()
     location_id = (cfg.store_id or "") if cfg else ""
+
+    llm_cfg = await get_active_llm_config(session)
 
     cart_service = CartService(
         db=session,
         location_id=location_id,
         kroger_client_id=settings.kroger_client_id,
         kroger_client_secret=settings.kroger_client_secret,
-        llm_api_key=settings.llm_api_key,
-        llm_provider=settings.llm_provider,
-        llm_model=settings.llm_model,
+        llm_api_key=llm_cfg["api_key"],
+        llm_provider=llm_cfg["provider"],
+        llm_model=llm_cfg["model"],
+        llm_ollama_base_url=llm_cfg["ollama_base_url"],
     )
 
     try:
@@ -228,14 +232,17 @@ async def shopping_add_to_cart(
     cfg = result.scalar_one_or_none()
     location_id = (cfg.store_id or "") if cfg else ""
 
+    llm_cfg = await get_active_llm_config(session)
+
     cart_service = CartService(
         db=session,
         location_id=location_id,
         kroger_client_id=settings.kroger_client_id,
         kroger_client_secret=settings.kroger_client_secret,
-        llm_api_key=settings.llm_api_key,
-        llm_provider=settings.llm_provider,
-        llm_model=settings.llm_model,
+        llm_api_key=llm_cfg["api_key"],
+        llm_provider=llm_cfg["provider"],
+        llm_model=llm_cfg["model"],
+        llm_ollama_base_url=llm_cfg["ollama_base_url"],
     )
 
     cart_session_record, success_count, fail_count, error_msg = (

@@ -18,20 +18,28 @@ async def test_connection(
     api_key: str,
     provider: str = "anthropic",
     model: str = "claude-3-haiku-20240307",
+    base_url: Optional[str] = None,
 ) -> tuple[bool, str]:
     """Test LLM API key by sending a minimal completion request.
+
+    When base_url is provided (Ollama), it is passed as api_base and
+    the api_key is not sent (Ollama does not require API keys).
 
     Returns (success: bool, message: str).
     """
     try:
         # Build model string for LiteLLM: provider/model
         model_str = f"{provider}/{model}" if "/" not in model else model
-        response = await litellm.acompletion(
-            model=model_str,
-            messages=[{"role": "user", "content": "ping"}],
-            api_key=api_key,
-            max_tokens=5,
-        )
+        kwargs: dict = {
+            "model": model_str,
+            "messages": [{"role": "user", "content": "ping"}],
+            "max_tokens": 5,
+        }
+        if base_url:
+            kwargs["api_base"] = base_url
+        else:
+            kwargs["api_key"] = api_key
+        response = await litellm.acompletion(**kwargs)
         if response.choices:
             return True, "Connected"
         return False, "No response from provider"
@@ -48,11 +56,14 @@ async def parse_shopping_list(
     api_key: str,
     provider: str = "anthropic",
     model: str = "claude-3-haiku-20240307",
+    base_url: Optional[str] = None,
 ) -> list[ParsedListItem]:
     """Parse a raw natural language shopping list into structured items.
 
     Uses Instructor with LiteLLM to extract items, quantities, units, and notes
     from free-form text (e.g. "a dozen eggs", "2% milk", "that pasta Jen likes").
+
+    When base_url is provided (Ollama), it is forwarded as api_base.
 
     Returns a list of ParsedListItem objects.
     Raises RuntimeError on LLM or parsing failure.
@@ -72,16 +83,20 @@ async def parse_shopping_list(
             "or '2% milk' (name='milk', notes='2% fat')."
         )
 
-        result = await client.create(
-            messages=[
+        create_kwargs: dict = {
+            "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": raw_text},
             ],
-            response_model=ParsedList,
-            max_tokens=1000,
-            max_retries=2,
-            api_key=api_key,
-        )
+            "response_model": ParsedList,
+            "max_tokens": 1000,
+            "max_retries": 2,
+            "api_key": api_key,
+        }
+        if base_url:
+            create_kwargs["api_base"] = base_url
+
+        result = await client.create(**create_kwargs)
         return result.items
     except Exception as e:
         raise RuntimeError(f"Failed to parse shopping list: {str(e)}") from e
@@ -94,6 +109,7 @@ async def match_products(
     provider: str = "anthropic",
     model: str = "claude-3-haiku-20240307",
     preferences: Optional[dict] = None,
+    base_url: Optional[str] = None,
 ) -> MatchResult:
     """Select the best Kroger product for each shopping list item using an LLM.
 
@@ -101,6 +117,7 @@ async def match_products(
     item name. Returns a MatchResult with per-item selections and confidence scores.
 
     The preferences parameter is a Phase 3 hook (D-07) — pass None in Phase 2.
+    When base_url is provided (Ollama), it is forwarded as api_base.
     Raises RuntimeError on LLM or matching failure.
     """
     try:
@@ -127,16 +144,20 @@ async def match_products(
 
         user_message = _build_matching_prompt(list_items, candidates)
 
-        result = await client.create(
-            messages=[
+        create_kwargs: dict = {
+            "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
             ],
-            response_model=MatchResult,
-            max_tokens=2000,
-            max_retries=2,
-            api_key=api_key,
-        )
+            "response_model": MatchResult,
+            "max_tokens": 2000,
+            "max_retries": 2,
+            "api_key": api_key,
+        }
+        if base_url:
+            create_kwargs["api_base"] = base_url
+
+        result = await client.create(**create_kwargs)
         return result
     except Exception as e:
         raise RuntimeError(f"Product matching failed: {str(e)}") from e
