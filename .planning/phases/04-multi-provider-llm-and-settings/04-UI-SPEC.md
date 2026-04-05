@@ -36,7 +36,7 @@ Declared values (must be multiples of 4):
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | Icon gaps (`gap-1`), inline badge padding |
+| xs | 4px | Icon gaps (`gap-1`), inline badge padding (`py-1`) |
 | sm | 8px | Compact element spacing (`px-2 py-2`, `gap-2`) |
 | md | 16px | Default element spacing (`p-4`, `gap-4`) |
 | lg | 24px | Card padding (`p-6`), section padding (`py-6`) |
@@ -125,6 +125,8 @@ HTMX target: `<div id="settings-content">` swaps section partial on sub-nav clic
 
 Container: `bg-slate-800 rounded-lg border border-slate-700 p-8`
 
+**Primary focal point: the "Test connection and save" CTA button.** It is the sole primary action in this section and carries the highest visual weight via `bg-green-600`.
+
 Fields in render order:
 1. Provider dropdown — standard select styled `bg-slate-700 text-slate-100 border border-slate-600 rounded px-3 py-2 text-sm`
 2. Model dropdown (Alpine.js, changes per provider) — same select style
@@ -152,8 +154,8 @@ Reuses the zip search + store selection UI from `templates/setup/step_store.html
 
 Shows Kroger auth status badge and re-authorize button:
 - Auth status row: label `text-sm text-slate-400` + status chip
-- Authorized chip: `bg-green-950 border border-green-800 rounded px-2 py-0.5 text-xs font-semibold text-green-400`
-- Not authorized chip: `bg-amber-950 border border-amber-800 rounded px-2 py-0.5 text-xs font-semibold text-amber-400`
+- Authorized chip: `bg-green-950 border border-green-800 rounded px-2 py-1 text-xs font-semibold text-green-400`
+- Not authorized chip: `bg-amber-950 border border-amber-800 rounded px-2 py-1 text-xs font-semibold text-amber-400`
 - Re-authorize button: `bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded` (same as primary CTA style)
 
 ### Preferences Section (`templates/partials/settings/preferences.html`)
