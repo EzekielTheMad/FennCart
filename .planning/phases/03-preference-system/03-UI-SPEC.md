@@ -158,7 +158,7 @@ Three-tab layout using Alpine.js `x-data="{tab: 'list'}"`. Tabs sit at the top o
 - Row: `bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 flex items-start gap-3`
 - Product name + brand: `text-base font-semibold text-slate-100`
 - Category: `text-sm text-slate-400`
-- Purchase count badge: `text-xs bg-slate-700 text-slate-300 rounded-full px-2 py-0.5` — e.g. "×4"
+- Purchase count badge: `text-xs bg-slate-700 text-slate-300 rounded-full px-2 py-1` — e.g. "×4"
 - Source + last seen: `text-xs text-slate-500 mt-1`
 - Recurring badge (purchase_count >= 2): `text-xs text-green-500` — "Established"
 - One-off badge (purchase_count == 1): `text-xs text-amber-400` — "Seen once"
@@ -254,7 +254,7 @@ Show whatever was parsed with inline warnings rather than rejecting. Zero-item r
 - Table: `w-full text-sm border-collapse`
 - Header row: `text-xs text-slate-500 uppercase tracking-wide border-b border-slate-700`
 - Data row: `border-b border-slate-800 hover:bg-slate-750` (use `hover:bg-slate-800/50`)
-- Editable cells: `contenteditable="true"` on product name, brand, size fields — styled with `focus:outline-none focus:bg-slate-700 rounded px-1 py-0.5`
+- Editable cells: `contenteditable="true"` on product name, brand, size fields — styled with `focus:outline-none focus:bg-slate-700 rounded px-1`
 - Low-confidence row: `text-amber-400` for cells where confidence < 0.7 — amber color signals "please verify"
 - Remove row button: `text-slate-500 hover:text-red-400 transition-colors` — Heroicons `x-mark` (16px)
 - Save button: `bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg min-h-[44px]` — "Save {N} preferences"
