@@ -59,7 +59,7 @@ Source: `templates/base.html` nav items, `templates/setup/step_llm.html` card pa
 | Body | 14px | 400 (regular) | 1.5 | `text-sm` |
 | Label | 14px | 600 (semibold) | 1.5 | `text-sm font-semibold` |
 | Heading | 20px | 600 (semibold) | 1.2 | `text-xl font-semibold` |
-| Nav/Sub-nav | 14px | 600 (semibold) | — | `text-sm font-semibold` |
+| Nav/Sub-nav | 14px | 600 (semibold) | controlled by flex items-center | `text-sm font-semibold` |
 
 Notes:
 - Section sub-headings within settings panels: `text-sm font-semibold text-slate-300` (same as Label, colored for hierarchy).
@@ -141,7 +141,7 @@ Success/error feedback rendered as inline partial swap on the same `#settings-co
 Alpine.js pattern:
 - Container: `x-data="{ show: false }"` wrapping a `relative` div
 - Input: `:type="show ? 'text' : 'password'"`, full-width, standard field styling
-- Toggle button: `absolute right-3 top-2.5`, `text-slate-400 hover:text-slate-300`, type="button"
+- Toggle button: `absolute right-3 top-2` (8px — matches `sm` token), `text-slate-400 hover:text-slate-300`, `type="button"`, `:aria-label="show ? 'Hide API key' : 'Show API key'"`
 - Icon: eye / eye-slash heroicon inline SVG, `w-5 h-5`
 
 ### Store Section (`templates/partials/settings/store.html`)
@@ -263,6 +263,7 @@ Inline feedback returned from HTMX POST — matches existing partial patterns:
 - Trigger: Click eye-icon button (`type="button"`, prevents form submit)
 - Effect: `:type="show ? 'text' : 'password'"` on input field
 - Icon swaps between eye / eye-slash SVG based on `show` state
+- Accessibility: `:aria-label="show ? 'Hide API key' : 'Show API key'"` on toggle button
 
 ---
 
