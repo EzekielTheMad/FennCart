@@ -77,9 +77,9 @@ Plans:
   1. User can navigate to a settings page and switch the active LLM provider between Claude, OpenAI, and a local Ollama endpoint without restarting the container
   2. User can enter or update the API key and model name for the selected provider and have the change take effect on the next shopping run
   3. Shopping runs succeed end-to-end after switching providers (same matching quality baseline)
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 Plans:
-- [ ] 04-01-PLAN.md — Backend foundation: AppConfig extension, Alembic migration, DB-authoritative LLM config reader, Ollama support
+- [x] 04-01-PLAN.md — Backend foundation: AppConfig extension, Alembic migration, DB-authoritative LLM config reader, Ollama support
 - [ ] 04-02-PLAN.md — Settings hub: router, shell template, 4 section partials (LLM, Store, Account, Preferences)
 - [ ] 04-03-PLAN.md — Tests: unit tests for LLM config service, integration tests for all settings endpoints
 **UI hint**: yes
@@ -104,7 +104,7 @@ Plans:
 | 1. Foundation and Auth | 4/4 | Complete   | 2026-04-03 |
 | 2. Core Loop | 4/4 | Complete   | 2026-04-03 |
 | 3. Preference System | 0/? | Not started | - |
-| 4. Multi-Provider LLM and Settings | 0/3 | Planning complete | - |
+| 4. Multi-Provider LLM and Settings | 1/3 | In Progress|  |
 | 5. Hardening and Distribution | 0/? | Not started | - |
 
 ---

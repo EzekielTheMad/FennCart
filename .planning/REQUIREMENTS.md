@@ -40,7 +40,7 @@ Requirements for initial release. Each maps to roadmap phases.
 ### LLM Provider Support
 
 - [x] **LLM-01**: App supports multiple LLM providers (Claude, OpenAI, local models via Ollama) through a provider abstraction layer
-- [ ] **LLM-02**: User can select and configure their preferred LLM provider and model in settings
+- [x] **LLM-02**: User can select and configure their preferred LLM provider and model in settings
 
 ## v2 Requirements
 
@@ -100,7 +100,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PREF-05 | Phase 3 | Pending |
 | PREF-06 | Phase 3 | Pending |
 | LLM-01 | Phase 2 | Complete |
-| LLM-02 | Phase 4 | Pending |
+| LLM-02 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 20 total

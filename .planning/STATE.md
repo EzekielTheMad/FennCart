@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-last_updated: "2026-04-03T09:16:36.496Z"
+status: executing
+last_updated: "2026-04-05T23:48:55.342Z"
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_plans: 14
+  completed_plans: 9
+  percent: 64
 ---
 
 # State: Fenn Cart
@@ -23,21 +23,22 @@ progress:
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
-**Current focus:** Phase 02 — core-loop
+**Current focus:** Phase 04 — multi-provider-llm-and-settings
 
 ---
 
 ## Current Position
 
-Phase: 02 (core-loop) — Plan 3 of 3 complete
-**Phase:** 3
-**Plan:** Not started
-**Status:** Ready to plan
+Phase: 04 (multi-provider-llm-and-settings) — EXECUTING
+Plan: 2 of 3
+**Phase:** 4
+**Plan:** 1 complete, 2 next
+**Status:** Executing Phase 04
 **Blocker:** None
 
 **Progress:**
 
-[██████████] 100%
+[██████░░░░] 64%
 [Phase 1] [ ] Foundation and Auth
 [Phase 2] [ ] Core Loop
 [Phase 3] [ ] Preference System
@@ -63,6 +64,7 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 | Phase 02-core-loop P01 | 8min | 2 tasks | 8 files |
 | Phase 02-core-loop P03 | 6min | 3 tasks | 10 files |
 | Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
+| Phase 04-multi-provider-llm-and-settings P01 | 8min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -87,6 +89,9 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 | 0.8 confidence threshold | CartService.partition_matches splits items into review cards vs auto-matched compact table |
 | Mock at module boundary (app.services.cart_service.*) | Patch at module level so CartService unit tests isolate service logic without touching Kroger or LLM |
 | Patch app.routers.shopping.get_valid_access_token | Router-level patch avoids OAuth storage for testing expired-token path independently |
+| get_active_llm_config() reads AppConfig at request time | Bypasses lru_cache for zero-restart LLM provider switching; falls back to env Settings |
+| CartService accepts llm_ollama_base_url param | Threads Ollama endpoint through full parse+match pipeline, not just the router layer |
+| Fernet reused for LLM API key encryption | Same get_or_create_fernet() from oauth_manager stores encrypted API key in AppConfig |
 
 ### Architecture Constraints (carry forward)
 
@@ -116,11 +121,11 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 02-04 — test suite for Phase 2 (82 tests passing). CartService unit tests (confidence partitioning, pipeline, dedup, persistence) and shopping flow integration tests (all 5 /shopping/* endpoints). All 9 Phase 2 requirement IDs have passing tests.
+**What was done last:** Completed Plan 04-01 — LLM backend foundation. Extended AppConfig with llm_api_key_encrypted/llm_ollama_base_url/review_mode, Alembic migration 0003, get_active_llm_config() service, Ollama base_url support in all LLM service functions, shopping router now reads LLM config from DB.
 
-**What comes next:** Phase 03 — Preference System (receipt PDF parsing, brand preference learning, pass preferences dict to CartService.process_list).
+**What comes next:** Plan 04-02 — Settings hub UI (write new LLM config columns, provider selector, Ollama endpoint field, test_connection integration).
 
-**Context to re-establish:** Read 02-01-SUMMARY.md through 02-04-SUMMARY.md. CartService.process_list accepts preferences=None hook. AppConfig.store_id holds the Kroger location. Starlette session stores match_data + candidates between requests. Mock pattern: patch app.services.cart_service.* at module level for unit tests; patch app.routers.shopping.get_valid_access_token for token path tests.
+**Context to re-establish:** Read 04-01-SUMMARY.md. AppConfig has 3 new columns. get_active_llm_config(db) returns {provider, model, api_key, ollama_base_url}. CartService has llm_ollama_base_url param. test_connection() accepts base_url. Alembic migration 0003 must run at startup before settings page writes.
 
 ---
 *State initialized: 2026-04-02*
