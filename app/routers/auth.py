@@ -38,6 +38,9 @@ async def kroger_auth_callback(request: Request, db: AsyncSession = Depends(get_
             cfg.wizard_complete = True
             await db.commit()
 
+        if cfg and cfg.wizard_complete:
+            # Re-auth from settings — go back to settings
+            return RedirectResponse("/settings?section=account", status_code=302)
         return RedirectResponse("/tour", status_code=302)
     except Exception as e:
         # OAuth failed — render step_oauth with error

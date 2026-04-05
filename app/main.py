@@ -90,6 +90,12 @@ try:
 except ImportError:
     pass  # Created by Plan 02-03
 
+try:
+    from app.routers import settings
+    app.include_router(settings.router)
+except ImportError:
+    pass  # Created by Plan 04-02
+
 
 @app.get("/health")
 async def health():
