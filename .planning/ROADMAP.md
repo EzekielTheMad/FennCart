@@ -129,7 +129,9 @@ Plans:
   1. Receipt upload parsing uses get_active_llm_config(db) instead of settings.llm_* env vars
   2. Preference NL chat uses get_active_llm_config(db) instead of settings.llm_* env vars
   3. Changing LLM provider in Settings takes effect on receipt parsing and NL chat without restart
-**Plans:** 0/0 plans
+**Plans:** 1 plan
+Plans:
+- [ ] 07-01-PLAN.md — Wire preferences.py LLM calls to get_active_llm_config(db), add integration tests
 
 ---
 
