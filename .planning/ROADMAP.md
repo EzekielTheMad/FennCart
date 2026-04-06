@@ -12,7 +12,7 @@
 - [x] **Phase 1: Foundation and Auth** - Running Docker container with stable schema, credentials wizard, and working Kroger OAuth PKCE with silent token refresh (completed 2026-04-03)
 - [x] **Phase 2: Core Loop** - End-to-end list-to-cart flow: paste list, LLM matches products, review, confirm, items added to Kroger cart (completed 2026-04-03)
 - [ ] **Phase 3: Preference System** - Receipt PDF upload and parsing, living preference profile, preference-compensated product matching, NL and manual preference editing
-- [ ] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration
+- [x] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration (completed 2026-04-06)
 - [ ] **Phase 5: Hardening and Distribution** - Minimal Docker image, Alembic migration verification, end-to-end test coverage, setup documentation, security pre-commit hooks
 
 ---
@@ -82,11 +82,11 @@ Plans:
   1. User can navigate to a settings page and switch the active LLM provider between Claude, OpenAI, and a local Ollama endpoint without restarting the container
   2. User can enter or update the API key and model name for the selected provider and have the change take effect on the next shopping run
   3. Shopping runs succeed end-to-end after switching providers (same matching quality baseline)
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 Plans:
 - [x] 04-01-PLAN.md — Backend foundation: AppConfig extension, Alembic migration, DB-authoritative LLM config reader, Ollama support
 - [x] 04-02-PLAN.md — Settings hub: router, shell template, 4 section partials (LLM, Store, Account, Preferences)
-- [ ] 04-03-PLAN.md — Tests: unit tests for LLM config service, integration tests for all settings endpoints
+- [x] 04-03-PLAN.md — Tests: unit tests for LLM config service, integration tests for all settings endpoints
 **UI hint**: yes
 
 ### Phase 5: Hardening and Distribution
@@ -109,7 +109,7 @@ Plans:
 | 1. Foundation and Auth | 4/4 | Complete   | 2026-04-03 |
 | 2. Core Loop | 4/4 | Complete   | 2026-04-03 |
 | 3. Preference System | 1/4 | In Progress|  |
-| 4. Multi-Provider LLM and Settings | 2/3 | In Progress|  |
+| 4. Multi-Provider LLM and Settings | 3/3 | Complete   | 2026-04-06 |
 | 5. Hardening and Distribution | 0/? | Not started | - |
 
 ---

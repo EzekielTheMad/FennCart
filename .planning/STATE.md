@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-04-06T00:15:40.774Z"
+last_updated: "2026-04-06T00:19:00.427Z"
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 15
-  completed_plans: 11
-  percent: 73
+  completed_plans: 12
+  percent: 80
 ---
 
 # State: Fenn Cart
@@ -29,23 +29,21 @@ progress:
 
 ## Current Position
 
-Phase: 03 (preference-system) — EXECUTING
-Plan: 2 of 4
-**Phase:** 3
-**Plan:** 1 complete, 2 next
-**Status:** Executing Phase 03
+Phase: 04 (multi-provider-llm-and-settings) — COMPLETE
+Plan: 3 of 3 — all plans complete
+**Phase:** 4
+**Plan:** 3 complete (phase complete)
+**Status:** Phase 04 complete; Phase 05 (hardening-and-distribution) is next
 **Blocker:** None
 
 **Progress:**
 
-[███████░░░] 73%
-[Phase 1] [ ] Foundation and Auth
-[Phase 2] [ ] Core Loop
+[████████░░] 80%
+[Phase 1] [x] Foundation and Auth
+[Phase 2] [x] Core Loop
 [Phase 3] [ ] Preference System
-[Phase 4] [ ] Multi-Provider LLM and Settings
+[Phase 4] [x] Multi-Provider LLM and Settings
 [Phase 5] [ ] Hardening and Distribution
-
-```
 
 ---
 
@@ -67,6 +65,7 @@ Plan: 2 of 4
 | Phase 04-multi-provider-llm-and-settings P01 | 8min | 2 tasks | 7 files |
 | Phase 04-multi-provider-llm-and-settings P02 | 18min | 2 tasks | 9 files |
 | Phase 03-preference-system P01 | 2min | 2 tasks | 7 files |
+| Phase 04-multi-provider-llm-and-settings P03 | 14min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -128,11 +127,11 @@ Plan: 2 of 4
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 03-01 — Preference data layer. Created PreferenceEntry and ReceiptUpload SQLModel tables, 6 Pydantic schemas (ReceiptLineItem, ParsedReceipt, ContradictionCandidate, PreferenceDelta, PreferenceCreateRequest, PreferenceUpdateRequest), PreferenceService with 10 methods (upsert, contradiction detection, preferences dict builder, CRUD, bulk_delete, apply_nl_delta), ReceiptParser (pdfplumber + Instructor). Alembic migration 0004 ready.
+**What was done last:** Completed Plan 04-03 — Settings test suite. Created tests/test_llm_config.py (4 unit tests for get_active_llm_config()) and tests/test_settings.py (13 integration tests for all settings endpoints). Full suite: 116 tests green. Phase 04 complete.
 
-**What comes next:** Plan 03-02 — Preference router and templates (upload flow, contradiction resolution UI, preference management UI, NL chat endpoint).
+**What comes next:** Phase 05 — Hardening and Distribution (Docker packaging, env var documentation, end-to-end smoke test).
 
-**Context to re-establish:** Read 04-02-SUMMARY.md. Settings hub at /settings owns LLM config writes. partials/settings/llm.html has the provider-reactive Alpine.js form pattern. auth callback uses was_already_complete to distinguish /tour vs /settings redirect. All 82 tests green.
+**Context to re-establish:** Phase 04 (multi-provider LLM + settings) is complete. Settings hub at /settings has full CRUD for LLM provider, store, and preferences. get_active_llm_config() provides DB-authoritative hot-swap. 116 tests green across both asyncio and trio backends.
 
 ---
 *State initialized: 2026-04-02*
