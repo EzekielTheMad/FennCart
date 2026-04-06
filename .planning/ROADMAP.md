@@ -14,6 +14,8 @@
 - [x] **Phase 3: Preference System** - Receipt PDF upload and parsing, living preference profile, preference-compensated product matching, NL and manual preference editing (completed 2026-04-06)
 - [x] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration (completed 2026-04-06)
 - [ ] **Phase 5: Hardening and Distribution** - Minimal Docker image, Alembic migration verification, end-to-end test coverage, setup documentation, security pre-commit hooks
+- [ ] **Phase 6: Wire Review Mode and Cart History** - Fix SRCH-05 review mode persistence and CART-03 history page stub; close integration and flow gaps from milestone audit
+- [ ] **Phase 7: LLM Config Integration Fix** - Wire preferences.py receipt upload and NL chat to use get_active_llm_config instead of env vars
 
 ---
 
@@ -103,6 +105,30 @@ Plans:
 - [x] 05-01-PLAN.md — Docker optimization (.dockerignore, LLM SDK deps) and security hardening (SESSION_SECRET_KEY validator, .gitignore)
 - [x] 05-02-PLAN.md — Alembic migration upgrade test (pytest-alembic) and quickstart README
 
+### Phase 6: Wire Review Mode and Cart History
+**Goal**: Close partial requirement gaps SRCH-05 and CART-03 — review mode persists across page loads and cart history page shows real data
+**Depends on**: Phase 2, Phase 4
+**Requirements**: SRCH-05, CART-03
+**Gap Closure**: Closes gaps from v1.0 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. Review mode toggle state persists across page loads by reading AppConfig.review_mode from the database
+  2. Shopping router passes the saved review_mode to the review screen template instead of hardcoding 'exceptions'
+  3. /history page queries CartSession/CartItem models and renders actual cart history data
+  4. User can see what was added to cart across sessions (not just current session)
+**Plans:** 0/0 plans
+**UI hint**: yes
+
+### Phase 7: LLM Config Integration Fix
+**Goal**: Ensure all LLM-using endpoints respect the user's configured provider from Settings, not just env vars
+**Depends on**: Phase 3, Phase 4
+**Requirements**: (integration fix — no new requirements)
+**Gap Closure**: Closes integration gap from v1.0 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. Receipt upload parsing uses get_active_llm_config(db) instead of settings.llm_* env vars
+  2. Preference NL chat uses get_active_llm_config(db) instead of settings.llm_* env vars
+  3. Changing LLM provider in Settings takes effect on receipt parsing and NL chat without restart
+**Plans:** 0/0 plans
+
 ---
 
 ## Progress
@@ -114,6 +140,8 @@ Plans:
 | 3. Preference System | 4/4 | Complete   | 2026-04-06 |
 | 4. Multi-Provider LLM and Settings | 3/3 | Complete   | 2026-04-06 |
 | 5. Hardening and Distribution | 1/2 | In Progress|  |
+| 6. Wire Review Mode and Cart History | 0/0 | Not Started |  |
+| 7. LLM Config Integration Fix | 0/0 | Not Started |  |
 
 ---
 
@@ -129,10 +157,10 @@ Plans:
 | SRCH-02 | Phase 2 |
 | SRCH-03 | Phase 2 |
 | SRCH-04 | Phase 2 |
-| SRCH-05 | Phase 2 |
+| SRCH-05 | Phase 6 |
 | CART-01 | Phase 2 |
 | CART-02 | Phase 2 |
-| CART-03 | Phase 2 |
+| CART-03 | Phase 6 |
 | PREF-01 | Phase 3 |
 | PREF-02 | Phase 3 |
 | PREF-03 | Phase 3 |
@@ -146,4 +174,4 @@ Plans:
 
 ---
 *Created: 2026-04-02*
-*Last updated: 2026-04-06 after Phase 5 planning*
+*Last updated: 2026-04-06 after gap closure phase creation*

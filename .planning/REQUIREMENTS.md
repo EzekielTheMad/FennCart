@@ -20,13 +20,13 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **SRCH-02**: App uses LLM to interpret list items and match them to Kroger Products API results
 - [x] **SRCH-03**: App filters product results to items available for curbside pickup fulfillment
 - [x] **SRCH-04**: App auto-matches high-confidence items and surfaces uncertain matches for review (exceptions-only default)
-- [x] **SRCH-05**: User can toggle between exceptions-only and full review modes
+- [ ] **SRCH-05**: User can toggle between exceptions-only and full review modes
 
 ### Cart Management
 
 - [x] **CART-01**: User can review matched products and explicitly confirm before items are added to Kroger cart
 - [x] **CART-02**: App maintains local cart state in SQLite (product, quantity, price, timestamp) since Cart API has no view endpoint
-- [x] **CART-03**: User can see what was added to cart in the current session
+- [ ] **CART-03**: User can see what was added to cart in the current session
 
 ### Preference System
 
@@ -89,10 +89,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRCH-02 | Phase 2 | Complete |
 | SRCH-03 | Phase 2 | Complete |
 | SRCH-04 | Phase 2 | Complete |
-| SRCH-05 | Phase 2 | Complete |
+| SRCH-05 | Phase 6 | Pending |
 | CART-01 | Phase 2 | Complete |
 | CART-02 | Phase 2 | Complete |
-| CART-03 | Phase 2 | Complete |
+| CART-03 | Phase 6 | Pending |
 | PREF-01 | Phase 3 | Complete |
 | PREF-02 | Phase 3 | Complete |
 | PREF-03 | Phase 3 | Complete |
@@ -109,4 +109,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-04-02*
-*Last updated: 2026-04-02 after roadmap creation*
+*Last updated: 2026-04-06 after gap closure phase creation*
