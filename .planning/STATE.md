@@ -3,19 +3,19 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-04-06T00:04:49.027Z"
+last_updated: "2026-04-06T00:15:40.774Z"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 15
-  completed_plans: 10
-  percent: 67
+  completed_plans: 11
+  percent: 73
 ---
 
 # State: Fenn Cart
 
-**Last updated:** 2026-04-02
-**Updated by:** roadmapper (initial creation)
+**Last updated:** 2026-04-06
+**Updated by:** executor (03-01 complete)
 
 ---
 
@@ -23,22 +23,22 @@ progress:
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
-**Current focus:** Phase 04 — multi-provider-llm-and-settings
+**Current focus:** Phase 03 — preference-system
 
 ---
 
 ## Current Position
 
-Phase: 04 (multi-provider-llm-and-settings) — EXECUTING
-Plan: 3 of 3
-**Phase:** 4
-**Plan:** 2 complete, 3 next
-**Status:** Executing Phase 04
+Phase: 03 (preference-system) — EXECUTING
+Plan: 2 of 4
+**Phase:** 3
+**Plan:** 1 complete, 2 next
+**Status:** Executing Phase 03
 **Blocker:** None
 
 **Progress:**
 
-[███████░░░] 67%
+[███████░░░] 73%
 [Phase 1] [ ] Foundation and Auth
 [Phase 2] [ ] Core Loop
 [Phase 3] [ ] Preference System
@@ -66,6 +66,7 @@ Plan: 3 of 3
 | Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
 | Phase 04-multi-provider-llm-and-settings P01 | 8min | 2 tasks | 7 files |
 | Phase 04-multi-provider-llm-and-settings P02 | 18min | 2 tasks | 9 files |
+| Phase 03-preference-system P01 | 2min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,8 @@ Plan: 3 of 3
 | was_already_complete in auth callback | Captured before wizard completion to route first-time OAuth to /tour and re-auth to /settings?section=account |
 | Settings store search no wizard mutation | Uses kroger_client.get_app_token() + search_stores_by_zip() directly, never touches wizard_step or wizard_complete |
 | Empty api_key preserves existing key | save-llm leaves llm_api_key_encrypted unchanged when api_key submitted empty — allows provider/model update without re-entering key |
+| purchase_count >= 2 for contradiction detection | Single-purchase anomalies don't override learned preferences; threshold ensures signal stability |
+| TOS guard in PreferenceService | Preference signals must never come from Kroger API responses or cart_items — only receipts and manual entries |
 
 ### Architecture Constraints (carry forward)
 
@@ -125,9 +128,9 @@ Plan: 3 of 3
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 04-02 — Settings hub UI. Built full settings router (6 endpoints), settings shell with HTMX sub-nav, LLM provider form (Alpine.js reactive, eye-icon API key reveal, test-before-save), store section, Kroger account section (auth status chip + re-auth), preferences section (review mode toggle). Fixed auth callback redirect logic.
+**What was done last:** Completed Plan 03-01 — Preference data layer. Created PreferenceEntry and ReceiptUpload SQLModel tables, 6 Pydantic schemas (ReceiptLineItem, ParsedReceipt, ContradictionCandidate, PreferenceDelta, PreferenceCreateRequest, PreferenceUpdateRequest), PreferenceService with 10 methods (upsert, contradiction detection, preferences dict builder, CRUD, bulk_delete, apply_nl_delta), ReceiptParser (pdfplumber + Instructor). Alembic migration 0004 ready.
 
-**What comes next:** Plan 04-03 — Wizard LLM setup step (add LLM configuration step to the onboarding wizard).
+**What comes next:** Plan 03-02 — Preference router and templates (upload flow, contradiction resolution UI, preference management UI, NL chat endpoint).
 
 **Context to re-establish:** Read 04-02-SUMMARY.md. Settings hub at /settings owns LLM config writes. partials/settings/llm.html has the provider-reactive Alpine.js form pattern. auth callback uses was_already_complete to distinguish /tour vs /settings redirect. All 82 tests green.
 
