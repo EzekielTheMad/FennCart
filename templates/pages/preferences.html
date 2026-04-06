@@ -190,15 +190,28 @@
     </div>
 
     <!-- ---------------------------------------------------------------- -->
-    <!-- Tab: Update Chat (placeholder for Plan 03)                       -->
+    <!-- Tab: Update Chat (PREF-04)                                       -->
     <!-- ---------------------------------------------------------------- -->
-    <div id="tab-chat" x-show="tab === 'chat'" style="display: none;" role="tabpanel">
-      <p class="text-sm text-slate-400 mb-4">
-        Tell FennCart about your preferences in plain language. For example:
-        'we switched to oat milk' or 'stop buying Kroger brand yogurt'.
-      </p>
+    <div id="tab-chat" x-show="tab === 'chat'" style="display: none;" role="tabpanel"
+         x-data="{ chatInput: '' }">
+      <p class="text-sm text-slate-400 mb-4">Tell FennCart about your preferences in plain language. For example: 'we switched to oat milk' or 'stop buying Kroger brand yogurt'.</p>
       <div id="chat-history" class="space-y-3 mb-4" aria-live="polite"></div>
-      <p class="text-sm text-slate-500 text-center py-8">Chat feature coming in the next update.</p>
+      <form hx-post="/preferences/chat"
+            hx-target="#chat-history"
+            hx-swap="beforeend"
+            hx-on::after-request="this.reset(); chatInput = ''; $nextTick(() => { const el = document.getElementById('chat-history'); el.scrollTop = el.scrollHeight; })"
+            class="flex gap-2 mt-2">
+        <input type="text"
+               name="message"
+               x-model="chatInput"
+               placeholder="Type a preference update..."
+               class="flex-1 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-base px-4 py-2 placeholder:text-slate-500 focus:outline-none focus:border-green-500">
+        <button type="submit"
+                :disabled="chatInput.trim().length === 0"
+                class="bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold px-6 rounded-lg min-h-[44px]">
+          Send message
+        </button>
+      </form>
     </div>
 
   </div><!-- /x-data -->

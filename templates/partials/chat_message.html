@@ -1,0 +1,60 @@
+{#
+  chat_message.html — Chat bubble partial for the NL preference update chat interface.
+  Context vars:
+    user_message (str | None)  — original user text to show as user bubble
+    role (str)                 — "user" | "assistant" | "system"
+    message (str)              — assistant or system message content
+    needs_confirm (bool)       — True when LLM returned a concrete (non-clarify) action
+    delta (dict | None)        — PreferenceDelta.model_dump() when needs_confirm is True
+    is_error (bool)            — True to style message in red-400
+#}
+
+{# User bubble — shown before the assistant response when user_message is present #}
+{% if user_message %}
+<div class="flex justify-end">
+  <div class="bg-green-600 text-white rounded-lg rounded-br-sm px-4 py-2 text-sm max-w-[75%]">
+    {{ user_message }}
+  </div>
+</div>
+{% endif %}
+
+{# System confirmation message (role == "system") #}
+{% if role == "system" %}
+<div class="flex justify-start">
+  <div class="bg-slate-800 border border-slate-700 text-green-400 rounded-lg rounded-bl-sm px-4 py-2 text-sm max-w-[85%]">
+    {{ message }}
+  </div>
+</div>
+
+{# Assistant message with or without confirmation preview #}
+{% elif role == "assistant" %}
+<div class="flex justify-start">
+  <div class="bg-slate-800 border border-slate-700 {% if is_error %}text-red-400{% else %}text-slate-100{% endif %} rounded-lg rounded-bl-sm px-4 py-2 text-sm max-w-[85%]"
+       {% if is_error %}role="alert"{% endif %}>
+
+    {% if needs_confirm and delta %}
+      <p>{{ message }}</p>
+      <div class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-slate-300 mt-2 mb-3">
+        <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Interpreted as:</p>
+        <p class="font-semibold text-slate-100">{{ delta.human_summary }}</p>
+      </div>
+      <div class="flex gap-2 mt-3">
+        <button hx-post="/preferences/chat/apply"
+                hx-target="#chat-history"
+                hx-swap="beforeend"
+                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]">
+          Apply this change
+        </button>
+        <button type="button"
+                class="bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px] border border-slate-600"
+                onclick="this.closest('.flex.justify-start').innerHTML = '<div class=\'bg-slate-800 border border-slate-700 text-slate-400 rounded-lg rounded-bl-sm px-4 py-2 text-sm max-w-[85%]\'>Change discarded.</div>'">
+          Discard change
+        </button>
+      </div>
+    {% else %}
+      {{ message }}
+    {% endif %}
+
+  </div>
+</div>
+{% endif %}

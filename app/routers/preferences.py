@@ -2,6 +2,8 @@
 import json
 from typing import Optional
 
+import instructor
+
 from fastapi import APIRouter, Request, Depends, Form, File, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -16,6 +18,7 @@ from app.schemas.preferences import (
     PreferenceUpdateRequest,
     ReceiptLineItem,
     ContradictionCandidate,
+    PreferenceDelta,
 )
 from app.models.receipt_upload import ReceiptUpload
 
@@ -347,5 +350,160 @@ async def receipt_save(
             "query": None,
             "save_success": True,
             "saved_count": confirmed_count,
+        },
+    )
+
+
+# ---------------------------------------------------------------------------
+# NL preference chat endpoints
+# ---------------------------------------------------------------------------
+
+
+async def parse_preference_nl(
+    conversation_history: list[dict],
+    api_key: str,
+    provider: str,
+    model: str,
+) -> PreferenceDelta:
+    """Parse a natural language preference update into a structured delta."""
+    model_str = f"{provider}/{model}" if "/" not in model else model
+    client = instructor.from_provider(f"litellm/{model_str}", async_client=True)
+
+    system_prompt = (
+        "You are a preference update assistant for a grocery shopping app. "
+        "The user wants to update their brand/product preferences. "
+        "Interpret their message and return a structured action. "
+        "If the intent is unclear, set action='clarify' and ask a specific question. "
+        "For clear intents: use 'replace' to switch brands, 'add' to add a new preference, "
+        "'remove' to delete a preference. Always include a human_summary describing the change."
+    )
+
+    messages = [{"role": "system", "content": system_prompt}] + conversation_history
+
+    return await client.create(
+        messages=messages,
+        response_model=PreferenceDelta,
+        max_tokens=500,
+        max_retries=2,
+        api_key=api_key,
+    )
+
+
+@router.post("/chat", response_class=HTMLResponse)
+async def preference_chat(
+    request: Request,
+    message: str = Form(...),
+    db: AsyncSession = Depends(get_session),
+):
+    """HTMX partial: process a natural language preference update message.
+
+    Appends user + assistant bubbles to #chat-history via hx-swap="beforeend".
+    When the LLM returns a concrete action (not 'clarify'), stores the delta in
+    session and returns a confirmation preview bubble with Apply/Discard buttons.
+    """
+    history: list[dict] = request.session.get("pref_chat_history", [])
+    history.append({"role": "user", "content": message})
+
+    # Cap LLM context at last 10 messages to control token cost (Pitfall 5)
+    llm_history = history[-10:]
+
+    settings = get_settings()
+
+    try:
+        delta = await parse_preference_nl(
+            llm_history,
+            settings.llm_api_key,
+            settings.llm_provider,
+            settings.llm_model,
+        )
+    except Exception as e:
+        # LLM failure — show inline error bubble
+        history.append({"role": "assistant", "content": "error"})
+        request.session["pref_chat_history"] = history
+        return templates.TemplateResponse(
+            request,
+            "partials/chat_message.html",
+            {
+                "user_message": message,
+                "role": "assistant",
+                "message": "Something went wrong. Try again or edit your preferences directly in the list.",
+                "needs_confirm": False,
+                "is_error": True,
+            },
+        )
+
+    history.append({"role": "assistant", "content": delta.human_summary})
+    request.session["pref_chat_history"] = history
+
+    if delta.action == "clarify":
+        return templates.TemplateResponse(
+            request,
+            "partials/chat_message.html",
+            {
+                "user_message": message,
+                "role": "assistant",
+                "message": delta.clarification_question or delta.human_summary,
+                "needs_confirm": False,
+                "is_error": False,
+            },
+        )
+
+    # Non-clarify action: store delta and return confirmation preview
+    request.session["pending_delta"] = delta.model_dump()
+    return templates.TemplateResponse(
+        request,
+        "partials/chat_message.html",
+        {
+            "user_message": message,
+            "role": "assistant",
+            "message": delta.human_summary,
+            "needs_confirm": True,
+            "is_error": False,
+            "delta": delta.model_dump(),
+        },
+    )
+
+
+@router.post("/chat/apply", response_class=HTMLResponse)
+async def preference_chat_apply(
+    request: Request,
+    db: AsyncSession = Depends(get_session),
+):
+    """HTMX partial: apply a confirmed NL preference delta.
+
+    Loads pending_delta from session, calls apply_nl_delta, clears session key.
+    Returns a system confirmation bubble appended to #chat-history.
+    """
+    pending_raw: Optional[dict] = request.session.get("pending_delta")
+
+    if not pending_raw:
+        return templates.TemplateResponse(
+            request,
+            "partials/chat_message.html",
+            {
+                "user_message": None,
+                "role": "assistant",
+                "message": "No pending change to apply.",
+                "needs_confirm": False,
+                "is_error": True,
+            },
+        )
+
+    delta = PreferenceDelta(**pending_raw)
+    await PreferenceService(db).apply_nl_delta(delta)
+    await db.commit()
+
+    # Clear pending delta from session
+    request.session.pop("pending_delta", None)
+
+    return templates.TemplateResponse(
+        request,
+        "partials/chat_message.html",
+        {
+            "user_message": None,
+            "role": "system",
+            "message": "Done! Your preferences have been updated.",
+            "needs_confirm": False,
+            "is_error": False,
         },
     )
