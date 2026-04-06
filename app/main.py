@@ -91,6 +91,12 @@ except ImportError:
     pass  # Created by Plan 02-03
 
 try:
+    from app.routers import preferences as preferences_router
+    app.include_router(preferences_router.router)
+except ImportError:
+    pass  # Created by Plan 03-02
+
+try:
     from app.routers import settings
     app.include_router(settings.router)
 except ImportError:

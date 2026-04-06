@@ -1,5 +1,9 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database import get_session
+from app.services.preference_service import PreferenceService
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -16,8 +20,12 @@ async def shopping(request: Request):
 
 
 @router.get("/preferences")
-async def preferences(request: Request):
-    return templates.TemplateResponse("pages/preferences.html", {"request": request, "active_page": "preferences"})
+async def preferences(request: Request, db: AsyncSession = Depends(get_session)):
+    entries = await PreferenceService(db).list_preferences()
+    return templates.TemplateResponse(
+        "pages/preferences.html",
+        {"request": request, "active_page": "preferences", "preferences": entries},
+    )
 
 
 @router.get("/history")
