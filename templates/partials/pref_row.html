@@ -45,7 +45,7 @@
     <div class="text-xs text-slate-500 mt-1">
       Source: {{ pref.source }}
       {% if pref.last_seen_at %}
-        &middot; Last seen: {{ pref.last_seen_at.strftime('%b %-d, %Y') }}
+        &middot; Last seen: {{ pref.last_seen_at.strftime('%b %d, %Y') }}
       {% endif %}
       {% if pref.notes %}
         &middot; {{ pref.notes }}
