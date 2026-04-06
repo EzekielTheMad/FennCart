@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-last_updated: "2026-04-06T00:36:59.088Z"
+last_updated: "2026-04-06T01:01:14.858Z"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 15
-  completed_plans: 14
-  percent: 93
+  completed_plans: 15
+  percent: 100
 ---
 
 # State: Fenn Cart
@@ -38,7 +38,7 @@ Plan: 3 of 3 — all plans complete
 
 **Progress:**
 
-[█████████░] 93%
+[██████████] 100%
 [Phase 1] [x] Foundation and Auth
 [Phase 2] [x] Core Loop
 [Phase 3] [ ] Preference System
@@ -68,6 +68,7 @@ Plan: 3 of 3 — all plans complete
 | Phase 04-multi-provider-llm-and-settings P03 | 14min | 1 tasks | 2 files |
 | Phase 03-preference-system P02 | 3min | 2 tasks | 10 files |
 | Phase 03-preference-system P03 | 10min | 2 tasks | 7 files |
+| Phase 03-preference-system P04 | 16min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,8 @@ Plan: 3 of 3 — all plans complete
 | Inline PreferenceService import in CartService.process_list() | Avoids circular import between cart_service and preference_service; both in same package |
 | pending_delta session key for NL chat confirmation | Stores PreferenceDelta dict between /preferences/chat and /preferences/chat/apply — user must explicitly POST /apply to commit |
 | Chat history capped at 10 messages for LLM | Controls token cost per Pitfall 5; full conversation stored in session but only last 10 sent to LLM |
+| Mock pdfplumber at module boundary for receipt parser tests | patch('app.services.receipt_parser.pdfplumber') isolates text extraction logic without a real PDF |
+| Patch app.main.get_settings for preferences integration tests | SetupGuardMiddleware calls get_settings() directly (not via FastAPI DI); must patch at app.main level |
 
 ### Architecture Constraints (carry forward)
 
@@ -135,11 +138,11 @@ Plan: 3 of 3 — all plans complete
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 03-03 — NL chat preference updates and CartService integration. Added POST /preferences/chat + /preferences/chat/apply with Instructor-based PreferenceDelta parsing, session-backed conversation history, and confirmation-before-apply flow. CartService.process_list() auto-loads preferences when preferences=None; preferences_loaded flag propagates to shopping review template. Created chat_message.html and preference_indicator.html partials.
+**What was done last:** Completed Plan 03-04 — full test suite for Phase 3 preference system. Created tests/test_receipt_parser.py (4 tests), tests/test_preference_service.py (16 tests), tests/test_preferences_flow.py (9 integration tests). 173 total tests green. Fixed Windows-incompatible %-d strftime format in pref_row.html. CartService PREF-06 test confirms preferences auto-loaded and passed to match_products.
 
-**What comes next:** Phase 03 Plan 04 — test suite for Phase 03 preference system.
+**What comes next:** Phase 05 — Hardening and Distribution.
 
-**Context to re-establish:** Phase 04 (multi-provider LLM + settings) is complete. Settings hub at /settings has full CRUD for LLM provider, store, and preferences. get_active_llm_config() provides DB-authoritative hot-swap. NL chat uses parse_preference_nl() (same Instructor pattern as parse_shopping_list). 116 tests green.
+**Context to re-establish:** All Phase 3 and Phase 4 code and tests are complete. 173 tests passing. Mock pattern for preferences: patch app.main.get_settings for middleware bypass, patch app.routers.preferences.parse_preference_nl for NL chat tests. Phase 3 complete: preference system, receipt parsing, NL chat, and CartService preference wiring all tested.
 
 ---
 *State initialized: 2026-04-02*
