@@ -11,7 +11,7 @@
 
 - [x] **Phase 1: Foundation and Auth** - Running Docker container with stable schema, credentials wizard, and working Kroger OAuth PKCE with silent token refresh (completed 2026-04-03)
 - [x] **Phase 2: Core Loop** - End-to-end list-to-cart flow: paste list, LLM matches products, review, confirm, items added to Kroger cart (completed 2026-04-03)
-- [x] **Phase 3: Preference System** - Receipt PDF upload and parsing, living preference profile, preference-compensated product matching, NL and manual preference editing (completed 2026-04-06)
+- [x] **Phase 3: Preference System** - Receipt PDF upload and parsing, living preference profile, preference-compensated product matching, NL and manual preference editing (completed 2026-04-06)
 - [x] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration (completed 2026-04-06)
 - [ ] **Phase 5: Hardening and Distribution** - Minimal Docker image, Alembic migration verification, end-to-end test coverage, setup documentation, security pre-commit hooks
 
@@ -98,7 +98,10 @@ Plans:
   2. Docker image size is minimized (LiteLLM provider extras pinned, Tailwind CSS purged) and the image builds cleanly from a cold pull
   3. Running the full Kroger OAuth flow inside Docker produces no redirect URI errors on a stock setup
   4. Upgrading from an earlier schema version runs Alembic migrations without data loss
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 05-01-PLAN.md — Docker optimization (.dockerignore, LLM SDK deps) and security hardening (SESSION_SECRET_KEY validator, .gitignore)
+- [ ] 05-02-PLAN.md — Alembic migration upgrade test (pytest-alembic) and quickstart README
 
 ---
 
@@ -110,7 +113,7 @@ Plans:
 | 2. Core Loop | 4/4 | Complete   | 2026-04-03 |
 | 3. Preference System | 4/4 | Complete   | 2026-04-06 |
 | 4. Multi-Provider LLM and Settings | 3/3 | Complete   | 2026-04-06 |
-| 5. Hardening and Distribution | 0/? | Not started | - |
+| 5. Hardening and Distribution | 0/2 | Planning complete | - |
 
 ---
 
@@ -143,4 +146,4 @@ Plans:
 
 ---
 *Created: 2026-04-02*
-*Last updated: 2026-04-05 after Phase 3 planning*
+*Last updated: 2026-04-06 after Phase 5 planning*
