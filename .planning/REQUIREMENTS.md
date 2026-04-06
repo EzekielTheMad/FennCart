@@ -16,17 +16,17 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Product Search & Matching
 
-- [ ] **SRCH-01**: User can input a natural language shopping list (paste, type, free-form text)
-- [ ] **SRCH-02**: App uses LLM to interpret list items and match them to Kroger Products API results
-- [ ] **SRCH-03**: App filters product results to items available for curbside pickup fulfillment
-- [ ] **SRCH-04**: App auto-matches high-confidence items and surfaces uncertain matches for review (exceptions-only default)
-- [ ] **SRCH-05**: User can toggle between exceptions-only and full review modes
+- [x] **SRCH-01**: User can input a natural language shopping list (paste, type, free-form text)
+- [x] **SRCH-02**: App uses LLM to interpret list items and match them to Kroger Products API results
+- [x] **SRCH-03**: App filters product results to items available for curbside pickup fulfillment
+- [x] **SRCH-04**: App auto-matches high-confidence items and surfaces uncertain matches for review (exceptions-only default)
+- [x] **SRCH-05**: User can toggle between exceptions-only and full review modes
 
 ### Cart Management
 
-- [ ] **CART-01**: User can review matched products and explicitly confirm before items are added to Kroger cart
-- [ ] **CART-02**: App maintains local cart state in SQLite (product, quantity, price, timestamp) since Cart API has no view endpoint
-- [ ] **CART-03**: User can see what was added to cart in the current session
+- [x] **CART-01**: User can review matched products and explicitly confirm before items are added to Kroger cart
+- [x] **CART-02**: App maintains local cart state in SQLite (product, quantity, price, timestamp) since Cart API has no view endpoint
+- [x] **CART-03**: User can see what was added to cart in the current session
 
 ### Preference System
 
@@ -39,7 +39,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### LLM Provider Support
 
-- [ ] **LLM-01**: App supports multiple LLM providers (Claude, OpenAI, local models via Ollama) through a provider abstraction layer
+- [x] **LLM-01**: App supports multiple LLM providers (Claude, OpenAI, local models via Ollama) through a provider abstraction layer
 - [ ] **LLM-02**: User can select and configure their preferred LLM provider and model in settings
 
 ## v2 Requirements
@@ -85,21 +85,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SETUP-02 | Phase 1 | Complete |
 | SETUP-03 | Phase 1 | Complete |
 | SETUP-04 | Phase 1 | Complete |
-| SRCH-01 | Phase 2 | Pending |
-| SRCH-02 | Phase 2 | Pending |
-| SRCH-03 | Phase 2 | Pending |
-| SRCH-04 | Phase 2 | Pending |
-| SRCH-05 | Phase 2 | Pending |
-| CART-01 | Phase 2 | Pending |
-| CART-02 | Phase 2 | Pending |
-| CART-03 | Phase 2 | Pending |
+| SRCH-01 | Phase 2 | Complete |
+| SRCH-02 | Phase 2 | Complete |
+| SRCH-03 | Phase 2 | Complete |
+| SRCH-04 | Phase 2 | Complete |
+| SRCH-05 | Phase 2 | Complete |
+| CART-01 | Phase 2 | Complete |
+| CART-02 | Phase 2 | Complete |
+| CART-03 | Phase 2 | Complete |
 | PREF-01 | Phase 3 | Pending |
 | PREF-02 | Phase 3 | Pending |
 | PREF-03 | Phase 3 | Pending |
 | PREF-04 | Phase 3 | Pending |
 | PREF-05 | Phase 3 | Pending |
 | PREF-06 | Phase 3 | Pending |
-| LLM-01 | Phase 2 | Pending |
+| LLM-01 | Phase 2 | Complete |
 | LLM-02 | Phase 4 | Pending |
 
 **Coverage:**

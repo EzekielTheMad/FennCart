@@ -1,0 +1,13 @@
+{% if items %}
+<p class="text-sm font-semibold text-slate-300 mb-2">Parsed items</p>
+<div class="flex flex-wrap gap-2">
+    {% for item in items %}
+    <span class="bg-slate-800 rounded p-3 text-sm">
+        <span class="font-semibold text-slate-100">{{ item.name }}</span>
+        {% if item.quantity and item.quantity != 1 %}
+        <span class="text-slate-400 ml-2">x{{ item.quantity }}</span>
+        {% endif %}
+    </span>
+    {% endfor %}
+</div>
+{% endif %}

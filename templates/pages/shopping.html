@@ -1,15 +1,50 @@
 {% extends "base.html" %}
 {% set active_page = "shopping" %}
-
 {% block title %}Shopping — FennCart{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-center min-h-screen">
-    <div class="text-center max-w-md px-6">
-        <h1 class="text-xl font-semibold text-slate-100 mb-3">Ready to build your cart</h1>
-        <p class="text-base text-slate-400">
-            Shopping list input is coming in the next phase. For now, setup is complete and your Kroger connection is active.
-        </p>
+<div class="max-w-2xl mx-auto py-8 px-4">
+
+    {# Alpine scope wraps the full input form for shared listText state #}
+    <div x-data="{ listText: '' }" id="shopping-content">
+
+        <h1 class="text-xl font-semibold text-slate-100 mb-2">What do you need?</h1>
+        <p class="text-sm text-slate-400 mb-6">Paste your list below. One item per line works best, but natural language is fine.</p>
+
+        <form hx-post="/shopping/match"
+              hx-target="#shopping-content"
+              hx-swap="innerHTML"
+              hx-indicator="#match-spinner">
+
+            <textarea
+                name="list_text"
+                x-model="listText"
+                hx-post="/shopping/preview"
+                hx-target="#list-preview"
+                hx-swap="innerHTML"
+                hx-trigger="input delay:400ms"
+                class="bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-base p-4 w-full min-h-[160px] resize-y placeholder:text-slate-500 focus:outline-none focus:border-green-500"
+                placeholder="milk, 2%&#10;eggs, a dozen&#10;that pasta Jen likes"
+            ></textarea>
+
+            {# Live preview region (D-01) #}
+            <div id="list-preview" class="mt-4"></div>
+
+            {# Submit button disabled when fewer than 2 non-whitespace characters #}
+            <button type="submit"
+                    :disabled="listText.trim().length < 2"
+                    class="w-full bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold py-3 px-4 rounded-lg mt-4 min-h-[44px]">
+                Build my cart
+            </button>
+
+        </form>
+
+        {# Loading spinner shown during HTMX request via hx-indicator #}
+        <div id="match-spinner" class="htmx-indicator flex flex-col items-center justify-center min-h-[300px] gap-4 mt-8">
+            {% include "partials/loading_spinner.html" %}
+        </div>
+
     </div>
+
 </div>
 {% endblock %}

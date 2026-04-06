@@ -1,0 +1,16 @@
+{#
+  error_block.html — Reusable error display for HTMX swaps.
+  Context vars: error_heading (str), error_body (str), show_retry (bool)
+#}
+<div class="bg-red-950 border border-red-800 rounded-lg p-6 text-center max-w-lg mx-auto mt-8">
+    <h2 class="text-base font-semibold text-red-400 mb-2">{{ error_heading }}</h2>
+    <p class="text-sm text-slate-400">{{ error_body | safe }}</p>
+    {% if show_retry %}
+    <button hx-get="/shopping"
+            hx-target="#shopping-content"
+            hx-swap="innerHTML"
+            class="bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg mt-4 min-h-[44px]">
+        Try again
+    </button>
+    {% endif %}
+</div>

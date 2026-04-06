@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-last_updated: "2026-04-03T01:09:03.480Z"
+last_updated: "2026-04-03T09:16:36.496Z"
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 2
+  total_plans: 8
+  completed_plans: 8
   percent: 100
 ---
 
@@ -23,15 +23,14 @@ progress:
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
-**Current focus:** Phase 01 — foundation-and-auth
+**Current focus:** Phase 02 — core-loop
 
 ---
 
 ## Current Position
 
-Phase: 01 (foundation-and-auth) — COMPLETE
-Plan: 4 of 4 (all plans complete)
-**Phase:** 2
+Phase: 02 (core-loop) — Plan 3 of 3 complete
+**Phase:** 3
 **Plan:** Not started
 **Status:** Ready to plan
 **Blocker:** None
@@ -61,6 +60,9 @@ Plan: 4 of 4 (all plans complete)
 | 01-foundation-and-auth | 02 | — | — | — |
 | 01-foundation-and-auth | 03 | 17min | 2 | 15 |
 | 01-foundation-and-auth | 04 | 12min | 2 | 7 |
+| Phase 02-core-loop P01 | 8min | 2 tasks | 8 files |
+| Phase 02-core-loop P03 | 6min | 3 tasks | 10 files |
+| Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -80,6 +82,11 @@ Plan: 4 of 4 (all plans complete)
 | Fernet key loaded at call time | Loaded from /data/app.key at call time not module import — allows tests to patch KEY_PATH without import-time side effects |
 | OAuth client registration guarded by credentials | register_kroger_oauth() only called when both Kroger credentials present — app starts cleanly in unconfigured state |
 | Tour page is standalone | No base.html extension — users arrive via OAuth redirect, nav shell not available/needed |
+| Router-local Jinja2Templates | Each router instantiates Jinja2Templates locally to avoid circular import from app.main |
+| Server-side session for match state | Starlette session persists match_data + candidates across multi-step HTMX shopping flow |
+| 0.8 confidence threshold | CartService.partition_matches splits items into review cards vs auto-matched compact table |
+| Mock at module boundary (app.services.cart_service.*) | Patch at module level so CartService unit tests isolate service logic without touching Kroger or LLM |
+| Patch app.routers.shopping.get_valid_access_token | Router-level patch avoids OAuth storage for testing expired-token path independently |
 
 ### Architecture Constraints (carry forward)
 
@@ -109,11 +116,11 @@ Plan: 4 of 4 (all plans complete)
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 04 — Kroger OAuth PKCE flow with Fernet token encryption, proactive silent refresh, and quick tour page. Phase 01 complete.
+**What was done last:** Completed Plan 02-04 — test suite for Phase 2 (82 tests passing). CartService unit tests (confidence partitioning, pipeline, dedup, persistence) and shopping flow integration tests (all 5 /shopping/* endpoints). All 9 Phase 2 requirement IDs have passing tests.
 
-**What comes next:** Phase 02 — Core Loop (product matching, shopping list input, cart building). Use get_valid_access_token(db) from app/services/oauth_manager.py for authenticated Kroger API calls.
+**What comes next:** Phase 03 — Preference System (receipt PDF parsing, brand preference learning, pass preferences dict to CartService.process_list).
 
-**Context to re-establish:** Read 01-01-SUMMARY.md, 01-03-SUMMARY.md, 01-04-SUMMARY.md. OAuth tokens encrypted in SQLite. AppConfig.wizard_complete=True guards main app routes.
+**Context to re-establish:** Read 02-01-SUMMARY.md through 02-04-SUMMARY.md. CartService.process_list accepts preferences=None hook. AppConfig.store_id holds the Kroger location. Starlette session stores match_data + candidates between requests. Mock pattern: patch app.services.cart_service.* at module level for unit tests; patch app.routers.shopping.get_valid_access_token for token path tests.
 
 ---
 *State initialized: 2026-04-02*

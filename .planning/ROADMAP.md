@@ -9,8 +9,8 @@
 
 ## Phases
 
-- [x] **Phase 1: Foundation and Auth** - Running Docker container with stable schema, credentials wizard, and working Kroger OAuth PKCE with silent token refresh (completed 2026-04-03)
-- [ ] **Phase 2: Core Loop** - End-to-end list-to-cart flow: paste list, LLM matches products, review, confirm, items added to Kroger cart
+- [x] **Phase 1: Foundation and Auth** - Running Docker container with stable schema, credentials wizard, and working Kroger OAuth PKCE with silent token refresh (completed 2026-04-03)
+- [x] **Phase 2: Core Loop** - End-to-end list-to-cart flow: paste list, LLM matches products, review, confirm, items added to Kroger cart (completed 2026-04-03)
 - [ ] **Phase 3: Preference System** - Receipt PDF upload and parsing, living preference profile, preference-compensated product matching, NL and manual preference editing
 - [ ] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration
 - [ ] **Phase 5: Hardening and Distribution** - Minimal Docker image, Alembic migration verification, end-to-end test coverage, setup documentation, security pre-commit hooks
@@ -47,7 +47,12 @@ Plans:
   3. By default, only uncertain or low-confidence matches appear for manual review; high-confidence matches are auto-selected
   4. User can toggle to full review mode and see all matched items before confirming
   5. User can confirm selections and have those items added to their Kroger cart, with a local session record of what was added
-**Plans**: TBD
+**Plans:** 4/4 plans complete
+Plans:
+- [x] 02-01-PLAN.md — Data layer: Pydantic schemas, SQLModel cart tables, Alembic migration, Kroger API extensions
+- [x] 02-02-PLAN.md — LLM matching: parse_shopping_list and match_products via Instructor + LiteLLM
+- [x] 02-03-PLAN.md — Cart service orchestration, shopping router, and all UI templates
+- [x] 02-04-PLAN.md — Integration and unit tests for all Phase 2 requirements
 **UI hint**: yes
 
 ### Phase 3: Preference System
@@ -92,7 +97,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and Auth | 4/4 | Complete   | 2026-04-03 |
-| 2. Core Loop | 0/? | Not started | - |
+| 2. Core Loop | 4/4 | Complete   | 2026-04-03 |
 | 3. Preference System | 0/? | Not started | - |
 | 4. Multi-Provider LLM and Settings | 0/? | Not started | - |
 | 5. Hardening and Distribution | 0/? | Not started | - |
@@ -128,4 +133,4 @@ Plans:
 
 ---
 *Created: 2026-04-02*
-*Last updated: 2026-04-02 after Phase 1 planning*
+*Last updated: 2026-04-03 after Phase 2 planning*

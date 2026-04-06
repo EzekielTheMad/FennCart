@@ -1,0 +1,44 @@
+{#
+  review_card.html — Single product review card, used by the /shopping/swap endpoint.
+  Context vars: item (ItemMatch), alternatives (list[ProductCandidate]), swapped (bool)
+#}
+<div class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex gap-4 items-start">
+
+    {# Product thumbnail #}
+    {% if item.selected_thumbnail %}
+    <img src="{{ item.selected_thumbnail }}"
+         alt="{{ item.selected_description }}"
+         class="w-16 h-16 rounded object-contain bg-slate-700 shrink-0">
+    {% else %}
+    <div class="w-16 h-16 rounded bg-slate-700 shrink-0 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+        </svg>
+    </div>
+    {% endif %}
+
+    {# Product info #}
+    <div class="flex-1 min-w-0">
+        <p class="text-base font-semibold text-slate-100">{{ item.selected_description }}</p>
+        <p class="text-sm text-slate-400">{{ item.selected_size }}</p>
+        {% if item.selected_price %}
+        <p class="text-sm font-semibold text-slate-100 mt-1">${{ "%.2f" | format(item.selected_price) }}</p>
+        {% endif %}
+
+        {% if swapped %}
+        {# User explicitly chose this — show as confirmed #}
+        <div class="inline-flex items-center gap-1 text-sm text-green-500 mt-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            Selected
+        </div>
+        {% else %}
+        <div class="inline-flex items-center gap-1 text-sm text-amber-400 mt-2">
+            <span class="w-2 h-2 bg-amber-400 rounded-full"></span>
+            Uncertain match
+        </div>
+        {% endif %}
+    </div>
+
+</div>

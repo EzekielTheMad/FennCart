@@ -1,0 +1,250 @@
+{#
+  review_screen.html — Hybrid review UI: low-confidence cards + high-confidence table.
+  Context vars: review_items (list[ItemMatch]), auto_items (list[ItemMatch]),
+                candidates_dict (dict[str, list[ProductCandidate]]), total_items (int)
+#}
+
+<div x-data="{
+    mode: 'exceptions',
+    confirmedItems: {{ confirmed_items_json | default('[]') | tojson }},
+    updateItem(upc, description, brand, size, price, quantity) {
+        const idx = this.confirmedItems.findIndex(i => i.list_item === description);
+        if (idx >= 0) {
+            this.confirmedItems[idx].upc = upc;
+        }
+    }
+}" id="shopping-content">
+
+    <h1 class="text-xl font-semibold text-slate-100 mb-2">Review your matches</h1>
+    <p class="text-sm text-slate-400 mb-6">{{ total_items }} items matched. Confirm to add them to your Fry's cart.</p>
+
+    {# Review mode toggle (SRCH-05) — shown only when both zones have content #}
+    {% if review_items and auto_items %}
+    <div class="flex items-center gap-3 mb-6">
+        <span class="text-sm text-slate-400">Review mode:</span>
+        <div class="bg-slate-800 rounded-full p-1 flex gap-1">
+            <button @click="mode = 'exceptions'"
+                    :class="mode === 'exceptions' ? 'bg-slate-600 text-slate-100' : 'text-slate-400 hover:text-slate-100'"
+                    class="text-sm px-3 py-1 rounded-full min-h-[44px]">
+                Exceptions only
+            </button>
+            <button @click="mode = 'full'"
+                    :class="mode === 'full' ? 'bg-slate-600 text-slate-100' : 'text-slate-400 hover:text-slate-100'"
+                    class="text-sm px-3 py-1 rounded-full min-h-[44px]">
+                Full review
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Zone 1 — Review Cards (low-confidence items) #}
+    {% if review_items %}
+    <div x-show="mode === 'exceptions' || mode === 'full'">
+        <h2 class="text-xl font-semibold text-slate-100 mb-4">Review these matches</h2>
+        <p class="text-sm text-slate-400 mb-6">FennCart wasn't certain about these items. Pick the right product or swap to an alternative.</p>
+
+        <div class="space-y-3" id="review-cards">
+            {% for item in review_items %}
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex gap-4 items-start"
+                 id="card-{{ loop.index }}"
+                 x-data="{ open: false, selectedUpc: '{{ item.selected_upc }}', selectedDesc: '{{ item.selected_description | e }}', selectedBrand: '{{ item.selected_brand | e }}', selectedSize: '{{ item.selected_size | e }}', selectedPrice: {{ item.selected_price if item.selected_price is not none else 'null' }} }">
+
+                {# Product thumbnail #}
+                {% if item.selected_thumbnail %}
+                <img src="{{ item.selected_thumbnail }}"
+                     alt="{{ item.selected_description }}"
+                     class="w-16 h-16 rounded object-contain bg-slate-700 shrink-0">
+                {% else %}
+                <div class="w-16 h-16 rounded bg-slate-700 shrink-0 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    </svg>
+                </div>
+                {% endif %}
+
+                {# Product info + swap #}
+                <div class="flex-1 min-w-0">
+                    <p class="text-base font-semibold text-slate-100" x-text="selectedDesc">{{ item.selected_description }}</p>
+                    <p class="text-sm text-slate-400" x-text="selectedSize">{{ item.selected_size }}</p>
+                    <p class="text-sm font-semibold text-slate-100 mt-1">
+                        <span x-show="selectedPrice !== null" x-text="'$' + selectedPrice.toFixed(2)"></span>
+                        {% if item.selected_price is none %}<span x-show="selectedPrice === null">—</span>{% endif %}
+                    </p>
+
+                    {# Confidence warning #}
+                    <div class="inline-flex items-center gap-1 text-sm text-amber-400 mt-2">
+                        <span class="w-2 h-2 bg-amber-400 rounded-full"></span>
+                        Uncertain match
+                    </div>
+
+                    {# Swap trigger #}
+                    <div class="mt-3">
+                        <button @click="open = !open"
+                                type="button"
+                                class="text-sm text-slate-400 hover:text-slate-100 underline">
+                            Choose a different product
+                        </button>
+
+                        {# Swap dropdown — alternatives from candidates_dict #}
+                        <div x-show="open"
+                             x-transition
+                             class="mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-lg">
+                            {% set alts = candidates_dict.get(item.list_item, []) %}
+                            {% for candidate in alts %}
+                            {% if candidate.upc != item.selected_upc %}
+                            <div class="flex items-center gap-3 p-3 hover:bg-slate-700 cursor-pointer rounded"
+                                 @click="
+                                    selectedUpc = '{{ candidate.upc }}';
+                                    selectedDesc = '{{ candidate.description | e }}';
+                                    selectedBrand = '{{ candidate.brand | e }}';
+                                    selectedSize = '{{ candidate.size | e }}';
+                                    selectedPrice = {{ candidate.price_regular if candidate.price_regular is not none else 'null' }};
+                                    open = false;
+                                 ">
+                                {% if candidate.thumbnail_url %}
+                                <img src="{{ candidate.thumbnail_url }}"
+                                     alt="{{ candidate.description }}"
+                                     class="w-10 h-10 rounded object-contain bg-slate-700 shrink-0">
+                                {% else %}
+                                <div class="w-10 h-10 rounded bg-slate-700 shrink-0"></div>
+                                {% endif %}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-slate-100">{{ candidate.description }}</p>
+                                    <p class="text-sm text-slate-400">{{ candidate.size }}{% if candidate.price_regular %} &bull; ${{ "%.2f" | format(candidate.price_regular) }}{% endif %}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Zone 2 — Auto-Matched Items (high-confidence) #}
+    {% if auto_items %}
+    <div x-show="mode === 'exceptions'" class="mt-8" x-data="{ showAll: false }">
+        <h2 class="text-xl font-semibold text-slate-100 mb-4">Auto-matched</h2>
+        <p class="text-sm text-slate-400 mb-4">These items matched with high confidence and are ready to add.</p>
+
+        <button @click="showAll = !showAll"
+                type="button"
+                class="text-sm text-slate-400 hover:text-slate-100 mb-4">
+            <span x-show="!showAll">Show all {{ auto_items | length }} items</span>
+            <span x-show="showAll">Hide</span>
+        </button>
+
+        <div x-show="showAll">
+            <table class="w-full text-sm border-collapse">
+                {% for item in auto_items %}
+                <tr class="border-b border-slate-700">
+                    <td class="py-2 text-slate-100">{{ item.selected_description }}</td>
+                    <td class="py-2 text-slate-400">{{ item.selected_size }}</td>
+                    <td class="py-2 text-slate-100 text-right">
+                        {% if item.selected_price %}${{ "%.2f" | format(item.selected_price) }}{% else %}—{% endif %}
+                    </td>
+                    <td class="py-2 pl-2 text-right">
+                        {# Green checkmark Heroicon #}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-500 inline" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {# In "full review" mode, also show auto items as cards #}
+    {% if auto_items %}
+    <div x-show="mode === 'full'" class="mt-8">
+        <h2 class="text-xl font-semibold text-slate-100 mb-4">Auto-matched</h2>
+        <p class="text-sm text-slate-400 mb-4">These items matched with high confidence and are ready to add.</p>
+        <div class="space-y-3">
+            {% for item in auto_items %}
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex gap-4 items-start">
+                {% if item.selected_thumbnail %}
+                <img src="{{ item.selected_thumbnail }}"
+                     alt="{{ item.selected_description }}"
+                     class="w-16 h-16 rounded object-contain bg-slate-700 shrink-0">
+                {% else %}
+                <div class="w-16 h-16 rounded bg-slate-700 shrink-0"></div>
+                {% endif %}
+                <div class="flex-1 min-w-0">
+                    <p class="text-base font-semibold text-slate-100">{{ item.selected_description }}</p>
+                    <p class="text-sm text-slate-400">{{ item.selected_size }}</p>
+                    {% if item.selected_price %}
+                    <p class="text-sm font-semibold text-slate-100 mt-1">${{ "%.2f" | format(item.selected_price) }}</p>
+                    {% endif %}
+                    <div class="inline-flex items-center gap-1 text-sm text-green-500 mt-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        Auto-matched
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Hidden form + sticky confirm bar — collects all confirmed items as JSON #}
+    <form hx-post="/shopping/add-to-cart"
+          hx-target="#shopping-content"
+          hx-swap="innerHTML">
+
+        {# Hidden input: JSON array of ConfirmedItem dicts built from Alpine state #}
+        <input type="hidden"
+               name="confirmed_items_json"
+               :value="JSON.stringify([
+                   {% for item in review_items %}
+                   {
+                       upc: (function() {
+                           for (let el of document.querySelectorAll('#card-{{ loop.index }}')) {
+                               if (el._x_dataStack) {
+                                   return el._x_dataStack[0].selectedUpc || '{{ item.selected_upc }}';
+                               }
+                           }
+                           return '{{ item.selected_upc }}';
+                       })(),
+                       description: '{{ item.selected_description | e }}',
+                       brand: '{{ item.selected_brand | e }}',
+                       size: '{{ item.selected_size | e }}',
+                       quantity: 1,
+                       price: {{ item.selected_price if item.selected_price is not none else 'null' }}
+                   }{% if not loop.last %},{% endif %}
+                   {% endfor %}
+                   {% if review_items and auto_items %},{% endif %}
+                   {% for item in auto_items %}
+                   {
+                       upc: '{{ item.selected_upc }}',
+                       description: '{{ item.selected_description | e }}',
+                       brand: '{{ item.selected_brand | e }}',
+                       size: '{{ item.selected_size | e }}',
+                       quantity: 1,
+                       price: {{ item.selected_price if item.selected_price is not none else 'null' }}
+                   }{% if not loop.last %},{% endif %}
+                   {% endfor %}
+               ])">
+
+        {# Sticky confirm bar — fixed at viewport bottom, offset for sidebar #}
+        <div class="fixed bottom-0 left-16 lg:left-60 right-0 bg-slate-900 border-t border-slate-700 p-4 flex items-center justify-between">
+            <span class="text-sm text-slate-400">{{ total_items }} items selected</span>
+            <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg min-h-[44px]">
+                Add to cart
+            </button>
+        </div>
+
+    </form>
+
+    {# Bottom padding so sticky bar doesn't overlap last card #}
+    <div class="pb-20"></div>
+
+</div>
