@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-last_updated: "2026-04-06T01:01:14.858Z"
+status: executing
+last_updated: "2026-04-06T17:12:35.794Z"
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 15
-  completed_plans: 15
-  percent: 100
+  total_plans: 17
+  completed_plans: 16
+  percent: 94
 ---
 
 # State: Fenn Cart
@@ -23,22 +23,22 @@ progress:
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
-**Current focus:** Phase 03 — preference-system
+**Current focus:** Phase 05 — hardening-and-distribution
 
 ---
 
 ## Current Position
 
-Phase: 04 (multi-provider-llm-and-settings) — COMPLETE
-Plan: 3 of 3 — all plans complete
+Phase: 05 (hardening-and-distribution) — EXECUTING
+Plan: 1 of 2
 **Phase:** 5
 **Plan:** Not started
-**Status:** Ready to plan
+**Status:** Executing Phase 05
 **Blocker:** None
 
 **Progress:**
 
-[██████████] 100%
+[█████████░] 94%
 [Phase 1] [x] Foundation and Auth
 [Phase 2] [x] Core Loop
 [Phase 3] [ ] Preference System
@@ -69,6 +69,7 @@ Plan: 3 of 3 — all plans complete
 | Phase 03-preference-system P02 | 3min | 2 tasks | 10 files |
 | Phase 03-preference-system P03 | 10min | 2 tasks | 7 files |
 | Phase 03-preference-system P04 | 16min | 2 tasks | 4 files |
+| Phase 05-hardening-and-distribution P02 | 7min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -138,11 +139,11 @@ Plan: 3 of 3 — all plans complete
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 03-04 — full test suite for Phase 3 preference system. Created tests/test_receipt_parser.py (4 tests), tests/test_preference_service.py (16 tests), tests/test_preferences_flow.py (9 integration tests). 173 total tests green. Fixed Windows-incompatible %-d strftime format in pref_row.html. CartService PREF-06 test confirms preferences auto-loaded and passed to match_products.
+**What was done last:** Completed Plan 05-02 — migration safety testing and quickstart README. Added pytest-alembic==0.12.1, created tests/test_migrations.py (2 tests), updated alembic/env.py with connection injection guard, created README.md. 175 total tests green.
 
-**What comes next:** Phase 05 — Hardening and Distribution.
+**What comes next:** Phase 05 — all plans complete.
 
-**Context to re-establish:** All Phase 3 and Phase 4 code and tests are complete. 173 tests passing. Mock pattern for preferences: patch app.main.get_settings for middleware bypass, patch app.routers.preferences.parse_preference_nl for NL chat tests. Phase 3 complete: preference system, receipt parsing, NL chat, and CartService preference wiring all tested.
+**Context to re-establish:** All 4 Alembic migrations (0001-0004) verified clean from empty DB to head. pytest-alembic 0.12.1 injects Engine via config.attributes — env.py unwraps to Connection via connectable.connect(). 175 tests passing. README.md provides 5-step quickstart for self-hosters.
 
 ---
 *State initialized: 2026-04-02*
