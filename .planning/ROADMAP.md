@@ -15,7 +15,7 @@
 - [x] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration (completed 2026-04-06)
 - [ ] **Phase 5: Hardening and Distribution** - Minimal Docker image, Alembic migration verification, end-to-end test coverage, setup documentation, security pre-commit hooks
 - [x] **Phase 6: Wire Review Mode and Cart History** - Fix SRCH-05 review mode persistence and CART-03 history page stub; close integration and flow gaps from milestone audit (completed 2026-04-06)
-- [ ] **Phase 7: LLM Config Integration Fix** - Wire preferences.py receipt upload and NL chat to use get_active_llm_config instead of env vars
+- [x] **Phase 7: LLM Config Integration Fix** - Wire preferences.py receipt upload and NL chat to use get_active_llm_config instead of env vars (completed 2026-04-06)
 
 ---
 
@@ -129,9 +129,9 @@ Plans:
   1. Receipt upload parsing uses get_active_llm_config(db) instead of settings.llm_* env vars
   2. Preference NL chat uses get_active_llm_config(db) instead of settings.llm_* env vars
   3. Changing LLM provider in Settings takes effect on receipt parsing and NL chat without restart
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 07-01-PLAN.md — Wire preferences.py LLM calls to get_active_llm_config(db), add integration tests
+- [x] 07-01-PLAN.md — Wire preferences.py LLM calls to get_active_llm_config(db), add integration tests
 
 ---
 
@@ -145,7 +145,7 @@ Plans:
 | 4. Multi-Provider LLM and Settings | 3/3 | Complete   | 2026-04-06 |
 | 5. Hardening and Distribution | 2/2 | Complete   |  |
 | 6. Wire Review Mode and Cart History | 1/1 | Complete   | 2026-04-06 |
-| 7. LLM Config Integration Fix | 0/0 | Not Started |  |
+| 7. LLM Config Integration Fix | 1/1 | Complete   | 2026-04-06 |
 
 ---
 

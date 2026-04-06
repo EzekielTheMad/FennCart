@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-last_updated: "2026-04-06T21:10:59.407Z"
+status: executing
+last_updated: "2026-04-06T23:00:40.098Z"
 progress:
   total_phases: 7
-  completed_phases: 6
-  total_plans: 18
-  completed_plans: 18
+  completed_phases: 7
+  total_plans: 19
+  completed_plans: 19
   percent: 100
 ---
 
@@ -23,17 +23,17 @@ progress:
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
-**Current focus:** Phase 06 — wire-review-mode-and-cart-history
+**Current focus:** Phase 07 — llm-config-integration-fix — COMPLETE
 
 ---
 
 ## Current Position
 
-Phase: 06 (wire-review-mode-and-cart-history) — EXECUTING
+Phase: 07 (llm-config-integration-fix) — COMPLETE
 Plan: 1 of 1
 **Phase:** 07
-**Plan:** Not started
-**Status:** Ready to plan
+**Plan:** 1 of 1 — COMPLETE
+**Status:** All phases and plans complete — milestone v1.0 ready
 **Blocker:** None
 
 **Progress:**
@@ -66,6 +66,7 @@ Plan: 1 of 1
 | Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
 | Phase 05-hardening-and-distribution P01 | 15min | 2 tasks | 6 files |
 | Phase 06-wire-review-mode-and-cart-history P01 | 18min | 3 tasks | 5 files |
+| Phase 07-llm-config-integration-fix P01 | 8min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -123,11 +124,11 @@ Plan: 1 of 1
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 06-01 — wired review mode persistence (SRCH-05) and history page (CART-03). shopping_match() now reads AppConfig.review_mode and passes it to review_screen.html Alpine x-data. History page queries CartSession/CartItem with expandable rows and empty state. 4 new tests (183 total passing).
+**What was done last:** Completed Plan 07-01 — wired preferences.py receipt upload and NL chat endpoints to use get_active_llm_config(db) instead of settings.llm_*. Two new integration tests prove DB-configured provider/model values reach the LLM service functions. 187 tests passing total (up from 183).
 
-**What comes next:** Phase 07 — llm-config-integration-fix (if applicable) or milestone complete.
+**What comes next:** Milestone v1.0 complete — all 7 phases, 19 plans executed.
 
-**Context to re-establish:** entry['items'] bracket syntax required in Jinja2 when key name shadows dict built-in method. Patch app.main.get_settings (not just DI override) for any test hitting a non-/setup route. TemplateResponse new API: request as first positional arg throughout.
+**Context to re-establish:** entry['items'] bracket syntax required in Jinja2 when key name shadows dict built-in method. Patch app.main.get_settings (not just DI override) for any test hitting a non-/setup route. TemplateResponse new API: request as first positional arg throughout. get_active_llm_config(db) is the canonical LLM config reader across shopping, upload, and NL chat.
 
 ---
 *State initialized: 2026-04-02*
