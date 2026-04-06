@@ -115,7 +115,9 @@ Plans:
   2. Shopping router passes the saved review_mode to the review screen template instead of hardcoding 'exceptions'
   3. /history page queries CartSession/CartItem models and renders actual cart history data
   4. User can see what was added to cart across sessions (not just current session)
-**Plans:** 0/0 plans
+**Plans:** 1 plan
+Plans:
+- [ ] 06-01-PLAN.md — Review mode DB persistence (SRCH-05), history page with expandable session rows (CART-03), tests
 **UI hint**: yes
 
 ### Phase 7: LLM Config Integration Fix
@@ -139,8 +141,8 @@ Plans:
 | 2. Core Loop | 4/4 | Complete   | 2026-04-03 |
 | 3. Preference System | 4/4 | Complete   | 2026-04-06 |
 | 4. Multi-Provider LLM and Settings | 3/3 | Complete   | 2026-04-06 |
-| 5. Hardening and Distribution | 1/2 | In Progress|  |
-| 6. Wire Review Mode and Cart History | 0/0 | Not Started |  |
+| 5. Hardening and Distribution | 2/2 | Complete   |  |
+| 6. Wire Review Mode and Cart History | 0/1 | Planning Complete |  |
 | 7. LLM Config Integration Fix | 0/0 | Not Started |  |
 
 ---
@@ -174,4 +176,4 @@ Plans:
 
 ---
 *Created: 2026-04-02*
-*Last updated: 2026-04-06 after gap closure phase creation*
+*Last updated: 2026-04-06 after Phase 6 planning*
