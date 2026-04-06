@@ -82,7 +82,7 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Docker container distribution | Makes it easy for anyone to self-host without environment setup | — Pending |
+| Docker container distribution | Makes it easy for anyone to self-host without environment setup | Validated in Phase 05 — .dockerignore, README quickstart, SESSION_SECRET_KEY validator |
 | Web UI (not CLI or Claude Desktop) | Broader accessibility, visual review flow, guided setup | — Pending |
 | LLM-agnostic with multi-provider support | Don't lock users into one AI provider; Claude, OpenAI, local models all viable | — Pending |
 | SQLite for persistence | Single-container simplicity, no separate DB service needed, Docker volume for durability | — Pending |
@@ -108,4 +108,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-02 after initialization*
+*Last updated: 2026-04-06 after Phase 05 completion — hardening and distribution readiness*
