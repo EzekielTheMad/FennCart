@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-last_updated: "2026-04-03T09:16:36.496Z"
+last_updated: "2026-04-06T17:19:36.278Z"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 8
-  completed_plans: 8
+  completed_plans: 9
   percent: 100
 ---
 
@@ -63,6 +63,7 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 | Phase 02-core-loop P01 | 8min | 2 tasks | 8 files |
 | Phase 02-core-loop P03 | 6min | 3 tasks | 10 files |
 | Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
+| Phase 05-hardening-and-distribution P01 | 15min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,8 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 | 0.8 confidence threshold | CartService.partition_matches splits items into review cards vs auto-matched compact table |
 | Mock at module boundary (app.services.cart_service.*) | Patch at module level so CartService unit tests isolate service logic without touching Kroger or LLM |
 | Patch app.routers.shopping.get_valid_access_token | Router-level patch avoids OAuth storage for testing expired-token path independently |
+| pytest-env for SESSION_SECRET_KEY in test environment | env var must be set before conftest imports app.main; lru_cache on get_settings() makes this critical |
+| anthropic and openai explicit in requirements.txt | LiteLLM does not bundle provider SDKs; Claude provider raises ImportError without explicit anthropic dep |
 
 ### Architecture Constraints (carry forward)
 
@@ -116,11 +119,11 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 02-04 — test suite for Phase 2 (82 tests passing). CartService unit tests (confidence partitioning, pipeline, dedup, persistence) and shopping flow integration tests (all 5 /shopping/* endpoints). All 9 Phase 2 requirement IDs have passing tests.
+**What was done last:** Completed Plan 05-01 — Docker optimization and security hardening. Created .dockerignore (44 lines), added anthropic/openai to requirements.txt, added SESSION_SECRET_KEY field_validator to app/config.py, added /data/ to .gitignore, added pytest-env for test env var injection. All 82 tests pass.
 
-**What comes next:** Phase 03 — Preference System (receipt PDF parsing, brand preference learning, pass preferences dict to CartService.process_list).
+**What comes next:** Phase 05 Plan 02 — Docker build and distribution packaging.
 
-**Context to re-establish:** Read 02-01-SUMMARY.md through 02-04-SUMMARY.md. CartService.process_list accepts preferences=None hook. AppConfig.store_id holds the Kroger location. Starlette session stores match_data + candidates between requests. Mock pattern: patch app.services.cart_service.* at module level for unit tests; patch app.routers.shopping.get_valid_access_token for token path tests.
+**Context to re-establish:** SESSION_SECRET_KEY validator rejects only the literal "change-me-in-production" default. pytest-env injects SESSION_SECRET_KEY=test-secret before test collection. anthropic must be explicit in requirements.txt for Claude provider to work. /data/ excluded from git to protect app.key and fenncart.db.
 
 ---
 *State initialized: 2026-04-02*
