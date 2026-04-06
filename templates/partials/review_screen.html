@@ -5,7 +5,7 @@
 #}
 
 <div x-data="{
-    mode: 'exceptions',
+    mode: '{{ review_mode | default("exceptions") }}',
     confirmedItems: {{ confirmed_items_json | default('[]') | tojson }},
     updateItem(upc, description, brand, size, price, quantity) {
         const idx = this.confirmedItems.findIndex(i => i.list_item === description);

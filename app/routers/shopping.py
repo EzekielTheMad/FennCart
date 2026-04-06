@@ -81,6 +81,7 @@ async def shopping_match(
     result = await session.execute(select(AppConfig).where(AppConfig.id == 1))
     cfg = result.scalar_one_or_none()
     location_id = (cfg.store_id or "") if cfg else ""
+    review_mode = (cfg.review_mode or "exceptions") if cfg else "exceptions"
 
     llm_cfg = await get_active_llm_config(session)
 
@@ -114,6 +115,7 @@ async def shopping_match(
                 "candidates_dict": candidates_dict,
                 "total_items": len(match_result.matches),
                 "preferences_loaded": cart_service.preferences_loaded,
+                "review_mode": review_mode,
             },
         )
     except RuntimeError as e:
