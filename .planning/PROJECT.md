@@ -23,12 +23,17 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 
 ### Active
 
-- [ ] LLM-powered product matching ranked by user preferences (preference system in Phase 3)
-- [ ] Receipt PDF upload and parsing to build/update preference profile over time
-- [ ] Living preference profile that learns from receipt history and weights recurring purchases vs one-off substitutions
-- [ ] Natural language preference updates ("we switched to oat milk", "stop buying Kroger brand yogurt")
-- [ ] Manual preference editing UI for direct control
+(All v1 requirements validated — milestone complete)
+
+### Recently Validated
+
+- [x] LLM-powered product matching ranked by user preferences — Validated in Phase 3: Preference System
+- [x] Receipt PDF upload and parsing to build/update preference profile over time — Validated in Phase 3: Preference System
+- [x] Living preference profile that learns from receipt history and weights recurring purchases vs one-off substitutions — Validated in Phase 3: Preference System
+- [x] Natural language preference updates ("we switched to oat milk", "stop buying Kroger brand yogurt") — Validated in Phase 3: Preference System
+- [x] Manual preference editing UI for direct control — Validated in Phase 3: Preference System
 - [x] Multi-provider LLM support (Claude, OpenAI, local models) with provider selector and settings hub — Validated in Phase 4: Multi-Provider LLM and Settings
+- [x] LLM config integration: all LLM-using endpoints use DB-authoritative config, not env vars — Validated in Phase 7: LLM Config Integration Fix
 
 ### Out of Scope
 
@@ -108,4 +113,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-06 after Phase 06 completion — review mode persistence and cart history wired*
+*Last updated: 2026-04-06 after Phase 07 completion — all LLM endpoints use DB-authoritative config, v1.0 milestone complete*
