@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from functools import lru_cache
 
 
@@ -12,6 +13,16 @@ class Settings(BaseSettings):
     session_secret_key: str = "change-me-in-production"
     port: int = 8000
     database_url: str = "sqlite+aiosqlite:////data/fenncart.db"
+
+    @field_validator("session_secret_key")
+    @classmethod
+    def session_key_must_be_changed(cls, v: str) -> str:
+        if v == "change-me-in-production":
+            raise ValueError(
+                "SESSION_SECRET_KEY must be set to a random string in your .env file. "
+                "It is currently using the insecure default value."
+            )
+        return v
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
