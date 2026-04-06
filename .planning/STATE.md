@@ -2,20 +2,20 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-last_updated: "2026-04-06T17:12:35.794Z"
+status: planning
+last_updated: "2026-04-06T17:19:36.278Z"
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 17
-  completed_plans: 16
-  percent: 94
+  completed_phases: 2
+  total_plans: 8
+  completed_plans: 9
+  percent: 100
 ---
 
 # State: Fenn Cart
 
-**Last updated:** 2026-04-06
-**Updated by:** executor (03-01 complete)
+**Last updated:** 2026-04-02
+**Updated by:** roadmapper (initial creation)
 
 ---
 
@@ -23,27 +23,28 @@ progress:
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
-**Current focus:** Phase 05 — hardening-and-distribution
+**Current focus:** Phase 02 — core-loop
 
 ---
 
 ## Current Position
 
-Phase: 05 (hardening-and-distribution) — EXECUTING
-Plan: 1 of 2
-**Phase:** 5
+Phase: 02 (core-loop) — Plan 3 of 3 complete
+**Phase:** 3
 **Plan:** Not started
-**Status:** Executing Phase 05
+**Status:** Ready to plan
 **Blocker:** None
 
 **Progress:**
 
-[█████████░] 94%
-[Phase 1] [x] Foundation and Auth
-[Phase 2] [x] Core Loop
+[██████████] 100%
+[Phase 1] [ ] Foundation and Auth
+[Phase 2] [ ] Core Loop
 [Phase 3] [ ] Preference System
-[Phase 4] [x] Multi-Provider LLM and Settings
+[Phase 4] [ ] Multi-Provider LLM and Settings
 [Phase 5] [ ] Hardening and Distribution
+
+```
 
 ---
 
@@ -62,14 +63,7 @@ Plan: 1 of 2
 | Phase 02-core-loop P01 | 8min | 2 tasks | 8 files |
 | Phase 02-core-loop P03 | 6min | 3 tasks | 10 files |
 | Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
-| Phase 04-multi-provider-llm-and-settings P01 | 8min | 2 tasks | 7 files |
-| Phase 04-multi-provider-llm-and-settings P02 | 18min | 2 tasks | 9 files |
-| Phase 03-preference-system P01 | 2min | 2 tasks | 7 files |
-| Phase 04-multi-provider-llm-and-settings P03 | 14min | 1 tasks | 2 files |
-| Phase 03-preference-system P02 | 3min | 2 tasks | 10 files |
-| Phase 03-preference-system P03 | 10min | 2 tasks | 7 files |
-| Phase 03-preference-system P04 | 16min | 2 tasks | 4 files |
-| Phase 05-hardening-and-distribution P02 | 7min | 2 tasks | 4 files |
+| Phase 05-hardening-and-distribution P01 | 15min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -94,22 +88,8 @@ Plan: 1 of 2
 | 0.8 confidence threshold | CartService.partition_matches splits items into review cards vs auto-matched compact table |
 | Mock at module boundary (app.services.cart_service.*) | Patch at module level so CartService unit tests isolate service logic without touching Kroger or LLM |
 | Patch app.routers.shopping.get_valid_access_token | Router-level patch avoids OAuth storage for testing expired-token path independently |
-| get_active_llm_config() reads AppConfig at request time | Bypasses lru_cache for zero-restart LLM provider switching; falls back to env Settings |
-| CartService accepts llm_ollama_base_url param | Threads Ollama endpoint through full parse+match pipeline, not just the router layer |
-| Fernet reused for LLM API key encryption | Same get_or_create_fernet() from oauth_manager stores encrypted API key in AppConfig |
-| was_already_complete in auth callback | Captured before wizard completion to route first-time OAuth to /tour and re-auth to /settings?section=account |
-| Settings store search no wizard mutation | Uses kroger_client.get_app_token() + search_stores_by_zip() directly, never touches wizard_step or wizard_complete |
-| Empty api_key preserves existing key | save-llm leaves llm_api_key_encrypted unchanged when api_key submitted empty — allows provider/model update without re-entering key |
-| purchase_count >= 2 for contradiction detection | Single-purchase anomalies don't override learned preferences; threshold ensures signal stability |
-| TOS guard in PreferenceService | Preference signals must never come from Kroger API responses or cart_items — only receipts and manual entries |
-| Contradiction resolution uses loop.index0 as form field | Server can update the correct session slot in receipt_contradictions list on /receipt/resolve |
-| allResolved Alpine flag from server context | Initialised true when no contradictions at parse time so Save button starts enabled without client-side logic |
-| Server-side session for receipt parse state | receipt_items + receipt_contradictions + receipt_upload_id persisted across upload/resolve/save multi-step flow |
-| Inline PreferenceService import in CartService.process_list() | Avoids circular import between cart_service and preference_service; both in same package |
-| pending_delta session key for NL chat confirmation | Stores PreferenceDelta dict between /preferences/chat and /preferences/chat/apply — user must explicitly POST /apply to commit |
-| Chat history capped at 10 messages for LLM | Controls token cost per Pitfall 5; full conversation stored in session but only last 10 sent to LLM |
-| Mock pdfplumber at module boundary for receipt parser tests | patch('app.services.receipt_parser.pdfplumber') isolates text extraction logic without a real PDF |
-| Patch app.main.get_settings for preferences integration tests | SetupGuardMiddleware calls get_settings() directly (not via FastAPI DI); must patch at app.main level |
+| pytest-env for SESSION_SECRET_KEY in test environment | env var must be set before conftest imports app.main; lru_cache on get_settings() makes this critical |
+| anthropic and openai explicit in requirements.txt | LiteLLM does not bundle provider SDKs; Claude provider raises ImportError without explicit anthropic dep |
 
 ### Architecture Constraints (carry forward)
 
@@ -139,11 +119,11 @@ Plan: 1 of 2
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 05-02 — migration safety testing and quickstart README. Added pytest-alembic==0.12.1, created tests/test_migrations.py (2 tests), updated alembic/env.py with connection injection guard, created README.md. 175 total tests green.
+**What was done last:** Completed Plan 05-01 — Docker optimization and security hardening. Created .dockerignore (44 lines), added anthropic/openai to requirements.txt, added SESSION_SECRET_KEY field_validator to app/config.py, added /data/ to .gitignore, added pytest-env for test env var injection. All 82 tests pass.
 
-**What comes next:** Phase 05 — all plans complete.
+**What comes next:** Phase 05 Plan 02 — Docker build and distribution packaging.
 
-**Context to re-establish:** All 4 Alembic migrations (0001-0004) verified clean from empty DB to head. pytest-alembic 0.12.1 injects Engine via config.attributes — env.py unwraps to Connection via connectable.connect(). 175 tests passing. README.md provides 5-step quickstart for self-hosters.
+**Context to re-establish:** SESSION_SECRET_KEY validator rejects only the literal "change-me-in-production" default. pytest-env injects SESSION_SECRET_KEY=test-secret before test collection. anthropic must be explicit in requirements.txt for Claude provider to work. /data/ excluded from git to protect app.key and fenncart.db.
 
 ---
 *State initialized: 2026-04-02*

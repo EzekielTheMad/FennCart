@@ -1,0 +1,55 @@
+# Version control
+.git/
+.gitignore
+
+# Planning and development
+.planning/
+.claude/
+docs/
+*.md
+
+# Tests and dev dependencies
+tests/
+requirements-dev.txt
+pytest.ini
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Secrets and local config
+.env
+.venv/
+venv/
+env/
+
+# Database files (runtime, not build)
+*.db
+*.db-shm
+*.db-wal
+
+# Generated CSS (regenerated at build time)
+static/output.css
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker meta
+Dockerfile
+.dockerignore
