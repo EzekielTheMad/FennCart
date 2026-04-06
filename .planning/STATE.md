@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-last_updated: "2026-04-06T00:22:42.226Z"
+last_updated: "2026-04-06T00:33:53.541Z"
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 15
-  completed_plans: 13
-  percent: 87
+  completed_plans: 14
+  percent: 93
 ---
 
 # State: Fenn Cart
@@ -38,7 +38,7 @@ Plan: 3 of 3 — all plans complete
 
 **Progress:**
 
-[█████████░] 87%
+[█████████░] 93%
 [Phase 1] [x] Foundation and Auth
 [Phase 2] [x] Core Loop
 [Phase 3] [ ] Preference System
@@ -67,6 +67,7 @@ Plan: 3 of 3 — all plans complete
 | Phase 03-preference-system P01 | 2min | 2 tasks | 7 files |
 | Phase 04-multi-provider-llm-and-settings P03 | 14min | 1 tasks | 2 files |
 | Phase 03-preference-system P02 | 3min | 2 tasks | 10 files |
+| Phase 03-preference-system P03 | 10min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,9 @@ Plan: 3 of 3 — all plans complete
 | Contradiction resolution uses loop.index0 as form field | Server can update the correct session slot in receipt_contradictions list on /receipt/resolve |
 | allResolved Alpine flag from server context | Initialised true when no contradictions at parse time so Save button starts enabled without client-side logic |
 | Server-side session for receipt parse state | receipt_items + receipt_contradictions + receipt_upload_id persisted across upload/resolve/save multi-step flow |
+| Inline PreferenceService import in CartService.process_list() | Avoids circular import between cart_service and preference_service; both in same package |
+| pending_delta session key for NL chat confirmation | Stores PreferenceDelta dict between /preferences/chat and /preferences/chat/apply — user must explicitly POST /apply to commit |
+| Chat history capped at 10 messages for LLM | Controls token cost per Pitfall 5; full conversation stored in session but only last 10 sent to LLM |
 
 ### Architecture Constraints (carry forward)
 
@@ -131,11 +135,11 @@ Plan: 3 of 3 — all plans complete
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 03-02 — Preferences router and UI. Created app/routers/preferences.py (10 endpoints: list, row, edit-form, update, create, delete, bulk-delete, upload, resolve, save), three-tab preferences page template, and 6 HTMX partials (pref_list, pref_row, pref_edit_form, receipt_upload_form, receipt_review, receipt_contradictions). Receipt upload/parse/review/save flow wired. Preference CRUD with inline editing and bulk delete complete.
+**What was done last:** Completed Plan 03-03 — NL chat preference updates and CartService integration. Added POST /preferences/chat + /preferences/chat/apply with Instructor-based PreferenceDelta parsing, session-backed conversation history, and confirmation-before-apply flow. CartService.process_list() auto-loads preferences when preferences=None; preferences_loaded flag propagates to shopping review template. Created chat_message.html and preference_indicator.html partials.
 
-**What comes next:** Phase 05 — Hardening and Distribution (Docker packaging, env var documentation, end-to-end smoke test).
+**What comes next:** Phase 03 Plan 04 — test suite for Phase 03 preference system.
 
-**Context to re-establish:** Phase 04 (multi-provider LLM + settings) is complete. Settings hub at /settings has full CRUD for LLM provider, store, and preferences. get_active_llm_config() provides DB-authoritative hot-swap. 116 tests green across both asyncio and trio backends.
+**Context to re-establish:** Phase 04 (multi-provider LLM + settings) is complete. Settings hub at /settings has full CRUD for LLM provider, store, and preferences. get_active_llm_config() provides DB-authoritative hot-swap. NL chat uses parse_preference_nl() (same Instructor pattern as parse_shopping_list). 116 tests green.
 
 ---
 *State initialized: 2026-04-02*

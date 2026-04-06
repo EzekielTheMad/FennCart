@@ -33,9 +33,9 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **PREF-01**: User can upload Fry's receipt PDFs to bootstrap their preference profile
 - [x] **PREF-02**: App parses receipt PDFs and extracts purchase history (items, brands, sizes, quantities, prices)
 - [x] **PREF-03**: App builds a living preference profile weighted by purchase frequency, distinguishing recurring preferences from one-off substitutions
-- [ ] **PREF-04**: User can update preferences via natural language ("we switched to oat milk", "stop buying Kroger brand yogurt")
+- [x] **PREF-04**: User can update preferences via natural language ("we switched to oat milk", "stop buying Kroger brand yogurt")
 - [x] **PREF-05**: User can manually view, add, edit, and delete preference entries
-- [ ] **PREF-06**: LLM product matching uses the preference profile to re-rank Kroger API results
+- [x] **PREF-06**: LLM product matching uses the preference profile to re-rank Kroger API results
 
 ### LLM Provider Support
 
@@ -96,9 +96,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PREF-01 | Phase 3 | Complete |
 | PREF-02 | Phase 3 | Complete |
 | PREF-03 | Phase 3 | Complete |
-| PREF-04 | Phase 3 | Pending |
+| PREF-04 | Phase 3 | Complete |
 | PREF-05 | Phase 3 | Complete |
-| PREF-06 | Phase 3 | Pending |
+| PREF-06 | Phase 3 | Complete |
 | LLM-01 | Phase 2 | Complete |
 | LLM-02 | Phase 4 | Complete |
 
