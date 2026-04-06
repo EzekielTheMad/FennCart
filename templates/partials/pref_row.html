@@ -1,0 +1,71 @@
+{#
+  pref_row.html — Single preference entry display row.
+  Context var: pref (PreferenceEntry)
+#}
+<div id="pref-row-{{ pref.id }}"
+     class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 flex items-start gap-3 mb-2">
+
+  <!-- Checkbox for bulk select -->
+  <input
+    type="checkbox"
+    class="w-4 h-4 accent-green-500 rounded cursor-pointer mt-1 shrink-0"
+    value="{{ pref.id }}"
+    aria-label="Select {{ pref.product_name }} for bulk action"
+    @change="toggleId({{ pref.id }})"
+    :checked="selectedIds.includes({{ pref.id }})"
+  >
+
+  <!-- Main content -->
+  <div class="flex-1 min-w-0">
+
+    <!-- Top line: product name + brand, category, purchase count badge -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="text-base font-semibold text-slate-100">
+        {% if pref.brand %}{{ pref.brand }} {% endif %}{{ pref.product_name }}
+      </span>
+      <span class="text-sm text-slate-400">{{ pref.product_category }}</span>
+      <span class="text-xs bg-slate-700 text-slate-300 rounded-full px-2 py-1">
+        &times;{{ pref.purchase_count }}
+      </span>
+
+      {% if pref.purchase_count >= 2 %}
+        <span class="text-xs text-green-500"
+              title="Seen {{ pref.purchase_count }} times across your receipts">
+          Established
+        </span>
+      {% else %}
+        <span class="text-xs text-amber-400"
+              title="Only seen once — will not influence matching until seen again">
+          Seen once
+        </span>
+      {% endif %}
+    </div>
+
+    <!-- Bottom line: source + last seen -->
+    <div class="text-xs text-slate-500 mt-1">
+      Source: {{ pref.source }}
+      {% if pref.last_seen_at %}
+        &middot; Last seen: {{ pref.last_seen_at.strftime('%b %-d, %Y') }}
+      {% endif %}
+      {% if pref.notes %}
+        &middot; {{ pref.notes }}
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- Edit trigger (ellipsis icon) -->
+  <button
+    hx-get="/preferences/{{ pref.id }}/edit-form"
+    hx-target="#pref-row-{{ pref.id }}"
+    hx-swap="outerHTML"
+    class="text-slate-400 hover:text-slate-100 p-1 shrink-0 transition-colors min-h-[36px]"
+    aria-label="Edit {{ pref.product_name }} preference"
+  >
+    <!-- Heroicons ellipsis-horizontal (20px) -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM12 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM16 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+    </svg>
+  </button>
+
+</div>

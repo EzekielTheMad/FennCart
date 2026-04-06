@@ -1,0 +1,41 @@
+{#
+  receipt_contradictions.html — Contradiction resolution cards.
+  Context var: contradictions (list[ContradictionCandidate]) — unresolved only.
+#}
+<div class="space-y-3">
+  {% for c in contradictions %}
+  <div
+    class="bg-amber-950 border border-amber-800 rounded-lg px-4 py-4"
+    role="region"
+    aria-label="Brand change detected for {{ c.category }}"
+  >
+    <p class="text-sm font-semibold text-amber-400 mb-2">Brand change detected</p>
+    <p class="text-sm text-slate-300 mb-4">
+      You usually buy {{ c.existing_brand }} {{ c.category }} ({{ c.existing_count }} purchase{{ 's' if c.existing_count != 1 else '' }}).
+      This receipt shows {{ c.new_brand }} {{ c.category }}.
+    </p>
+    <div class="flex flex-wrap gap-2">
+      <form hx-post="/preferences/receipt/resolve"
+            hx-target="#contradictions-panel"
+            hx-swap="innerHTML">
+        <input type="hidden" name="contradiction_index" value="{{ loop.index0 }}">
+        <input type="hidden" name="resolution" value="new_preference">
+        <button type="submit"
+          class="bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]">
+          New preference &mdash; switch to {{ c.new_brand }}
+        </button>
+      </form>
+      <form hx-post="/preferences/receipt/resolve"
+            hx-target="#contradictions-panel"
+            hx-swap="innerHTML">
+        <input type="hidden" name="contradiction_index" value="{{ loop.index0 }}">
+        <input type="hidden" name="resolution" value="one_time">
+        <button type="submit"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-400 font-semibold py-2 px-4 rounded-lg text-sm border border-slate-700 min-h-[44px]">
+          One-time substitution &mdash; keep {{ c.existing_brand }}
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>

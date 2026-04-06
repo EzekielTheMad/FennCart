@@ -4,12 +4,203 @@
 {% block title %}Preferences — FennCart{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-center min-h-screen">
-    <div class="text-center max-w-md px-6">
-        <h1 class="text-xl font-semibold text-slate-100 mb-3">Preferences</h1>
-        <p class="text-base text-slate-400">
-            Preference learning is coming in a future update. Upload receipts to train your brand preferences.
-        </p>
+<div class="max-w-2xl mx-auto py-8 px-4">
+
+  <h1 class="text-xl font-semibold text-slate-100 leading-tight mb-6">Preferences</h1>
+
+  <div
+    x-data="{
+      tab: 'list',
+      selectedIds: [],
+      get selectedCount() { return this.selectedIds.length },
+      confirmingDelete: false,
+      toggleId(id) {
+        const idx = this.selectedIds.indexOf(id);
+        if (idx === -1) { this.selectedIds.push(id); }
+        else { this.selectedIds.splice(idx, 1); }
+      },
+      clearSelected() { this.selectedIds = []; this.confirmingDelete = false; }
+    }"
+  >
+
+    <!-- Tab bar -->
+    <div class="border-b border-slate-700 mb-6 flex gap-1" role="tablist">
+      <button
+        @click="tab = 'list'"
+        :class="tab === 'list'
+          ? 'px-4 py-2 text-sm font-semibold text-slate-100 border-b-2 border-green-500 -mb-px'
+          : 'px-4 py-2 text-sm text-slate-400 hover:text-slate-100 transition-colors cursor-pointer'"
+        :aria-selected="tab === 'list'"
+        role="tab"
+        aria-controls="tab-list"
+      >Preferences List</button>
+      <button
+        @click="tab = 'upload'"
+        :class="tab === 'upload'
+          ? 'px-4 py-2 text-sm font-semibold text-slate-100 border-b-2 border-green-500 -mb-px'
+          : 'px-4 py-2 text-sm text-slate-400 hover:text-slate-100 transition-colors cursor-pointer'"
+        :aria-selected="tab === 'upload'"
+        role="tab"
+        aria-controls="tab-upload"
+      >Receipt Upload</button>
+      <button
+        @click="tab = 'chat'"
+        :class="tab === 'chat'
+          ? 'px-4 py-2 text-sm font-semibold text-slate-100 border-b-2 border-green-500 -mb-px'
+          : 'px-4 py-2 text-sm text-slate-400 hover:text-slate-100 transition-colors cursor-pointer'"
+        :aria-selected="tab === 'chat'"
+        role="tab"
+        aria-controls="tab-chat"
+      >Update Chat</button>
     </div>
+
+    <!-- ---------------------------------------------------------------- -->
+    <!-- Tab: Preferences List                                            -->
+    <!-- ---------------------------------------------------------------- -->
+    <div id="tab-list" x-show="tab === 'list'" role="tabpanel">
+
+      <!-- Search bar -->
+      <input
+        type="text"
+        name="q"
+        placeholder="Search by product or brand..."
+        class="bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-base px-4 py-2 w-full placeholder:text-slate-500 focus:outline-none focus:border-green-500 mb-4"
+        hx-get="/preferences/list"
+        hx-trigger="input delay:300ms"
+        hx-target="#pref-list-container"
+        hx-swap="innerHTML"
+      >
+
+      <!-- Preference list container -->
+      <div id="pref-list-container">
+        {% include "partials/pref_list.html" %}
+      </div>
+
+      <!-- Add preference manually button -->
+      <div
+        x-data="{ showAddForm: false }"
+        class="mt-4"
+      >
+        <button
+          @click="showAddForm = !showAddForm"
+          x-show="!showAddForm"
+          class="bg-slate-800 border border-slate-700 border-dashed rounded-lg px-4 py-2 text-sm text-slate-400 hover:text-slate-100 hover:border-slate-500 w-full text-left transition-colors min-h-[44px]"
+        >+ Add preference manually</button>
+
+        <!-- Inline add form -->
+        <div
+          x-show="showAddForm"
+          x-cloak
+          class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-4 mt-2"
+        >
+          <form
+            hx-post="/preferences/create"
+            hx-target="#pref-list-container"
+            hx-swap="afterbegin"
+            @htmx:after-request="showAddForm = false"
+          >
+            <div class="grid grid-cols-1 gap-3 mb-4">
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">Product name</label>
+                <input name="product_name" type="text" required
+                  class="bg-slate-700 border border-slate-600 rounded text-slate-100 text-sm px-3 py-2 w-full focus:outline-none focus:border-green-500"
+                  placeholder="e.g. 2% Milk">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">Brand</label>
+                <input name="brand" type="text" required
+                  class="bg-slate-700 border border-slate-600 rounded text-slate-100 text-sm px-3 py-2 w-full focus:outline-none focus:border-green-500"
+                  placeholder="e.g. Organic Valley">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">Category</label>
+                <input name="product_category" type="text" required
+                  class="bg-slate-700 border border-slate-600 rounded text-slate-100 text-sm px-3 py-2 w-full focus:outline-none focus:border-green-500"
+                  placeholder="e.g. milk">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">Notes (optional)</label>
+                <textarea name="notes" rows="2"
+                  class="bg-slate-700 border border-slate-600 rounded text-slate-100 text-sm px-3 py-2 w-full focus:outline-none focus:border-green-500 resize-none"
+                  placeholder="Any notes about this preference..."></textarea>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button type="submit"
+                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]">
+                Save changes
+              </button>
+              <button type="button" @click="showAddForm = false"
+                class="bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]">
+                Discard changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Bulk action bar -->
+      <div
+        x-show="selectedCount > 0"
+        x-cloak
+        class="sticky bottom-0 bg-slate-900 border-t border-slate-700 px-4 py-2 flex items-center gap-4 mt-4 -mx-4"
+      >
+        <span class="text-sm text-slate-400" x-text="`${selectedCount} selected`"></span>
+
+        <template x-if="!confirmingDelete">
+          <button
+            @click="confirmingDelete = true"
+            class="bg-red-900 hover:bg-red-800 text-red-400 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]"
+          >Delete selected</button>
+        </template>
+
+        <template x-if="confirmingDelete">
+          <span class="flex items-center gap-3">
+            <span class="text-sm text-slate-300" x-text="`Delete ${selectedCount} preferences? This cannot be undone.`"></span>
+            <form
+              hx-post="/preferences/bulk-delete"
+              hx-target="#pref-list-container"
+              hx-swap="innerHTML"
+              @htmx:after-request="clearSelected()"
+              class="flex gap-2"
+            >
+              <input type="hidden" name="ids" :value="selectedIds.join(',')">
+              <button type="submit"
+                class="bg-red-900 hover:bg-red-800 text-red-400 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]">
+                Confirm
+              </button>
+              <button type="button" @click="confirmingDelete = false"
+                class="bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]">
+                Cancel
+              </button>
+            </form>
+          </span>
+        </template>
+      </div>
+
+    </div>
+
+    <!-- ---------------------------------------------------------------- -->
+    <!-- Tab: Receipt Upload                                               -->
+    <!-- ---------------------------------------------------------------- -->
+    <div id="tab-upload" x-show="tab === 'upload'" style="display: none;" role="tabpanel">
+      <div id="receipt-panel">
+        {% include "partials/receipt_upload_form.html" %}
+      </div>
+    </div>
+
+    <!-- ---------------------------------------------------------------- -->
+    <!-- Tab: Update Chat (placeholder for Plan 03)                       -->
+    <!-- ---------------------------------------------------------------- -->
+    <div id="tab-chat" x-show="tab === 'chat'" style="display: none;" role="tabpanel">
+      <p class="text-sm text-slate-400 mb-4">
+        Tell FennCart about your preferences in plain language. For example:
+        'we switched to oat milk' or 'stop buying Kroger brand yogurt'.
+      </p>
+      <div id="chat-history" class="space-y-3 mb-4" aria-live="polite"></div>
+      <p class="text-sm text-slate-500 text-center py-8">Chat feature coming in the next update.</p>
+    </div>
+
+  </div><!-- /x-data -->
 </div>
 {% endblock %}

@@ -1,0 +1,79 @@
+{#
+  pref_edit_form.html — Inline edit form that replaces a preference row.
+  Context var: pref (PreferenceEntry)
+#}
+<div id="pref-row-{{ pref.id }}"
+     class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-4 mb-2">
+
+  <form
+    hx-put="/preferences/{{ pref.id }}"
+    hx-target="#pref-row-{{ pref.id }}"
+    hx-swap="outerHTML"
+  >
+    <div class="grid grid-cols-1 gap-3 mb-4">
+
+      <div>
+        <label class="block text-xs text-slate-500 mb-1" for="edit-name-{{ pref.id }}">Product name</label>
+        <input
+          id="edit-name-{{ pref.id }}"
+          name="product_name"
+          type="text"
+          required
+          value="{{ pref.product_name }}"
+          class="bg-slate-700 border border-slate-600 rounded text-slate-100 text-sm px-3 py-2 w-full focus:outline-none focus:border-green-500"
+        >
+      </div>
+
+      <div>
+        <label class="block text-xs text-slate-500 mb-1" for="edit-brand-{{ pref.id }}">Brand</label>
+        <input
+          id="edit-brand-{{ pref.id }}"
+          name="brand"
+          type="text"
+          required
+          value="{{ pref.brand }}"
+          class="bg-slate-700 border border-slate-600 rounded text-slate-100 text-sm px-3 py-2 w-full focus:outline-none focus:border-green-500"
+        >
+      </div>
+
+      <div>
+        <label class="block text-xs text-slate-500 mb-1" for="edit-category-{{ pref.id }}">Category</label>
+        <input
+          id="edit-category-{{ pref.id }}"
+          name="product_category"
+          type="text"
+          required
+          value="{{ pref.product_category }}"
+          class="bg-slate-700 border border-slate-600 rounded text-slate-100 text-sm px-3 py-2 w-full focus:outline-none focus:border-green-500"
+        >
+      </div>
+
+      <div>
+        <label class="block text-xs text-slate-500 mb-1" for="edit-notes-{{ pref.id }}">Notes (optional)</label>
+        <textarea
+          id="edit-notes-{{ pref.id }}"
+          name="notes"
+          rows="2"
+          class="bg-slate-700 border border-slate-600 rounded text-slate-100 text-sm px-3 py-2 w-full focus:outline-none focus:border-green-500 resize-none"
+        >{{ pref.notes or '' }}</textarea>
+      </div>
+
+    </div>
+
+    <div class="flex gap-2 mt-3">
+      <button
+        type="submit"
+        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]"
+      >Save changes</button>
+
+      <button
+        type="button"
+        hx-get="/preferences/{{ pref.id }}/row"
+        hx-target="#pref-row-{{ pref.id }}"
+        hx-swap="outerHTML"
+        class="bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-2 px-4 rounded-lg text-sm min-h-[44px]"
+      >Discard changes</button>
+    </div>
+
+  </form>
+</div>
