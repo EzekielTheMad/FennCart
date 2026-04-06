@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_session
 from app.config import get_settings
+from app.services.llm_config import get_active_llm_config
 from app.services.preference_service import PreferenceService
 from app.services.receipt_parser import extract_receipt_text, parse_receipt_with_llm
 from app.schemas.preferences import (
@@ -207,14 +208,14 @@ async def upload_receipt(
             },
         )
 
-    settings = get_settings()
+    llm_cfg = await get_active_llm_config(db)
 
     try:
         parsed = await parse_receipt_with_llm(
             raw_text,
-            settings.llm_api_key,
-            settings.llm_provider,
-            settings.llm_model,
+            llm_cfg["api_key"],
+            llm_cfg["provider"],
+            llm_cfg["model"],
         )
     except RuntimeError as e:
         return templates.TemplateResponse(
@@ -407,14 +408,14 @@ async def preference_chat(
     # Cap LLM context at last 10 messages to control token cost (Pitfall 5)
     llm_history = history[-10:]
 
-    settings = get_settings()
+    llm_cfg = await get_active_llm_config(db)
 
     try:
         delta = await parse_preference_nl(
             llm_history,
-            settings.llm_api_key,
-            settings.llm_provider,
-            settings.llm_model,
+            llm_cfg["api_key"],
+            llm_cfg["provider"],
+            llm_cfg["model"],
         )
     except Exception as e:
         # LLM failure — show inline error bubble
