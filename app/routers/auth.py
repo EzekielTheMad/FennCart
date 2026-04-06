@@ -33,12 +33,14 @@ async def kroger_auth_callback(request: Request, db: AsyncSession = Depends(get_
         # Mark wizard as complete (D-02)
         result = await db.execute(select(AppConfig).where(AppConfig.id == 1))
         cfg = result.scalar_one_or_none()
+        # Capture pre-auth state to determine redirect destination
+        was_already_complete = cfg.wizard_complete if cfg else False
         if cfg:
             cfg.wizard_step = "complete"
             cfg.wizard_complete = True
             await db.commit()
 
-        if cfg and cfg.wizard_complete:
+        if was_already_complete:
             # Re-auth from settings — go back to settings
             return RedirectResponse("/settings?section=account", status_code=302)
         return RedirectResponse("/tour", status_code=302)

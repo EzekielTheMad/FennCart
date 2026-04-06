@@ -1,0 +1,125 @@
+<div class="bg-slate-800 rounded-lg border border-slate-700 p-8">
+    <h2 class="text-xl font-semibold text-slate-100 mb-1">LLM Provider</h2>
+    <p class="text-sm text-slate-400 mb-6">Choose which AI provider and model FennCart uses for product matching. Changes take effect on the next shopping run.</p>
+
+    {% if success %}
+    <div class="bg-green-950 border border-green-800 rounded p-3 text-green-400 text-sm mb-4">{{ success }}</div>
+    {% endif %}
+    {% if error %}
+    <div class="bg-red-950 border border-red-800 rounded p-3 text-red-400 text-sm mb-4">{{ error }}</div>
+    {% endif %}
+
+    <form hx-post="/settings/save-llm"
+          hx-target="#settings-content"
+          hx-swap="innerHTML"
+          x-data="{
+              provider: '{{ cfg.llm_provider }}',
+              selectedModel: '{{ cfg.llm_model }}',
+              customModel: false,
+              testing: false
+          }"
+          @htmx:before-request="testing = true"
+          @htmx:after-request="testing = false">
+
+        <!-- Provider dropdown -->
+        <div class="mb-4">
+            <label class="text-sm font-semibold text-slate-300 mb-1 block">Provider</label>
+            <select name="provider"
+                    x-model="provider"
+                    @change="customModel = false; selectedModel = (provider === 'anthropic' ? 'claude-3-haiku-20240307' : (provider === 'openai' ? 'gpt-4o-mini' : ''))"
+                    class="bg-slate-700 text-slate-100 border border-slate-600 rounded px-3 py-2 text-sm w-full focus:outline-none focus:border-slate-400">
+                <option value="anthropic">Claude (Anthropic)</option>
+                <option value="openai">OpenAI</option>
+                <option value="ollama">Ollama (local)</option>
+            </select>
+        </div>
+
+        <!-- Model dropdown (cloud providers only) -->
+        <div class="mb-4" x-show="provider !== 'ollama'">
+            <label class="text-sm font-semibold text-slate-300 mb-1 block">Model</label>
+            <select name="model"
+                    x-model="selectedModel"
+                    @change="customModel = (selectedModel === '__custom__')"
+                    class="bg-slate-700 text-slate-100 border border-slate-600 rounded px-3 py-2 text-sm w-full focus:outline-none focus:border-slate-400">
+                <!-- Anthropic models -->
+                <template x-if="provider === 'anthropic'">
+                    <optgroup label="Claude (Anthropic)">
+                        <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+                        <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+                        <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                        <option value="__custom__">Custom model ID...</option>
+                    </optgroup>
+                </template>
+                <!-- OpenAI models -->
+                <template x-if="provider === 'openai'">
+                    <optgroup label="OpenAI">
+                        <option value="gpt-4o-mini">GPT-4o mini</option>
+                        <option value="gpt-4o">GPT-4o</option>
+                        <option value="__custom__">Custom model ID...</option>
+                    </optgroup>
+                </template>
+            </select>
+        </div>
+
+        <!-- Custom model text input (shown for custom option or Ollama) -->
+        <div class="mb-4" x-show="customModel || provider === 'ollama'">
+            <label class="text-sm font-semibold text-slate-300 mb-1 block">Custom model ID</label>
+            <input type="text"
+                   name="custom_model"
+                   placeholder="e.g. llama3, mistral, claude-3-opus-20240229"
+                   :value="(provider !== 'ollama' && customModel) ? '' : ''"
+                   class="bg-slate-700 text-slate-100 border border-slate-600 rounded px-3 py-2 text-sm w-full placeholder-slate-500 focus:outline-none focus:border-slate-400">
+        </div>
+
+        <!-- API Key field (cloud providers only) -->
+        <div class="mb-4" x-show="provider !== 'ollama'">
+            <label class="text-sm font-semibold text-slate-300 mb-1 block">API Key</label>
+            <div class="relative" x-data="{ show: false }">
+                <input :type="show ? 'text' : 'password'"
+                       name="api_key"
+                       placeholder=""
+                       class="bg-slate-700 text-slate-100 border border-slate-600 rounded px-3 py-2 pr-10 text-sm w-full placeholder-slate-500 focus:outline-none focus:border-slate-400">
+                <button type="button"
+                        @click="show = !show"
+                        :aria-label="show ? 'Hide API key' : 'Show API key'"
+                        class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-300">
+                    <!-- Eye icon (show) -->
+                    <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    <!-- Eye-slash icon (hide) -->
+                    <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                    </svg>
+                </button>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">Leave blank to keep your current key.</p>
+        </div>
+
+        <!-- Ollama endpoint URL (Ollama only) -->
+        <div class="mb-4" x-show="provider === 'ollama'">
+            <label class="text-sm font-semibold text-slate-300 mb-1 block">Ollama endpoint URL</label>
+            <input type="url"
+                   name="ollama_base_url"
+                   value="{{ cfg.llm_ollama_base_url or '' }}"
+                   placeholder="http://localhost:11434"
+                   class="bg-slate-700 text-slate-100 border border-slate-600 rounded px-3 py-2 text-sm w-full placeholder-slate-500 focus:outline-none focus:border-slate-400">
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit"
+                :disabled="testing"
+                class="bg-green-600 hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded transition-colors mt-4">
+            <span x-show="!testing">Test connection and save</span>
+            <span x-show="testing" class="flex items-center gap-2">
+                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Testing...
+            </span>
+        </button>
+
+    </form>
+</div>
