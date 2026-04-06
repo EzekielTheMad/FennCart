@@ -345,6 +345,76 @@ async def test_nl_chat_confirm(client, test_db):
 # Test 9 — CartService.process_list auto-loads preferences (PREF-06)
 # ---------------------------------------------------------------------------
 
+async def _seed_app_config_custom(db, provider: str, model: str):
+    """Seed AppConfig with wizard_complete=True and a custom LLM provider/model."""
+    config = AppConfig(
+        wizard_complete=True,
+        store_id="70100153",
+        store_name="Fry's Marketplace",
+        llm_provider=provider,
+        llm_model=model,
+    )
+    db.add(config)
+    await db.commit()
+
+
+# ---------------------------------------------------------------------------
+# Test 10 — upload_receipt uses DB LLM config (LLM-CONFIG)
+# ---------------------------------------------------------------------------
+
+@pytest.mark.anyio
+async def test_upload_receipt_uses_db_llm_config(client, test_db):
+    """POST /preferences/upload uses DB-configured LLM provider/model, not env defaults."""
+    await _seed_app_config_custom(test_db, "openai", "gpt-4o")
+
+    with patch("app.main.get_settings", return_value=_mock_settings()):
+        with patch("app.routers.preferences.extract_receipt_text",
+                   return_value=("FRYS STORE #123\nItem1 $5.00\nItem2 $3.50\nItem3 $2.00\nSUBTOTAL $10.50\nTAX $0.84\nTOTAL $11.34", [])):
+            with patch("app.routers.preferences.parse_receipt_with_llm",
+                       new=AsyncMock(return_value=ParsedReceipt(items=[], parse_warnings=[]))) as mock_parse:
+                response = await client.post(
+                    "/preferences/upload",
+                    files={"receipt_pdf": ("receipt.pdf", b"fake pdf content", "application/pdf")},
+                )
+
+    assert response.status_code == 200
+    mock_parse.assert_called_once()
+    call_args = mock_parse.call_args
+    # Positional args: (raw_text, api_key, provider, model)
+    assert call_args[0][2] == "openai", f"Expected provider='openai', got {call_args[0][2]!r}"
+    assert call_args[0][3] == "gpt-4o", f"Expected model='gpt-4o', got {call_args[0][3]!r}"
+
+
+# ---------------------------------------------------------------------------
+# Test 11 — preference_chat uses DB LLM config (LLM-CONFIG)
+# ---------------------------------------------------------------------------
+
+@pytest.mark.anyio
+async def test_nl_chat_uses_db_llm_config(client, test_db):
+    """POST /preferences/chat uses DB-configured LLM provider/model, not env defaults."""
+    await _seed_app_config_custom(test_db, "openai", "gpt-4o")
+
+    mock_delta = PreferenceDelta(
+        action="clarify",
+        human_summary="What kind?",
+        clarification_question="What kind of oat milk?",
+    )
+
+    with patch("app.main.get_settings", return_value=_mock_settings()):
+        with patch("app.routers.preferences.parse_preference_nl",
+                   new=AsyncMock(return_value=mock_delta)) as mock_nl:
+            response = await client.post(
+                "/preferences/chat",
+                data={"message": "switch to oat milk"},
+            )
+
+    assert response.status_code == 200
+    mock_nl.assert_called_once()
+    call_args = mock_nl.call_args
+    # Positional args: (conversation_history, api_key, provider, model)
+    assert call_args[0][2] == "openai", f"Expected provider='openai', got {call_args[0][2]!r}"
+    assert call_args[0][3] == "gpt-4o", f"Expected model='gpt-4o', got {call_args[0][3]!r}"
+
 @pytest.mark.anyio
 @patch("app.services.cart_service.match_products", new_callable=AsyncMock)
 @patch("app.services.cart_service.search_products", new_callable=AsyncMock)
