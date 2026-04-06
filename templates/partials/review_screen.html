@@ -15,6 +15,10 @@
     }
 }" id="shopping-content">
 
+    {% if preferences_loaded %}
+    {% include "partials/preference_indicator.html" %}
+    {% endif %}
+
     <h1 class="text-xl font-semibold text-slate-100 mb-2">Review your matches</h1>
     <p class="text-sm text-slate-400 mb-6">{{ total_items }} items matched. Confirm to add them to your Fry's cart.</p>
 

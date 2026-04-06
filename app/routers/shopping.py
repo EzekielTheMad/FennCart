@@ -113,6 +113,7 @@ async def shopping_match(
                 "auto_items": auto_items,
                 "candidates_dict": candidates_dict,
                 "total_items": len(match_result.matches),
+                "preferences_loaded": cart_service.preferences_loaded,
             },
         )
     except RuntimeError as e:

@@ -45,6 +45,8 @@ class CartService:
         self.llm_ollama_base_url = llm_ollama_base_url
         # In-memory dedup cache keyed by item.name.lower().strip() (Pitfall 7 — TOS-safe, not persistent)
         self._search_cache: dict[str, list[dict]] = {}
+        # Tracks whether preferences were loaded and passed to match_products (Phase 3)
+        self._preferences_loaded: bool = False
 
     async def process_list(
         self,
@@ -83,6 +85,20 @@ class CartService:
             ]
             candidates_dict[item.name] = candidates
 
+        # Step 2.5: Auto-load preferences if not provided (Phase 3 integration)
+        if preferences is None:
+            from app.services.preference_service import PreferenceService
+            pref_service = PreferenceService(self.db)
+            loaded_prefs = await pref_service.get_preferences_for_matching()
+            if loaded_prefs["entries"]:
+                preferences = loaded_prefs
+                # Flag for template context — indicates preferences influenced matching
+                self._preferences_loaded = True
+            else:
+                self._preferences_loaded = False
+        else:
+            self._preferences_loaded = True
+
         # Step 3: LLM match — select best product per item with confidence scores
         match_result: MatchResult = await match_products(
             parsed_items,
@@ -95,6 +111,11 @@ class CartService:
         )
 
         return (match_result, candidates_dict)
+
+    @property
+    def preferences_loaded(self) -> bool:
+        """True if preferences were loaded and passed to match_products in the last process_list call."""
+        return self._preferences_loaded
 
     def partition_matches(
         self,
