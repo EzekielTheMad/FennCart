@@ -98,9 +98,9 @@ Plans:
   2. Docker image size is minimized (LiteLLM provider extras pinned, Tailwind CSS purged) and the image builds cleanly from a cold pull
   3. Running the full Kroger OAuth flow inside Docker produces no redirect URI errors on a stock setup
   4. Upgrading from an earlier schema version runs Alembic migrations without data loss
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans executed
 Plans:
-- [ ] 05-01-PLAN.md — Docker optimization (.dockerignore, LLM SDK deps) and security hardening (SESSION_SECRET_KEY validator, .gitignore)
+- [x] 05-01-PLAN.md — Docker optimization (.dockerignore, LLM SDK deps) and security hardening (SESSION_SECRET_KEY validator, .gitignore)
 - [x] 05-02-PLAN.md — Alembic migration upgrade test (pytest-alembic) and quickstart README
 
 ---
