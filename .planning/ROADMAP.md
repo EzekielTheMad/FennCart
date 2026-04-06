@@ -14,7 +14,7 @@
 - [x] **Phase 3: Preference System** - Receipt PDF upload and parsing, living preference profile, preference-compensated product matching, NL and manual preference editing (completed 2026-04-06)
 - [x] **Phase 4: Multi-Provider LLM and Settings** - Provider selector UI (Claude, OpenAI, Ollama), settings surface for ongoing configuration (completed 2026-04-06)
 - [ ] **Phase 5: Hardening and Distribution** - Minimal Docker image, Alembic migration verification, end-to-end test coverage, setup documentation, security pre-commit hooks
-- [ ] **Phase 6: Wire Review Mode and Cart History** - Fix SRCH-05 review mode persistence and CART-03 history page stub; close integration and flow gaps from milestone audit
+- [x] **Phase 6: Wire Review Mode and Cart History** - Fix SRCH-05 review mode persistence and CART-03 history page stub; close integration and flow gaps from milestone audit (completed 2026-04-06)
 - [ ] **Phase 7: LLM Config Integration Fix** - Wire preferences.py receipt upload and NL chat to use get_active_llm_config instead of env vars
 
 ---
@@ -115,9 +115,9 @@ Plans:
   2. Shopping router passes the saved review_mode to the review screen template instead of hardcoding 'exceptions'
   3. /history page queries CartSession/CartItem models and renders actual cart history data
   4. User can see what was added to cart across sessions (not just current session)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 06-01-PLAN.md — Review mode DB persistence (SRCH-05), history page with expandable session rows (CART-03), tests
+- [x] 06-01-PLAN.md — Review mode DB persistence (SRCH-05), history page with expandable session rows (CART-03), tests
 **UI hint**: yes
 
 ### Phase 7: LLM Config Integration Fix
@@ -142,7 +142,7 @@ Plans:
 | 3. Preference System | 4/4 | Complete   | 2026-04-06 |
 | 4. Multi-Provider LLM and Settings | 3/3 | Complete   | 2026-04-06 |
 | 5. Hardening and Distribution | 2/2 | Complete   |  |
-| 6. Wire Review Mode and Cart History | 0/1 | Planning Complete |  |
+| 6. Wire Review Mode and Cart History | 1/1 | Complete   | 2026-04-06 |
 | 7. LLM Config Integration Fix | 0/0 | Not Started |  |
 
 ---

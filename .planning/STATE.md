@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-last_updated: "2026-04-06T17:31:14.147Z"
+status: executing
+last_updated: "2026-04-06T20:12:15.906Z"
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 17
-  completed_plans: 17
+  total_phases: 7
+  completed_phases: 6
+  total_plans: 18
+  completed_plans: 18
   percent: 100
 ---
 
@@ -23,16 +23,17 @@ progress:
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
-**Current focus:** Phase 02 — core-loop
+**Current focus:** Phase 06 — wire-review-mode-and-cart-history
 
 ---
 
 ## Current Position
 
-Phase: 02 (core-loop) — Plan 3 of 3 complete
+Phase: 06 (wire-review-mode-and-cart-history) — EXECUTING
+Plan: 1 of 1
 **Phase:** 05
 **Plan:** Not started
-**Status:** Milestone complete
+**Status:** Executing Phase 06
 **Blocker:** None
 
 **Progress:**
@@ -64,6 +65,7 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 | Phase 02-core-loop P03 | 6min | 3 tasks | 10 files |
 | Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
 | Phase 05-hardening-and-distribution P01 | 15min | 2 tasks | 6 files |
+| Phase 06-wire-review-mode-and-cart-history P01 | 18min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -90,6 +92,8 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 | Patch app.routers.shopping.get_valid_access_token | Router-level patch avoids OAuth storage for testing expired-token path independently |
 | pytest-env for SESSION_SECRET_KEY in test environment | env var must be set before conftest imports app.main; lru_cache on get_settings() makes this critical |
 | anthropic and openai explicit in requirements.txt | LiteLLM does not bundle provider SDKs; Claude provider raises ImportError without explicit anthropic dep |
+| Jinja2 dict bracket access for shadowed keys | entry['items'] not entry.items — Jinja2 resolves .items as Python dict method, not the 'items' key |
+| Patch app.main.get_settings in history/shopping tests | SetupGuardMiddleware calls get_settings() directly, bypassing DI; must patch at module level in history/preferences tests too |
 
 ### Architecture Constraints (carry forward)
 
@@ -119,11 +123,11 @@ Phase: 02 (core-loop) — Plan 3 of 3 complete
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 05-01 — Docker optimization and security hardening. Created .dockerignore (44 lines), added anthropic/openai to requirements.txt, added SESSION_SECRET_KEY field_validator to app/config.py, added /data/ to .gitignore, added pytest-env for test env var injection. All 82 tests pass.
+**What was done last:** Completed Plan 06-01 — wired review mode persistence (SRCH-05) and history page (CART-03). shopping_match() now reads AppConfig.review_mode and passes it to review_screen.html Alpine x-data. History page queries CartSession/CartItem with expandable rows and empty state. 4 new tests (183 total passing).
 
-**What comes next:** Phase 05 Plan 02 — Docker build and distribution packaging.
+**What comes next:** Phase 07 — llm-config-integration-fix (if applicable) or milestone complete.
 
-**Context to re-establish:** SESSION_SECRET_KEY validator rejects only the literal "change-me-in-production" default. pytest-env injects SESSION_SECRET_KEY=test-secret before test collection. anthropic must be explicit in requirements.txt for Claude provider to work. /data/ excluded from git to protect app.key and fenncart.db.
+**Context to re-establish:** entry['items'] bracket syntax required in Jinja2 when key name shadows dict built-in method. Patch app.main.get_settings (not just DI override) for any test hitting a non-/setup route. TemplateResponse new API: request as first positional arg throughout.
 
 ---
 *State initialized: 2026-04-02*
