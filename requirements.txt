@@ -4,6 +4,8 @@ sqlmodel==0.0.37
 aiosqlite==0.22.1
 alembic==1.18.4
 litellm==1.83.0
+anthropic
+openai
 instructor==1.14.5
 httpx==0.28.1
 authlib==1.6.9
