@@ -28,7 +28,7 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 - [ ] Living preference profile that learns from receipt history and weights recurring purchases vs one-off substitutions
 - [ ] Natural language preference updates ("we switched to oat milk", "stop buying Kroger brand yogurt")
 - [ ] Manual preference editing UI for direct control
-- [ ] Multi-provider LLM support (Claude, OpenAI, local models) with provider selector
+- [x] Multi-provider LLM support (Claude, OpenAI, local models) with provider selector and settings hub — Validated in Phase 4: Multi-Provider LLM and Settings
 
 ### Out of Scope
 
