@@ -49,9 +49,9 @@ async def history(request: Request, db: AsyncSession = Depends(get_session)):
         sessions_with_items.append({"session": s, "items": items})
 
     return templates.TemplateResponse(
+        request,
         "pages/history.html",
         {
-            "request": request,
             "active_page": "history",
             "sessions": sessions_with_items,
             "session_count": len(sessions),

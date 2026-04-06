@@ -26,8 +26,8 @@
     {# Session list — newest first #}
     <div class="space-y-3">
         {% for entry in sessions %}
-        {% set s = entry.session %}
-        {% set items = entry.items %}
+        {% set s = entry['session'] %}
+        {% set items = entry['items'] %}
         <div class="bg-slate-800 border border-slate-700 rounded-lg" x-data="{ open: false }">
 
             {# Collapsed header — click to expand #}
