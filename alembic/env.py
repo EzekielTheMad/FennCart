@@ -37,6 +37,18 @@ async def run_async_migrations():
 
 
 def run_migrations_online():
+    # Allow pytest-alembic to inject a synchronous connection directly.
+    # pytest-alembic may inject an Engine (not a Connection) via config.attributes.
+    from sqlalchemy.engine import Engine
+    connectable = config.attributes.get("connection", None)
+    if connectable is not None:
+        if isinstance(connectable, Engine):
+            with connectable.connect() as connection:
+                do_run_migrations(connection)
+        else:
+            do_run_migrations(connectable)
+        return
+    # Production: async SQLite via aiosqlite
     asyncio.run(run_async_migrations())
 
 

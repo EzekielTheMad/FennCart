@@ -3,3 +3,4 @@ pytest
 pytest-anyio
 httpx
 anyio
+pytest-alembic==0.12.1
