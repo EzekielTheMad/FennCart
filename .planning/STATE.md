@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-last_updated: "2026-04-06T00:19:00.427Z"
+status: completed
+last_updated: "2026-04-06T00:22:42.226Z"
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 15
-  completed_plans: 12
-  percent: 80
+  completed_plans: 13
+  percent: 87
 ---
 
 # State: Fenn Cart
@@ -38,7 +38,7 @@ Plan: 3 of 3 — all plans complete
 
 **Progress:**
 
-[████████░░] 80%
+[█████████░] 87%
 [Phase 1] [x] Foundation and Auth
 [Phase 2] [x] Core Loop
 [Phase 3] [ ] Preference System
@@ -66,6 +66,7 @@ Plan: 3 of 3 — all plans complete
 | Phase 04-multi-provider-llm-and-settings P02 | 18min | 2 tasks | 9 files |
 | Phase 03-preference-system P01 | 2min | 2 tasks | 7 files |
 | Phase 04-multi-provider-llm-and-settings P03 | 14min | 1 tasks | 2 files |
+| Phase 03-preference-system P02 | 3min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,9 @@ Plan: 3 of 3 — all plans complete
 | Empty api_key preserves existing key | save-llm leaves llm_api_key_encrypted unchanged when api_key submitted empty — allows provider/model update without re-entering key |
 | purchase_count >= 2 for contradiction detection | Single-purchase anomalies don't override learned preferences; threshold ensures signal stability |
 | TOS guard in PreferenceService | Preference signals must never come from Kroger API responses or cart_items — only receipts and manual entries |
+| Contradiction resolution uses loop.index0 as form field | Server can update the correct session slot in receipt_contradictions list on /receipt/resolve |
+| allResolved Alpine flag from server context | Initialised true when no contradictions at parse time so Save button starts enabled without client-side logic |
+| Server-side session for receipt parse state | receipt_items + receipt_contradictions + receipt_upload_id persisted across upload/resolve/save multi-step flow |
 
 ### Architecture Constraints (carry forward)
 
@@ -127,7 +131,7 @@ Plan: 3 of 3 — all plans complete
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 04-03 — Settings test suite. Created tests/test_llm_config.py (4 unit tests for get_active_llm_config()) and tests/test_settings.py (13 integration tests for all settings endpoints). Full suite: 116 tests green. Phase 04 complete.
+**What was done last:** Completed Plan 03-02 — Preferences router and UI. Created app/routers/preferences.py (10 endpoints: list, row, edit-form, update, create, delete, bulk-delete, upload, resolve, save), three-tab preferences page template, and 6 HTMX partials (pref_list, pref_row, pref_edit_form, receipt_upload_form, receipt_review, receipt_contradictions). Receipt upload/parse/review/save flow wired. Preference CRUD with inline editing and bulk delete complete.
 
 **What comes next:** Phase 05 — Hardening and Distribution (Docker packaging, env var documentation, end-to-end smoke test).
 
