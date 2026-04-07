@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: tech-debt-cleanup
-status: defining_requirements
-last_updated: "2026-04-07T16:00:00.000Z"
+status: ready_to_plan
+last_updated: "2026-04-07T16:30:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -14,8 +14,8 @@ progress:
 
 # State: Fenn Cart
 
-**Last updated:** 2026-04-02
-**Updated by:** roadmapper (initial creation)
+**Last updated:** 2026-04-07
+**Updated by:** roadmapper (v1.1 roadmap)
 
 ---
 
@@ -24,38 +24,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
-**Current focus:** v1.1 Tech Debt Cleanup — defining requirements
+**Current focus:** v1.1 Tech Debt Cleanup — Phase 8 (Code Cleanup) ready to plan
 
 ---
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 8 - Code Cleanup (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-07 — Milestone v1.1 started
+Status: Ready to plan
+Last activity: 2026-04-07 — v1.1 roadmap created
 **Blocker:** None
+
+Progress: [░░░░░░░░░░] 0% — 0/2 phases complete
 
 ---
 
 ## Performance Metrics
 
-**Plans completed:** 4
-**Plans total:** 4
-**Phases completed:** 1/5
+**Plans completed:** 0
+**Plans total:** TBD
+**Phases completed:** 0/2
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
-| 01-foundation-and-auth | 01 | ~4min | 2 | 21 |
-| 01-foundation-and-auth | 02 | — | — | — |
-| 01-foundation-and-auth | 03 | 17min | 2 | 15 |
-| 01-foundation-and-auth | 04 | 12min | 2 | 7 |
-| Phase 02-core-loop P01 | 8min | 2 tasks | 8 files |
-| Phase 02-core-loop P03 | 6min | 3 tasks | 10 files |
-| Phase 02-core-loop P04 | 15min | 2 tasks | 2 files |
-| Phase 05-hardening-and-distribution P01 | 15min | 2 tasks | 6 files |
-| Phase 06-wire-review-mode-and-cart-history P01 | 18min | 3 tasks | 5 files |
-| Phase 07-llm-config-integration-fix P01 | 8min | 2 tasks | 2 files |
+| (v1.1 phases not yet planned) | — | — | — | — |
+
+---
 
 ## Accumulated Context
 
@@ -97,13 +92,11 @@ Last activity: 2026-04-07 — Milestone v1.1 started
 
 ### Research Flags (carry into planning)
 
-- **Phase 2 planning:** Spike on LLM prompt strategy before building Cart Service — 48% baseline success rate means prompt engineering is non-trivial. Validate Kroger Products API response shape with a real API call before designing matching logic.
-- **Phase 3 planning:** Test at least three real Fry's receipt PDF formats (emailed, app-downloaded, older) with pdfplumber before committing to parser design.
-- **Phase 1 planning:** Validate full Kroger OAuth PKCE round-trip inside Docker early — redirect URI mismatch is the known failure mode.
+- **Phase 9 planning:** Audit all 7 v1.0 phase directories for existing VALIDATION.md files before writing new ones. Identify which phases have partial coverage vs. none, and which routers/services are missing test coverage entirely.
 
 ### Todos
 
-- (none yet — awaiting plan-phase for Phase 1)
+- (none yet — awaiting plan-phase for Phase 8)
 
 ### Blockers
 
@@ -113,11 +106,12 @@ Last activity: 2026-04-07 — Milestone v1.1 started
 
 ## Session Continuity
 
-**What was done last:** Completed v1.0 milestone — archived 7 phases to milestones/v1.0-phases/, created MILESTONES.md, tagged v1.0.
+**What was done last:** Created v1.1 roadmap — 2 phases (8: Code Cleanup, 9: Nyquist Validation Backfill).
 
-**What comes next:** Define v1.1 requirements and create roadmap for tech debt cleanup.
+**What comes next:** Plan Phase 8 — fix SESSION_SECRET_KEY crash, update README, replace Alpine._x_dataStack usage, remove dead code.
 
 **Context to re-establish:** entry['items'] bracket syntax required in Jinja2 when key name shadows dict built-in method. Patch app.main.get_settings (not just DI override) for any test hitting a non-/setup route. TemplateResponse new API: request as first positional arg throughout. get_active_llm_config(db) is the canonical LLM config reader across shopping, upload, and NL chat.
 
 ---
 *State initialized: 2026-04-02*
+*Updated: 2026-04-07 — v1.1 roadmap created, Phase 8 ready to plan*
