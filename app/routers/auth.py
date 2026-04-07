@@ -46,8 +46,7 @@ async def kroger_auth_callback(request: Request, db: AsyncSession = Depends(get_
         return RedirectResponse("/tour", status_code=302)
     except Exception as e:
         # OAuth failed — render step_oauth with error
-        return templates.TemplateResponse("setup/step_oauth.html", {
-            "request": request,
+        return templates.TemplateResponse(request, "setup/step_oauth.html", {
             "error": f"Authorization failed. This usually means the redirect URI doesn't match what's registered in your Kroger developer app. Check BASE_URL in your environment. Detail: {str(e)}",
             "current_step": 4,
         })

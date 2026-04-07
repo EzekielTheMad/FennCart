@@ -14,20 +14,21 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/")
 async def index(request: Request):
-    return templates.TemplateResponse("pages/shopping.html", {"request": request, "active_page": "shopping"})
+    return templates.TemplateResponse(request, "pages/shopping.html", {"active_page": "shopping"})
 
 
 @router.get("/shopping")
 async def shopping(request: Request):
-    return templates.TemplateResponse("pages/shopping.html", {"request": request, "active_page": "shopping"})
+    return templates.TemplateResponse(request, "pages/shopping.html", {"active_page": "shopping"})
 
 
 @router.get("/preferences")
 async def preferences(request: Request, db: AsyncSession = Depends(get_session)):
     entries = await PreferenceService(db).list_preferences()
     return templates.TemplateResponse(
+        request,
         "pages/preferences.html",
-        {"request": request, "active_page": "preferences", "preferences": entries},
+        {"active_page": "preferences", "preferences": entries},
     )
 
 
@@ -62,4 +63,4 @@ async def history(request: Request, db: AsyncSession = Depends(get_session)):
 
 @router.get("/tour")
 async def tour(request: Request):
-    return templates.TemplateResponse("tour.html", {"request": request})
+    return templates.TemplateResponse(request, "tour.html")

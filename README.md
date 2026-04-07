@@ -12,7 +12,7 @@ A self-hosted web application that converts grocery shopping lists into loaded K
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/youruser/fenncart.git && cd fenncart
+   git clone https://github.com/EzekielTheMad/FennCart.git && cd FennCart
    ```
 
 2. **Configure environment**
@@ -90,4 +90,4 @@ uvicorn app.main:app --reload --port 8000
 
 ## License
 
-[Add your license here]
+This project is licensed under the [MIT License](LICENSE).
