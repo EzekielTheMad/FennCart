@@ -18,8 +18,8 @@ Requirements for tech debt cleanup. Each maps to roadmap phases.
 
 ### Code Quality
 
-- [ ] **QUAL-01**: Product swap in review screen uses stable Alpine.js API instead of Alpine._x_dataStack internal
-- [ ] **QUAL-02**: Dead code removed (POST /shopping/swap endpoint, unused imports, stale routes across all routers)
+- [x] **QUAL-01**: Product swap in review screen uses stable Alpine.js API instead of Alpine._x_dataStack internal
+- [x] **QUAL-02**: Dead code removed (POST /shopping/swap endpoint, unused imports, stale routes across all routers)
 
 ### Validation
 
@@ -55,8 +55,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | ERR-01 | Phase 8 | Complete |
 | DOC-01 | Phase 8 | Complete |
-| QUAL-01 | Phase 8 | Pending |
-| QUAL-02 | Phase 8 | Pending |
+| QUAL-01 | Phase 8 | Complete |
+| QUAL-02 | Phase 8 | Complete |
 | VAL-01 | Phase 9 | Pending |
 
 **Coverage:**

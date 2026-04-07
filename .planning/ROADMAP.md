@@ -30,7 +30,7 @@
 
 **v1.1 Tech Debt Cleanup**
 
-- [ ] **Phase 8: Code Cleanup** - Fix fragile code, remove dead code, replace placeholder content
+- [x] **Phase 8: Code Cleanup** - Fix fragile code, remove dead code, replace placeholder content (completed 2026-04-07)
 - [ ] **Phase 9: Nyquist Validation Backfill** - Complete VALIDATION.md coverage across all v1.0 phases
 
 ---
@@ -41,11 +41,11 @@
 **Goal**: The codebase is free of known fragility, dead code, and placeholder content
 **Depends on**: Nothing (standalone cleanup)
 **Requirements**: ERR-01, DOC-01, QUAL-01, QUAL-02
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 08-01-PLAN.md — Session key startup guard, README/LICENSE updates, TemplateResponse API fixes
-- [ ] 08-02-PLAN.md — Alpine.js state-lift for product swap, dead code removal
+- [x] 08-02-PLAN.md — Alpine.js state-lift for product swap, dead code removal
 
 **Success Criteria** (what must be TRUE):
   1. A container started without SESSION_SECRET_KEY shows a helpful error page with setup instructions instead of crash-looping
@@ -76,7 +76,7 @@ Plans:
 | 5. Hardening and Distribution | v1.0 | 2/2 | Complete | 2026-04-06 |
 | 6. Wire Review Mode and Cart History | v1.0 | 1/1 | Complete | 2026-04-06 |
 | 7. LLM Config Integration Fix | v1.0 | 1/1 | Complete | 2026-04-06 |
-| 8. Code Cleanup | v1.1 | 1/2 | In Progress|  |
+| 8. Code Cleanup | v1.1 | 2/2 | Complete   | 2026-04-07 |
 | 9. Nyquist Validation Backfill | v1.1 | 0/? | Not started | - |
 
 ---
