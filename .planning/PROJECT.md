@@ -50,7 +50,18 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 
 ### Active
 
-(No active requirements — next milestone not yet defined)
+(Defined in REQUIREMENTS.md for v1.1)
+
+## Current Milestone: v1.1 Tech Debt Cleanup
+
+**Goal:** Clean up accumulated tech debt, dead code, and validation gaps from v1.0
+
+**Target features:**
+- Fix opaque SESSION_SECRET_KEY startup crash with a helpful error page
+- Replace placeholder README license and GitHub URL
+- Replace fragile Alpine._x_dataStack internal API usage with stable approach
+- Remove dead POST /shopping/swap endpoint and audit for other dead code/unused imports
+- Backfill Nyquist validation across all v1.0 phases
 
 ### Out of Scope
 
@@ -131,4 +142,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-07 after v1.0 milestone*
+*Last updated: 2026-04-07 after v1.1 milestone start*

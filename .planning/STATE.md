@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: completed
-last_updated: "2026-04-07T15:29:22.599Z"
+milestone: v1.1
+milestone_name: tech-debt-cleanup
+status: defining_requirements
+last_updated: "2026-04-07T16:00:00.000Z"
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 19
-  completed_plans: 19
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State: Fenn Cart
@@ -24,29 +24,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
-**Current focus:** v1.0 shipped — planning next milestone
+**Current focus:** v1.1 Tech Debt Cleanup — defining requirements
 
 ---
 
 ## Current Position
 
-Phase: 07 (llm-config-integration-fix) — COMPLETE
-Plan: 1 of 1
-**Phase:** 07
-**Plan:** Not started
-**Status:** v1.0 milestone complete
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-07 — Milestone v1.1 started
 **Blocker:** None
-
-**Progress:**
-
-[██████████] 100%
-[Phase 1] [ ] Foundation and Auth
-[Phase 2] [ ] Core Loop
-[Phase 3] [ ] Preference System
-[Phase 4] [ ] Multi-Provider LLM and Settings
-[Phase 5] [ ] Hardening and Distribution
-
-```
 
 ---
 
@@ -125,9 +113,9 @@ Plan: 1 of 1
 
 ## Session Continuity
 
-**What was done last:** Completed Plan 07-01 — wired preferences.py receipt upload and NL chat endpoints to use get_active_llm_config(db) instead of settings.llm_*. Two new integration tests prove DB-configured provider/model values reach the LLM service functions. 187 tests passing total (up from 183).
+**What was done last:** Completed v1.0 milestone — archived 7 phases to milestones/v1.0-phases/, created MILESTONES.md, tagged v1.0.
 
-**What comes next:** Milestone v1.0 complete — all 7 phases, 19 plans executed.
+**What comes next:** Define v1.1 requirements and create roadmap for tech debt cleanup.
 
 **Context to re-establish:** entry['items'] bracket syntax required in Jinja2 when key name shadows dict built-in method. Patch app.main.get_settings (not just DI override) for any test hitting a non-/setup route. TemplateResponse new API: request as first positional arg throughout. get_active_llm_config(db) is the canonical LLM config reader across shopping, upload, and NL chat.
 
