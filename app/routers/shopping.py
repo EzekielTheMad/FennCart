@@ -1,8 +1,6 @@
 """Shopping router: all /shopping/* endpoints for the list-to-cart flow."""
 import json
 import re
-from typing import Optional
-
 from fastapi import APIRouter, Request, Depends, Form
 from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -139,56 +137,6 @@ async def shopping_match(
             },
         )
 
-
-@router.post("/swap")
-async def shopping_swap(
-    request: Request,
-    item_name: str = Form(...),
-    new_upc: str = Form(...),
-):
-    """HTMX partial swap: replace a product card with a different candidate (D-05).
-
-    Loads candidates from session, finds the matching ProductCandidate,
-    returns a rendered product card partial.
-    """
-    raw_candidates = request.session.get("candidates", "{}")
-    candidates_by_item: dict[str, list[dict]] = json.loads(raw_candidates)
-
-    item_candidates_raw = candidates_by_item.get(item_name, [])
-    matched_candidate: Optional[ProductCandidate] = None
-    for c_dict in item_candidates_raw:
-        if c_dict.get("upc") == new_upc:
-            matched_candidate = ProductCandidate(**c_dict)
-            break
-
-    if matched_candidate is None:
-        return HTMLResponse("")
-
-    # Return a single card in a swapped state (high-confidence, already chosen)
-    from app.schemas.shopping import ItemMatch
-    swapped_match = ItemMatch(
-        list_item=item_name,
-        selected_upc=matched_candidate.upc,
-        selected_description=matched_candidate.description,
-        selected_brand=matched_candidate.brand,
-        selected_size=matched_candidate.size,
-        selected_price=matched_candidate.price_regular,
-        selected_thumbnail=matched_candidate.thumbnail_url,
-        confidence=1.0,  # User explicitly chose this — treat as confirmed
-        reasoning="User selected",
-        alternatives=[],
-    )
-
-    # Re-render the card with the new selection (no confidence warning, no swap needed)
-    return templates.TemplateResponse(
-        request,
-        "partials/review_card.html",
-        {
-            "item": swapped_match,
-            "alternatives": [],
-            "swapped": True,
-        },
-    )
 
 
 @router.post("/add-to-cart")

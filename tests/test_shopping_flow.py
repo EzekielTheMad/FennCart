@@ -297,3 +297,31 @@ async def test_add_to_cart_expired_token(mock_token, client, test_db):
     # The error_block contains "Session expired" heading and "Reconnect" link
     assert "Session expired" in response.text or "session expired" in response.text.lower()
     assert "Reconnect" in response.text
+
+
+# ---------------------------------------------------------------------------
+# Test 10 — Swap endpoint removed (QUAL-02)
+# ---------------------------------------------------------------------------
+
+@pytest.mark.anyio
+async def test_swap_endpoint_removed(client, test_db):
+    """QUAL-02: POST /shopping/swap should no longer exist."""
+    await _seed_app_config(test_db)
+    with patch("app.main.get_settings", return_value=_mock_settings()):
+        response = await client.post("/shopping/swap", data={"item_name": "test", "new_upc": "123"})
+    assert response.status_code in (404, 405), f"Expected 404/405 but got {response.status_code}"
+
+
+# ---------------------------------------------------------------------------
+# Test 11 — review_screen.html has no _x_dataStack (QUAL-01)
+# ---------------------------------------------------------------------------
+
+@pytest.mark.anyio
+async def test_review_screen_no_x_datastack():
+    """QUAL-01: review_screen.html must not reference _x_dataStack."""
+    import os
+    template_path = os.path.join("templates", "partials", "review_screen.html")
+    with open(template_path) as f:
+        content = f.read()
+    assert "_x_dataStack" not in content, "review_screen.html still references _x_dataStack"
+    assert "$root.updateItem" in content, "review_screen.html missing $root.updateItem"

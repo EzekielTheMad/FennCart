@@ -6,12 +6,33 @@
 
 <div x-data="{
     mode: '{{ review_mode | default("exceptions") }}',
-    confirmedItems: {{ confirmed_items_json | default('[]') | tojson }},
-    updateItem(upc, description, brand, size, price, quantity) {
-        const idx = this.confirmedItems.findIndex(i => i.list_item === description);
-        if (idx >= 0) {
-            this.confirmedItems[idx].upc = upc;
-        }
+    confirmedItems: [
+        {% for item in review_items %}
+        {
+            list_item: '{{ item.list_item | e }}',
+            upc: '{{ item.selected_upc }}',
+            description: '{{ item.selected_description | e }}',
+            brand: '{{ item.selected_brand | e }}',
+            size: '{{ item.selected_size | e }}',
+            quantity: 1,
+            price: {{ item.selected_price if item.selected_price is not none else 'null' }}
+        }{% if not loop.last or auto_items %},{% endif %}
+        {% endfor %}
+        {% for item in auto_items %}
+        {
+            list_item: '{{ item.list_item | e }}',
+            upc: '{{ item.selected_upc }}',
+            description: '{{ item.selected_description | e }}',
+            brand: '{{ item.selected_brand | e }}',
+            size: '{{ item.selected_size | e }}',
+            quantity: 1,
+            price: {{ item.selected_price if item.selected_price is not none else 'null' }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ],
+    updateItem(listItem, newUpc) {
+        const idx = this.confirmedItems.findIndex(i => i.list_item === listItem);
+        if (idx >= 0) { this.confirmedItems[idx].upc = newUpc; }
     }
 }" id="shopping-content">
 
@@ -104,6 +125,7 @@
                                     selectedSize = '{{ candidate.size | e }}';
                                     selectedPrice = {{ candidate.price_regular if candidate.price_regular is not none else 'null' }};
                                     open = false;
+                                    $root.updateItem('{{ item.list_item | e }}', '{{ candidate.upc }}')
                                  ">
                                 {% if candidate.thumbnail_url %}
                                 <img src="{{ candidate.thumbnail_url }}"
@@ -203,39 +225,10 @@
           hx-target="#shopping-content"
           hx-swap="innerHTML">
 
-        {# Hidden input: JSON array of ConfirmedItem dicts built from Alpine state #}
+        {# Hidden input: JSON array of ConfirmedItem dicts from Alpine state #}
         <input type="hidden"
                name="confirmed_items_json"
-               :value="JSON.stringify([
-                   {% for item in review_items %}
-                   {
-                       upc: (function() {
-                           for (let el of document.querySelectorAll('#card-{{ loop.index }}')) {
-                               if (el._x_dataStack) {
-                                   return el._x_dataStack[0].selectedUpc || '{{ item.selected_upc }}';
-                               }
-                           }
-                           return '{{ item.selected_upc }}';
-                       })(),
-                       description: '{{ item.selected_description | e }}',
-                       brand: '{{ item.selected_brand | e }}',
-                       size: '{{ item.selected_size | e }}',
-                       quantity: 1,
-                       price: {{ item.selected_price if item.selected_price is not none else 'null' }}
-                   }{% if not loop.last %},{% endif %}
-                   {% endfor %}
-                   {% if review_items and auto_items %},{% endif %}
-                   {% for item in auto_items %}
-                   {
-                       upc: '{{ item.selected_upc }}',
-                       description: '{{ item.selected_description | e }}',
-                       brand: '{{ item.selected_brand | e }}',
-                       size: '{{ item.selected_size | e }}',
-                       quantity: 1,
-                       price: {{ item.selected_price if item.selected_price is not none else 'null' }}
-                   }{% if not loop.last %},{% endif %}
-                   {% endfor %}
-               ])">
+               :value="JSON.stringify(confirmedItems)">
 
         {# Sticky confirm bar — fixed at viewport bottom, offset for sidebar #}
         <div class="fixed bottom-0 left-16 lg:left-60 right-0 bg-slate-900 border-t border-slate-700 p-4 flex items-center justify-between">
