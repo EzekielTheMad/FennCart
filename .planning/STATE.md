@@ -1,14 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: tech-debt-cleanup
-status: ready_to_plan
-last_updated: "2026-04-07T16:30:00.000Z"
+milestone: v1.0
+milestone_name: milestone
+status: executing
+last_updated: "2026-04-07T16:26:35.871Z"
+last_activity: 2026-04-07
 progress:
   total_phases: 2
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
   percent: 0
 ---
 
@@ -24,19 +25,19 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
-**Current focus:** v1.1 Tech Debt Cleanup — Phase 8 (Code Cleanup) ready to plan
+**Current focus:** Phase 08 — code-cleanup
 
 ---
 
 ## Current Position
 
-Phase: 8 - Code Cleanup (not started)
-Plan: —
-Status: Ready to plan
-Last activity: 2026-04-07 — v1.1 roadmap created
+Phase: 08 (code-cleanup) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-04-07
 **Blocker:** None
 
-Progress: [░░░░░░░░░░] 0% — 0/2 phases complete
+Progress: [█████░░░░░] 50% — 0/2 phases complete (1/2 plans done in phase 08)
 
 ---
 
@@ -48,9 +49,7 @@ Progress: [░░░░░░░░░░] 0% — 0/2 phases complete
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
-| (v1.1 phases not yet planned) | — | — | — | — |
-
----
+| 08-code-cleanup | P01 | 15min | 2 | 7 |
 
 ## Accumulated Context
 
@@ -79,6 +78,8 @@ Progress: [░░░░░░░░░░] 0% — 0/2 phases complete
 | anthropic and openai explicit in requirements.txt | LiteLLM does not bundle provider SDKs; Claude provider raises ImportError without explicit anthropic dep |
 | Jinja2 dict bracket access for shadowed keys | entry['items'] not entry.items — Jinja2 resolves .items as Python dict method, not the 'items' key |
 | Patch app.main.get_settings in history/shopping tests | SetupGuardMiddleware calls get_settings() directly, bypassing DI; must patch at module level in history/preferences tests too |
+| SESSION_KEY_MISSING module-level flag (08-01) | Avoids re-calling lru_cached get_settings() which would raise ValidationError on each request when key is missing |
+| Standalone session_error.html (08-01) | No base.html — consistent with missing_config.html pattern, works when session middleware initialized with placeholder |
 
 ### Architecture Constraints (carry forward)
 
@@ -106,11 +107,11 @@ Progress: [░░░░░░░░░░] 0% — 0/2 phases complete
 
 ## Session Continuity
 
-**What was done last:** Created v1.1 roadmap — 2 phases (8: Code Cleanup, 9: Nyquist Validation Backfill).
+**What was done last:** Executed 08-01-PLAN.md — SESSION_SECRET_KEY guard (ERR-01), MIT License + README URL (DOC-01), TemplateResponse API fix in pages.py + auth.py. 193 tests passing.
 
-**What comes next:** Plan Phase 8 — fix SESSION_SECRET_KEY crash, update README, replace Alpine._x_dataStack usage, remove dead code.
+**What comes next:** 08-02-PLAN.md — Alpine._x_dataStack replacement, dead POST /shopping/swap removal, dead code audit.
 
-**Context to re-establish:** entry['items'] bracket syntax required in Jinja2 when key name shadows dict built-in method. Patch app.main.get_settings (not just DI override) for any test hitting a non-/setup route. TemplateResponse new API: request as first positional arg throughout. get_active_llm_config(db) is the canonical LLM config reader across shopping, upload, and NL chat.
+**Context to re-establish:** entry['items'] bracket syntax required in Jinja2 when key name shadows dict built-in method. Patch app.main.get_settings (not just DI override) for any test hitting a non-/setup route. TemplateResponse new API: request as first positional arg throughout — now applied to all routes. SESSION_KEY_MISSING flag is module-level in app/main.py; patch at "app.main.SESSION_KEY_MISSING" in tests. get_active_llm_config(db) is the canonical LLM config reader across shopping, upload, and NL chat.
 
 ---
 *State initialized: 2026-04-02*

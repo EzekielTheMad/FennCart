@@ -10,11 +10,11 @@ Requirements for tech debt cleanup. Each maps to roadmap phases.
 
 ### Error Handling
 
-- [ ] **ERR-01**: App shows a helpful error page when SESSION_SECRET_KEY is missing instead of crash-looping the container
+- [x] **ERR-01**: App shows a helpful error page when SESSION_SECRET_KEY is missing instead of crash-looping the container
 
 ### Documentation
 
-- [ ] **DOC-01**: README contains actual license (MIT) and correct GitHub repository URL
+- [x] **DOC-01**: README contains actual license (MIT) and correct GitHub repository URL
 
 ### Code Quality
 
@@ -53,8 +53,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ERR-01 | Phase 8 | Pending |
-| DOC-01 | Phase 8 | Pending |
+| ERR-01 | Phase 8 | Complete |
+| DOC-01 | Phase 8 | Complete |
 | QUAL-01 | Phase 8 | Pending |
 | QUAL-02 | Phase 8 | Pending |
 | VAL-01 | Phase 9 | Pending |

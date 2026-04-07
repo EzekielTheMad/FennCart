@@ -41,10 +41,10 @@
 **Goal**: The codebase is free of known fragility, dead code, and placeholder content
 **Depends on**: Nothing (standalone cleanup)
 **Requirements**: ERR-01, DOC-01, QUAL-01, QUAL-02
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 08-01-PLAN.md — Session key startup guard, README/LICENSE updates, TemplateResponse API fixes
+- [x] 08-01-PLAN.md — Session key startup guard, README/LICENSE updates, TemplateResponse API fixes
 - [ ] 08-02-PLAN.md — Alpine.js state-lift for product swap, dead code removal
 
 **Success Criteria** (what must be TRUE):
@@ -76,7 +76,7 @@ Plans:
 | 5. Hardening and Distribution | v1.0 | 2/2 | Complete | 2026-04-06 |
 | 6. Wire Review Mode and Cart History | v1.0 | 1/1 | Complete | 2026-04-06 |
 | 7. LLM Config Integration Fix | v1.0 | 1/1 | Complete | 2026-04-06 |
-| 8. Code Cleanup | v1.1 | 0/2 | Planned | - |
+| 8. Code Cleanup | v1.1 | 1/2 | In Progress|  |
 | 9. Nyquist Validation Backfill | v1.1 | 0/? | Not started | - |
 
 ---
