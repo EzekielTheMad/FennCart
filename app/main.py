@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import ValidationError
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import RedirectResponse
@@ -17,6 +18,13 @@ class SetupGuardMiddleware(BaseHTTPMiddleware):
         exempt_prefixes = ("/static", "/setup", "/auth", "/health")
         if any(request.url.path.startswith(p) for p in exempt_prefixes):
             return await call_next(request)
+
+        if SESSION_KEY_MISSING:
+            return templates.TemplateResponse(
+                request,
+                "session_error.html",
+                status_code=500,
+            )
 
         settings = get_settings()
         # Check for missing Kroger credentials (D-07: serve missing config page)
@@ -58,8 +66,15 @@ async def lifespan(app: FastAPI):
     yield
 
 
+SESSION_KEY_MISSING = False
+try:
+    _session_secret = get_settings().session_secret_key
+except (ValidationError, Exception):
+    SESSION_KEY_MISSING = True
+    _session_secret = "startup-error-placeholder-not-used"
+
 app = FastAPI(title="FennCart", lifespan=lifespan)
-app.add_middleware(SessionMiddleware, secret_key=get_settings().session_secret_key)
+app.add_middleware(SessionMiddleware, secret_key=_session_secret)
 app.add_middleware(SetupGuardMiddleware)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

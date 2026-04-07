@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FennCart -- Setup Required</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center py-16" style="font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;">
+    <div class="max-w-lg w-full px-6">
+        <h1 class="text-3xl font-semibold text-slate-100 mb-4">SESSION_SECRET_KEY not set</h1>
+        <p class="text-base text-slate-400 mb-8">
+            FennCart requires a unique secret key for session cookie signing.
+            The default value is not allowed. Set <code class="text-slate-200">SESSION_SECRET_KEY</code> in your
+            <code class="text-slate-200">.env</code> file or Docker environment and restart the container.
+        </p>
+        <div class="bg-slate-800 rounded-md p-4 mb-8">
+            <p class="text-sm text-slate-400 mb-2">Generate a secure key:</p>
+            <code class="text-slate-100 text-sm block">python -c "import secrets; print(secrets.token_urlsafe(32))"</code>
+        </div>
+        <div class="bg-slate-800 rounded-md p-4 mb-8">
+            <p class="text-sm text-slate-400 mb-2">Then add it to your .env file:</p>
+            <code class="text-slate-100 text-sm block">SESSION_SECRET_KEY=your-generated-key-here</code>
+        </div>
+        <p class="text-sm text-slate-500">
+            After setting the key, restart the container:
+            <code class="text-slate-400">docker compose restart</code>
+        </p>
+    </div>
+</body>
+</html>
