@@ -40,7 +40,7 @@ created: 2026-04-07
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
 | 08-01-01 | 01 | 1 | ERR-01 | integration | `python -m pytest tests/test_session_key_guard.py -x` | Wave 0 gap | pending |
 | 08-01-02 | 01 | 1 | DOC-01 | manual/smoke | `grep -c "EzekielTheMad/FennCart" README.md && grep -c "MIT License" README.md` | manual | pending |
-| 08-01-03 | 01 | 1 | QUAL-01 | integration | `python -m pytest tests/test_shopping_flow.py::test_swap_updates_confirmed_items -x` | Wave 0 gap | pending |
+| 08-01-03 | 01 | 1 | QUAL-01 | integration | `python -m pytest tests/test_shopping_flow.py::test_review_screen_no_x_datastack -x` | Wave 0 gap | pending |
 | 08-01-04 | 01 | 1 | QUAL-02 | integration | `python -m pytest tests/test_shopping_flow.py::test_swap_endpoint_removed -x` | Wave 0 gap | pending |
 
 *Status: pending / green / red / flaky*
@@ -50,7 +50,7 @@ created: 2026-04-07
 ## Wave 0 Requirements
 
 - [ ] `tests/test_session_key_guard.py` — covers ERR-01: tests that a missing/default SESSION_SECRET_KEY causes session_error.html to render instead of crashing
-- [ ] `tests/test_shopping_flow.py::test_swap_updates_confirmed_items` — covers QUAL-01: confirms template renders without _x_dataStack references
+- [ ] `tests/test_shopping_flow.py::test_review_screen_no_x_datastack` — covers QUAL-01: confirms template renders without _x_dataStack references
 - [ ] `tests/test_shopping_flow.py::test_swap_endpoint_removed` — covers QUAL-02: 404/405 check that POST /shopping/swap is gone
 
 *Existing `test_shopping_flow.py` tests (1-9) cover the shopping flow end-to-end. New tests should be added to that file or a new dedicated file.*
