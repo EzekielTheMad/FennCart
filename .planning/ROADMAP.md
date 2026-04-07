@@ -41,12 +41,17 @@
 **Goal**: The codebase is free of known fragility, dead code, and placeholder content
 **Depends on**: Nothing (standalone cleanup)
 **Requirements**: ERR-01, DOC-01, QUAL-01, QUAL-02
+**Plans:** 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Session key startup guard, README/LICENSE updates, TemplateResponse API fixes
+- [ ] 08-02-PLAN.md — Alpine.js state-lift for product swap, dead code removal
+
 **Success Criteria** (what must be TRUE):
   1. A container started without SESSION_SECRET_KEY shows a helpful error page with setup instructions instead of crash-looping
   2. README displays "MIT License" and a real GitHub repository URL, not placeholder text
   3. Product swap in the review screen works correctly and no longer touches Alpine._x_dataStack
   4. POST /shopping/swap endpoint is absent from the codebase and no unused imports or stale routes remain in any router
-**Plans**: TBD
 
 ### Phase 9: Nyquist Validation Backfill
 **Goal**: Every v1.0 phase has a documented VALIDATION.md with passing test coverage
@@ -71,9 +76,9 @@
 | 5. Hardening and Distribution | v1.0 | 2/2 | Complete | 2026-04-06 |
 | 6. Wire Review Mode and Cart History | v1.0 | 1/1 | Complete | 2026-04-06 |
 | 7. LLM Config Integration Fix | v1.0 | 1/1 | Complete | 2026-04-06 |
-| 8. Code Cleanup | v1.1 | 0/? | Not started | - |
+| 8. Code Cleanup | v1.1 | 0/2 | Planned | - |
 | 9. Nyquist Validation Backfill | v1.1 | 0/? | Not started | - |
 
 ---
 *Created: 2026-04-02*
-*Last updated: 2026-04-07 after v1.1 roadmap creation*
+*Last updated: 2026-04-07 after Phase 8 planning*
