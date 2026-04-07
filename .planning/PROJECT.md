@@ -8,42 +8,62 @@ A self-hosted, Docker-containerized web application that converts grocery shoppi
 
 Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with minimal effort, matching brand and price preferences automatically.
 
+## Current State
+
+**Version:** v1.0 MVP (shipped 2026-04-07)
+**Codebase:** ~6,400 Python + ~5,000 HTML (187 tests passing)
+**Stack:** Python 3.12, FastAPI, HTMX/Jinja2/Alpine.js/Tailwind, SQLite, LiteLLM + Instructor
+
+**What's working:**
+- Guided first-run wizard (LLM key, Kroger credentials, store selection, OAuth)
+- NL shopping list -> LLM product matching -> review -> Kroger Cart API
+- Receipt PDF parsing to build a living preference profile
+- Multi-provider LLM (Claude, OpenAI, Ollama) with DB-authoritative hot-swap
+- NL preference chat and manual preference CRUD
+- Cart history tracking across sessions
+- Docker-ready with Alembic migration safety
+
 ## Requirements
 
 ### Validated
 
-- [x] Guided first-run setup wizard (LLM API key, Kroger developer credentials, Kroger OAuth login, store selection) — Validated in Phase 1: Foundation and Auth
-- [x] Natural language shopping list input (paste, type, or dictate) — Validated in Phase 2: Core Loop
-- [x] LLM-powered product matching against Kroger Products API — Validated in Phase 2: Core Loop
-- [x] Smart review flow: exceptions-only by default, full review table toggle — Validated in Phase 2: Core Loop
-- [x] Cart building via Kroger Cart API with explicit user confirmation — Validated in Phase 2: Core Loop
-- [x] Kroger OAuth flow handled within the web UI — Validated in Phase 1: Foundation and Auth
-- [x] Curbside pickup fulfillment filtering — Validated in Phase 2: Core Loop
-- [x] SQLite persistence via Docker volume — Validated in Phase 1: Foundation and Auth
+- ✓ SETUP-01: Guided first-run setup wizard — v1.0
+- ✓ SETUP-02: Store location via zip code search — v1.0
+- ✓ SETUP-03: Kroger OAuth PKCE flow within web UI — v1.0
+- ✓ SETUP-04: Silent token refresh (6-month validity) — v1.0
+- ✓ SRCH-01: Natural language shopping list input — v1.0
+- ✓ SRCH-02: LLM product matching against Kroger Products API — v1.0
+- ✓ SRCH-03: Curbside pickup fulfillment filtering — v1.0
+- ✓ SRCH-04: Exceptions-only default with auto-match for high confidence — v1.0
+- ✓ SRCH-05: Review mode toggle (persisted across page loads) — v1.0
+- ✓ CART-01: Explicit confirmation before cart add — v1.0
+- ✓ CART-02: Local cart state in SQLite — v1.0
+- ✓ CART-03: Cart history view across sessions — v1.0
+- ✓ PREF-01: Receipt PDF upload to bootstrap preferences — v1.0
+- ✓ PREF-02: Receipt parsing (items, brands, sizes, prices) — v1.0
+- ✓ PREF-03: Living preference profile weighted by frequency — v1.0
+- ✓ PREF-04: NL preference updates — v1.0
+- ✓ PREF-05: Manual preference CRUD — v1.0
+- ✓ PREF-06: Preference-ranked product matching — v1.0
+- ✓ LLM-01: Multi-provider support (Claude, OpenAI, Ollama) — v1.0
+- ✓ LLM-02: Provider selector and settings hub — v1.0
 
 ### Active
 
-(All v1 requirements validated — milestone complete)
-
-### Recently Validated
-
-- [x] LLM-powered product matching ranked by user preferences — Validated in Phase 3: Preference System
-- [x] Receipt PDF upload and parsing to build/update preference profile over time — Validated in Phase 3: Preference System
-- [x] Living preference profile that learns from receipt history and weights recurring purchases vs one-off substitutions — Validated in Phase 3: Preference System
-- [x] Natural language preference updates ("we switched to oat milk", "stop buying Kroger brand yogurt") — Validated in Phase 3: Preference System
-- [x] Manual preference editing UI for direct control — Validated in Phase 3: Preference System
-- [x] Multi-provider LLM support (Claude, OpenAI, local models) with provider selector and settings hub — Validated in Phase 4: Multi-Provider LLM and Settings
-- [x] LLM config integration: all LLM-using endpoints use DB-authoritative config, not env vars — Validated in Phase 7: LLM Config Integration Fix
+(No active requirements — next milestone not yet defined)
 
 ### Out of Scope
 
-- Coupon clipping automation — manual during checkout on frysfood.com
-- Automated checkout or payment — legal/TOS risk, users complete checkout on Kroger's site
-- Multi-store price comparison — explicitly prohibited by Kroger TOS
-- Mobile native app — web UI is sufficient, mobile browser works
-- Multi-user/household support in v1 — single user per container instance
-- Building a product database from API responses — prohibited by Kroger TOS
-- Real-time stock availability — Kroger API doesn't provide this, same limitation as their website
+- Coupon clipping automation — not available via Kroger public API
+- Automated checkout or payment — prohibited by Kroger TOS
+- Multi-store price comparison — prohibited by Kroger TOS
+- Real-time stock availability — Kroger API doesn't expose stock data
+- Product database persistence — prohibited by Kroger TOS
+- Background/scheduled cart building — Kroger TOS requires explicit user action
+- Multi-user/household support — single user per container in v1
+- Mobile native app — responsive web UI sufficient
+- Pantry inventory tracking — Grocy/KitchenOwl serve this well
+- Recipe-to-cart / meal planning — defer until core loop validated
 
 ## Context
 
@@ -69,11 +89,6 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 - Cannot compare prices across retailers
 - Must not circumvent rate limits
 
-**Existing open source:**
-- kroger-mcp (CupOfOwls) — MCP server wrapping Kroger API, MIT licensed
-- kroger-api (CupOfOwls) — Python client for Kroger API, MIT licensed
-- These are reference implementations, not dependencies (we're building a standalone app)
-
 ## Constraints
 
 - **TOS**: Each user must bring their own Kroger developer credentials — cannot distribute with shared keys
@@ -87,24 +102,27 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Docker container distribution | Makes it easy for anyone to self-host without environment setup | Validated in Phase 05 — .dockerignore, README quickstart, SESSION_SECRET_KEY validator |
-| Web UI (not CLI or Claude Desktop) | Broader accessibility, visual review flow, guided setup | — Pending |
-| LLM-agnostic with multi-provider support | Don't lock users into one AI provider; Claude, OpenAI, local models all viable | — Pending |
-| SQLite for persistence | Single-container simplicity, no separate DB service needed, Docker volume for durability | — Pending |
-| Receipt PDF parsing for preference learning | Solves cold-start problem — users don't have to manually build preference profiles | — Pending |
-| BYO-credentials model | Required by Kroger TOS — cannot distribute shared API keys | — Pending |
-| Exceptions-only default review flow | Fast path for high-confidence matches, full review available when wanted | — Pending |
+| Docker container distribution | Makes it easy for anyone to self-host without environment setup | ✓ Good — .dockerignore, README quickstart, SESSION_SECRET_KEY validator |
+| Web UI (not CLI or Claude Desktop) | Broader accessibility, visual review flow, guided setup | ✓ Good — HTMX+Jinja2 delivers interactive UX without JS build step |
+| LLM-agnostic with multi-provider support | Don't lock users into one AI provider | ✓ Good — DB-authoritative hot-swap, all endpoints respect settings |
+| SQLite for persistence | Single-container simplicity, no separate DB service | ✓ Good — WAL mode + single worker is reliable |
+| Receipt PDF parsing for preference learning | Solves cold-start problem for preferences | ✓ Good — pdfplumber handles Fry's receipt format well |
+| BYO-credentials model | Required by Kroger TOS | ✓ Good — no legal risk |
+| Exceptions-only default review flow | Fast path for high-confidence matches | ✓ Good — review mode toggle persists user preference |
+| Fernet encryption for API keys in DB | Protect sensitive keys at rest | ✓ Good — /data/app.key auto-generated, keys never in plaintext |
+| Router-local Jinja2Templates | Avoids circular imports from app.main | ⚠️ Revisit — adds boilerplate per router |
+| Server-side session for match state | Starlette session persists multi-step HTMX flow | ✓ Good — simpler than client-side state management |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 **After each phase transition** (via `/gsd:transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
+1. Requirements invalidated? -> Move to Out of Scope with reason
+2. Requirements validated? -> Move to Validated with phase reference
+3. New requirements emerged? -> Add to Active
+4. Decisions to log? -> Add to Key Decisions
+5. "What This Is" still accurate? -> Update if drifted
 
 **After each milestone** (via `/gsd:complete-milestone`):
 1. Full review of all sections
@@ -113,4 +131,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-06 after Phase 07 completion — all LLM endpoints use DB-authoritative config, v1.0 milestone complete*
+*Last updated: 2026-04-07 after v1.0 milestone*
