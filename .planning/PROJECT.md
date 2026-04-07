@@ -10,8 +10,8 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 
 ## Current State
 
-**Version:** v1.0 MVP (shipped 2026-04-07)
-**Codebase:** ~6,400 Python + ~5,000 HTML (187 tests passing)
+**Version:** v1.0 MVP (shipped 2026-04-07), v1.1 Phase 8 complete
+**Codebase:** ~6,400 Python + ~5,000 HTML (tests passing)
 **Stack:** Python 3.12, FastAPI, HTMX/Jinja2/Alpine.js/Tailwind, SQLite, LiteLLM + Instructor
 
 **What's working:**
@@ -142,4 +142,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-07 after v1.1 milestone start*
+*Last updated: 2026-04-07 after Phase 8 (Code Cleanup) completion*
