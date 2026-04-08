@@ -57,11 +57,11 @@ Plans:
 **Goal**: Every v1.0 phase has a documented VALIDATION.md with passing test coverage
 **Depends on**: Phase 8 (dead code removal may affect test surface)
 **Requirements**: VAL-01
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 - [ ] 09-01-PLAN.md — Rewrite VALIDATION.md for Phases 1, 2, 3 (Foundation, Core Loop, Preferences)
-- [ ] 09-02-PLAN.md — Rewrite VALIDATION.md for Phases 4, 5 (LLM Settings, Hardening)
+- [x] 09-02-PLAN.md — Rewrite VALIDATION.md for Phases 4, 5 (LLM Settings, Hardening)
 - [ ] 09-03-PLAN.md — Create Phase 6 VALIDATION.md, rewrite Phase 7, full suite confirmation
 
 **Success Criteria** (what must be TRUE):
@@ -83,7 +83,7 @@ Plans:
 | 6. Wire Review Mode and Cart History | v1.0 | 1/1 | Complete | 2026-04-06 |
 | 7. LLM Config Integration Fix | v1.0 | 1/1 | Complete | 2026-04-06 |
 | 8. Code Cleanup | v1.1 | 2/2 | Complete   | 2026-04-07 |
-| 9. Nyquist Validation Backfill | v1.1 | 0/3 | Not started | - |
+| 9. Nyquist Validation Backfill | v1.1 | 1/3 | In Progress|  |
 
 ---
 *Created: 2026-04-02*

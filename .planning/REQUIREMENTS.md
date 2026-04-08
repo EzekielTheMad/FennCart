@@ -23,7 +23,7 @@ Requirements for tech debt cleanup. Each maps to roadmap phases.
 
 ### Validation
 
-- [ ] **VAL-01**: All v1.0 phases have Nyquist-compliant VALIDATION.md with passing test coverage
+- [x] **VAL-01**: All v1.0 phases have Nyquist-compliant VALIDATION.md with passing test coverage
 
 ## Future Requirements
 
@@ -57,7 +57,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOC-01 | Phase 8 | Complete |
 | QUAL-01 | Phase 8 | Complete |
 | QUAL-02 | Phase 8 | Complete |
-| VAL-01 | Phase 9 | Pending |
+| VAL-01 | Phase 9 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 5 total
