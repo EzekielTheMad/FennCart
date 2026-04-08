@@ -62,7 +62,7 @@ Plans:
 Plans:
 - [ ] 09-01-PLAN.md — Rewrite VALIDATION.md for Phases 1, 2, 3 (Foundation, Core Loop, Preferences)
 - [x] 09-02-PLAN.md — Rewrite VALIDATION.md for Phases 4, 5 (LLM Settings, Hardening)
-- [ ] 09-03-PLAN.md — Create Phase 6 VALIDATION.md, rewrite Phase 7, full suite confirmation
+- [x] 09-03-PLAN.md — Create Phase 6 VALIDATION.md, rewrite Phase 7, full suite confirmation
 
 **Success Criteria** (what must be TRUE):
   1. Each of the 7 v1.0 phases has a non-stub VALIDATION.md file covering its observable behaviors
