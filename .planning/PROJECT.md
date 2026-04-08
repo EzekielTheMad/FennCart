@@ -48,20 +48,15 @@ Go from a rough shopping list to a fully loaded Fry's curbside pickup cart with 
 - ✓ LLM-01: Multi-provider support (Claude, OpenAI, Ollama) — v1.0
 - ✓ LLM-02: Provider selector and settings hub — v1.0
 
+- ✓ ERR-01: Helpful error page when SESSION_SECRET_KEY missing — v1.1
+- ✓ DOC-01: README with MIT License and correct GitHub URL — v1.1
+- ✓ QUAL-01: Stable Alpine.js API for product swap (replaced _x_dataStack) — v1.1
+- ✓ QUAL-02: Dead code removed (swap endpoint, unused imports, stale routes) — v1.1
+- ✓ VAL-01: Nyquist-compliant VALIDATION.md for all v1.0 phases — v1.1
+
 ### Active
 
-(Defined in REQUIREMENTS.md for v1.1)
-
-## Current Milestone: v1.1 Tech Debt Cleanup
-
-**Goal:** Clean up accumulated tech debt, dead code, and validation gaps from v1.0
-
-**Target features:**
-- Fix opaque SESSION_SECRET_KEY startup crash with a helpful error page
-- Replace placeholder README license and GitHub URL
-- Replace fragile Alpine._x_dataStack internal API usage with stable approach
-- Remove dead POST /shopping/swap endpoint and audit for other dead code/unused imports
-- Backfill Nyquist validation across all v1.0 phases
+(No active milestone — define with /gsd:new-milestone)
 
 ### Out of Scope
 
@@ -142,4 +137,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-08 after v1.1 milestone completion (Phase 8 + Phase 9)*
+*Last updated: 2026-04-08 after v1.1 Tech Debt Cleanup milestone shipped*

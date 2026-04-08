@@ -42,16 +42,46 @@
 
 ---
 
+## Milestone: v1.1 Tech Debt Cleanup
+
+**Shipped:** 2026-04-08
+**Phases:** 2 | **Plans:** 5 | **Timeline:** 1 day
+
+### What Was Built
+- Helpful error page for missing SESSION_SECRET_KEY (was crash-looping containers)
+- MIT License file and corrected GitHub URL in README
+- Stable Alpine.js `$root.updateItem()` state-lift replacing fragile `_x_dataStack` internal API
+- Dead code removal: `/shopping/swap` endpoint, `review_card.html`, unused imports, deprecated TemplateResponse calls
+- Nyquist-compliant VALIDATION.md for all 7 v1.0 phases (197 tests mapped to requirements)
+
+### What Worked
+- **Parallel executor agents:** Phase 8 ran both plans simultaneously in worktree isolation — efficient use of time
+- **Research-driven Alpine fix:** Researcher identified `$root` state-lift as the correct pattern, eliminating both QUAL-01 and QUAL-02 in one architectural change
+- **Auto-advance chain:** discuss -> plan -> execute ran seamlessly for Phase 8
+- **Documentation-only Phase 9:** 3 parallel agents rewrote 7 VALIDATION.md files without touching any code
+
+### What Was Inefficient
+- **Merge conflicts from parallel worktrees:** Both Phase 8 agents modified `review_screen.html` — required manual conflict resolution
+- **Plan checker rate limit:** Phase 9 plan verification was skipped due to rate limit on subagent model
+- **Background test tasks:** Several pytest processes hung or were orphaned during parallel execution
+
+### Key Lessons
+- **QUAL-01 and QUAL-02 were one fix:** The Alpine state-lift that fixed the fragile API also eliminated the need for the server-side swap endpoint
+- **Worktree isolation prevents most conflicts:** Only one conflict across 5 parallel agent runs — and it was in a file both plans legitimately needed to modify
+- **Stub VALIDATION.md files are tech debt:** All 6 existing files were stubs created during planning but never filled in post-execution — the backfill was necessary
+
+---
+
 ## Cross-Milestone Trends
 
-| Metric | v1.0 |
-|--------|------|
-| Phases | 7 |
-| Plans | 19 |
-| Days | 5 |
-| Commits | 125 |
-| Python LOC | ~6,400 |
-| HTML LOC | ~5,000 |
-| Tests | 187 |
-| Requirements | 20/20 |
-| Tech debt items | 5 |
+| Metric | v1.0 | v1.1 |
+|--------|------|------|
+| Phases | 7 | 2 |
+| Plans | 19 | 5 |
+| Days | 5 | 1 |
+| Commits | 125 | 28 |
+| Python LOC | ~6,400 | ~6,400 |
+| HTML LOC | ~5,000 | ~5,000 |
+| Tests | 187 | 197 |
+| Requirements | 20/20 | 5/5 |
+| Tech debt items | 5 | 0 |
