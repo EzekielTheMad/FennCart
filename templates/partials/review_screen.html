@@ -4,32 +4,37 @@
                 candidates_dict (dict[str, list[ProductCandidate]]), total_items (int)
 #}
 
+{# Confirmed items data as JSON to avoid x-data quoting issues with special chars #}
+<script id="confirmed-items-data" type="application/json">
+[
+  {% for item in review_items %}
+  {
+    "list_item": {{ item.list_item | tojson }},
+    "upc": {{ item.selected_upc | tojson }},
+    "description": {{ item.selected_description | tojson }},
+    "brand": {{ (item.selected_brand or '') | tojson }},
+    "size": {{ (item.selected_size or '') | tojson }},
+    "quantity": {{ item.quantity }},
+    "price": {{ item.selected_price if item.selected_price is not none else 'null' }}
+  }{% if not loop.last or auto_items %},{% endif %}
+  {% endfor %}
+  {% for item in auto_items %}
+  {
+    "list_item": {{ item.list_item | tojson }},
+    "upc": {{ item.selected_upc | tojson }},
+    "description": {{ item.selected_description | tojson }},
+    "brand": {{ (item.selected_brand or '') | tojson }},
+    "size": {{ (item.selected_size or '') | tojson }},
+    "quantity": {{ item.quantity }},
+    "price": {{ item.selected_price if item.selected_price is not none else 'null' }}
+  }{% if not loop.last %},{% endif %}
+  {% endfor %}
+]
+</script>
+
 <div x-data="{
-    mode: '{{ review_mode | default("exceptions") }}',
-    confirmedItems: [
-        {% for item in review_items %}
-        {
-            list_item: '{{ item.list_item | e }}',
-            upc: '{{ item.selected_upc }}',
-            description: '{{ item.selected_description | e }}',
-            brand: '{{ item.selected_brand | e }}',
-            size: '{{ item.selected_size | e }}',
-            quantity: {{ item.quantity }},
-            price: {{ item.selected_price if item.selected_price is not none else 'null' }}
-        }{% if not loop.last or auto_items %},{% endif %}
-        {% endfor %}
-        {% for item in auto_items %}
-        {
-            list_item: '{{ item.list_item | e }}',
-            upc: '{{ item.selected_upc }}',
-            description: '{{ item.selected_description | e }}',
-            brand: '{{ item.selected_brand | e }}',
-            size: '{{ item.selected_size | e }}',
-            quantity: {{ item.quantity }},
-            price: {{ item.selected_price if item.selected_price is not none else 'null' }}
-        }{% if not loop.last %},{% endif %}
-        {% endfor %}
-    ],
+    mode: '{{ review_mode | default('exceptions') }}',
+    confirmedItems: [],
     updateItem(listItem, newUpc) {
         const idx = this.confirmedItems.findIndex(i => i.list_item === listItem);
         if (idx >= 0) { this.confirmedItems[idx].upc = newUpc; }
@@ -38,7 +43,9 @@
         const idx = this.confirmedItems.findIndex(i => i.list_item === listItem);
         if (idx >= 0) { this.confirmedItems[idx].quantity = qty; }
     }
-}" id="shopping-content">
+}"
+x-init="confirmedItems = JSON.parse(document.getElementById('confirmed-items-data').textContent)"
+id="shopping-content">
 
     {% if preferences_loaded %}
     {% include "partials/preference_indicator.html" %}
