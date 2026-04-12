@@ -6,11 +6,12 @@
   x-data="{ dragging: false }"
   @dragover.prevent="dragging = true"
   @dragleave.prevent="dragging = false"
-  @drop.prevent="dragging = false; $refs.fileInput.files = $event.dataTransfer.files; $refs.uploadForm.requestSubmit()"
+  @drop.prevent="dragging = false; $refs.fileInput.files = $event.dataTransfer.files; htmx.trigger($refs.fileInput, 'change')"
 >
 
   <form
     x-ref="uploadForm"
+    id="receipt-upload-form"
     hx-post="/preferences/upload"
     hx-encoding="multipart/form-data"
     hx-target="#receipt-panel"
@@ -41,7 +42,12 @@
         multiple
         x-ref="fileInput"
         class="hidden"
-        @change="$refs.uploadForm.requestSubmit()"
+        hx-post="/preferences/upload"
+        hx-encoding="multipart/form-data"
+        hx-target="#receipt-panel"
+        hx-swap="innerHTML"
+        hx-indicator="#upload-spinner"
+        hx-trigger="change"
         aria-label="Choose receipt PDFs to upload"
       >
     </div>
