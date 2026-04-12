@@ -28,43 +28,28 @@
   </div>
 
 {% else %}
+  {# Embed preference data as JSON in a script tag to avoid x-data quoting issues #}
+  <script id="pref-data" type="application/json">
+  [
+    {% for pref in preferences %}
+    {
+      "id": {{ pref.id }},
+      "product": {{ pref.product_name | tojson }},
+      "brand": {{ (pref.brand or '') | tojson }},
+      "category": {{ (pref.product_category or '') | tojson }},
+      "count": {{ pref.purchase_count }},
+      "lastSeen": {{ (pref.last_seen_at.strftime('%Y-%m-%d') if pref.last_seen_at else '') | tojson }},
+      "lastSeenDisplay": {{ (pref.last_seen_at.strftime('%b %d, %Y') if pref.last_seen_at else '\u2014') | tojson }},
+      "source": {{ pref.source | tojson }},
+      "notes": {{ (pref.notes or '') | tojson }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  </script>
+
   <div class="overflow-x-auto"
-       x-data="{
-         sortCol: 'product',
-         sortAsc: true,
-         rows: [
-           {% for pref in preferences %}
-           {
-             id: {{ pref.id }},
-             product: {{ pref.product_name | tojson }},
-             brand: {{ (pref.brand or '') | tojson }},
-             category: {{ (pref.product_category or '') | tojson }},
-             count: {{ pref.purchase_count }},
-             lastSeen: {{ (pref.last_seen_at.strftime('%Y-%m-%d') if pref.last_seen_at else '') | tojson }},
-             lastSeenDisplay: {{ (pref.last_seen_at.strftime('%b %d, %Y') if pref.last_seen_at else '\u2014') | tojson }},
-             source: {{ pref.source | tojson }},
-             notes: {{ (pref.notes or '') | tojson }}
-           }{% if not loop.last %},{% endif %}
-           {% endfor %}
-         ],
-         get sorted() {
-           return [...this.rows].sort((a, b) => {
-             let va = a[this.sortCol], vb = b[this.sortCol];
-             if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
-             if (va < vb) return this.sortAsc ? -1 : 1;
-             if (va > vb) return this.sortAsc ? 1 : -1;
-             return 0;
-           });
-         },
-         toggleSort(col) {
-           if (this.sortCol === col) { this.sortAsc = !this.sortAsc; }
-           else { this.sortCol = col; this.sortAsc = true; }
-         },
-         sortIcon(col) {
-           if (this.sortCol !== col) return '↕';
-           return this.sortAsc ? '↑' : '↓';
-         }
-       }">
+       x-data="prefTable()"
+       x-init="rows = JSON.parse(document.getElementById('pref-data').textContent)">
     <table class="w-full text-sm text-left">
       <thead class="text-xs text-slate-400 uppercase border-b border-slate-700">
         <tr>
@@ -109,8 +94,8 @@
               >
             </td>
             <td class="px-3 py-2 text-slate-100 font-medium" x-text="pref.product"></td>
-            <td class="px-3 py-2 text-slate-300" x-text="pref.brand || '—'"></td>
-            <td class="px-3 py-2 text-slate-400" x-text="pref.category || '—'"></td>
+            <td class="px-3 py-2 text-slate-300" x-text="pref.brand || '\u2014'"></td>
+            <td class="px-3 py-2 text-slate-400" x-text="pref.category || '\u2014'"></td>
             <td class="px-3 py-2 text-center text-slate-300" x-text="pref.count"></td>
             <td class="px-3 py-2">
               <span x-show="pref.count >= 2" class="text-xs text-green-500">Established</span>
@@ -135,4 +120,31 @@
       </tbody>
     </table>
   </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('prefTable', () => ({
+        sortCol: 'product',
+        sortAsc: true,
+        rows: [],
+        get sorted() {
+          return [...this.rows].sort((a, b) => {
+            let va = a[this.sortCol], vb = b[this.sortCol];
+            if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+            if (va < vb) return this.sortAsc ? -1 : 1;
+            if (va > vb) return this.sortAsc ? 1 : -1;
+            return 0;
+          });
+        },
+        toggleSort(col) {
+          if (this.sortCol === col) { this.sortAsc = !this.sortAsc; }
+          else { this.sortCol = col; this.sortAsc = true; }
+        },
+        sortIcon(col) {
+          if (this.sortCol !== col) return '\u2195';
+          return this.sortAsc ? '\u2191' : '\u2193';
+        }
+      }));
+    });
+  </script>
 {% endif %}
