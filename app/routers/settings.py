@@ -10,6 +10,7 @@ from app.database import get_session
 from app.config import get_settings
 from app.models.config_model import AppConfig
 from app.services import llm_service, kroger_client
+from app.constants import get_models_for_provider
 from app.services.llm_config import get_active_llm_config
 from app.services.oauth_manager import get_or_create_fernet, get_valid_access_token
 
@@ -39,6 +40,9 @@ async def settings_page(
     cfg = await _get_or_create_config(db)
     llm_cfg = await get_active_llm_config(db)
     is_authorized = bool(await get_valid_access_token(db))
+    models = await get_models_for_provider(
+        cfg.llm_provider, cfg.llm_ollama_base_url
+    )
 
     return templates.TemplateResponse(
         request,
@@ -50,6 +54,9 @@ async def settings_page(
             "llm_cfg": llm_cfg,
             "has_db_key": bool(cfg.llm_api_key_encrypted),
             "is_authorized": is_authorized,
+            "models": models,
+            "model_ids": [m["id"] for m in models],
+            "current_model": cfg.llm_model,
         },
     )
 
@@ -65,6 +72,9 @@ async def settings_section(
 
     if section == "llm":
         llm_cfg = await get_active_llm_config(db)
+        models = await get_models_for_provider(
+            cfg.llm_provider, cfg.llm_ollama_base_url
+        )
         return templates.TemplateResponse(
             request,
             "partials/settings/llm.html",
@@ -73,6 +83,9 @@ async def settings_section(
                 "cfg": cfg,
                 "llm_cfg": llm_cfg,
                 "has_db_key": bool(cfg.llm_api_key_encrypted),
+                "models": models,
+                "model_ids": [m["id"] for m in models],
+            "current_model": cfg.llm_model,
             },
         )
     elif section == "store":
@@ -107,6 +120,9 @@ async def settings_section(
     else:
         # Default fallback to LLM section
         llm_cfg = await get_active_llm_config(db)
+        models = await get_models_for_provider(
+            cfg.llm_provider, cfg.llm_ollama_base_url
+        )
         return templates.TemplateResponse(
             request,
             "partials/settings/llm.html",
@@ -115,6 +131,9 @@ async def settings_section(
                 "cfg": cfg,
                 "llm_cfg": llm_cfg,
                 "has_db_key": bool(cfg.llm_api_key_encrypted),
+                "models": models,
+                "model_ids": [m["id"] for m in models],
+            "current_model": cfg.llm_model,
             },
         )
 
@@ -149,6 +168,7 @@ async def save_llm(
     llm_cfg = await get_active_llm_config(db)
 
     if not success:
+        models = await get_models_for_provider(provider, base_url)
         return templates.TemplateResponse(
             request,
             "partials/settings/llm.html",
@@ -158,6 +178,9 @@ async def save_llm(
                 "llm_cfg": llm_cfg,
                 "has_db_key": bool(cfg.llm_api_key_encrypted),
                 "error": f"Connection failed: {message}. Check your API key and try again.",
+                "models": models,
+                "model_ids": [m["id"] for m in models],
+            "current_model": cfg.llm_model,
             },
         )
 
@@ -181,6 +204,7 @@ async def save_llm(
     # Re-read llm_cfg after save
     llm_cfg = await get_active_llm_config(db)
 
+    models = await get_models_for_provider(provider, base_url)
     return templates.TemplateResponse(
         request,
         "partials/settings/llm.html",
@@ -190,6 +214,30 @@ async def save_llm(
             "llm_cfg": llm_cfg,
             "has_db_key": bool(cfg.llm_api_key_encrypted),
             "success": "Provider updated successfully.",
+            "models": models,
+            "model_ids": [m["id"] for m in models],
+            "current_model": cfg.llm_model,
+        },
+    )
+
+
+@router.get("/settings/models", response_class=HTMLResponse)
+async def list_models(
+    request: Request,
+    provider: str = "anthropic",
+    ollama_base_url: str = "",
+    current_model: str = "",
+):
+    """HTMX partial: return <option> elements for available models."""
+    models = await get_models_for_provider(provider, ollama_base_url or None)
+    return templates.TemplateResponse(
+        request,
+        "partials/settings/model_options.html",
+        {
+            "models": models,
+            "model_ids": [m["id"] for m in models],
+            "current_model": cfg.llm_model,
+            "current_model": current_model,
         },
     )
 

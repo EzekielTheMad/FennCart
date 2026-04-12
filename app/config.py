@@ -2,13 +2,15 @@ from pydantic_settings import BaseSettings
 from pydantic import field_validator
 from functools import lru_cache
 
+from app.constants import DEFAULT_LLM_PROVIDER, DEFAULT_LLM_MODEL
+
 
 class Settings(BaseSettings):
     kroger_client_id: str = ""
     kroger_client_secret: str = ""
     llm_api_key: str = ""
-    llm_provider: str = "anthropic"
-    llm_model: str = "claude-haiku-4-5-20251001"
+    llm_provider: str = DEFAULT_LLM_PROVIDER
+    llm_model: str = DEFAULT_LLM_MODEL
     base_url: str = "http://localhost:8000"
     session_secret_key: str = "change-me-in-production"
     port: int = 8000

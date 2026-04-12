@@ -1,6 +1,8 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 
+from app.constants import DEFAULT_LLM_PROVIDER, DEFAULT_LLM_MODEL
+
 
 class AppConfig(SQLModel, table=True):
     __tablename__ = "app_config"
@@ -10,8 +12,8 @@ class AppConfig(SQLModel, table=True):
     store_id: Optional[str] = None
     store_name: Optional[str] = None
     store_zip: Optional[str] = None
-    llm_provider: str = Field(default="anthropic")
-    llm_model: str = Field(default="claude-haiku-4-5-20251001")
+    llm_provider: str = Field(default=DEFAULT_LLM_PROVIDER)
+    llm_model: str = Field(default=DEFAULT_LLM_MODEL)
     llm_api_key_encrypted: Optional[str] = None
     llm_ollama_base_url: Optional[str] = None
     review_mode: str = Field(default="exceptions")

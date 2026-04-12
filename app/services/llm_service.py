@@ -5,6 +5,7 @@ import instructor
 import litellm
 from pydantic import BaseModel
 
+from app.constants import DEFAULT_LLM_PROVIDER, DEFAULT_LLM_MODEL
 from app.schemas.shopping import ItemMatch, MatchResult, ParsedListItem, ProductCandidate
 
 
@@ -16,8 +17,8 @@ class ParsedList(BaseModel):
 
 async def test_connection(
     api_key: str,
-    provider: str = "anthropic",
-    model: str = "claude-haiku-4-5-20251001",
+    provider: str = DEFAULT_LLM_PROVIDER,
+    model: str = DEFAULT_LLM_MODEL,
     base_url: Optional[str] = None,
 ) -> tuple[bool, str]:
     """Test LLM API key by sending a minimal completion request.
@@ -55,7 +56,7 @@ async def parse_shopping_list(
     raw_text: str,
     api_key: str,
     provider: str = "anthropic",
-    model: str = "claude-haiku-4-5-20251001",
+    model: str = DEFAULT_LLM_MODEL,
     base_url: Optional[str] = None,
 ) -> list[ParsedListItem]:
     """Parse a raw natural language shopping list into structured items.
@@ -107,7 +108,7 @@ async def match_products(
     candidates: dict[str, list[ProductCandidate]],
     api_key: str,
     provider: str = "anthropic",
-    model: str = "claude-haiku-4-5-20251001",
+    model: str = DEFAULT_LLM_MODEL,
     preferences: Optional[dict] = None,
     base_url: Optional[str] = None,
 ) -> MatchResult:

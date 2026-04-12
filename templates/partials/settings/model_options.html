@@ -1,0 +1,9 @@
+{% if current_model and current_model not in model_ids %}
+<option value="{{ current_model }}" selected>{{ current_model }} (saved)</option>
+{% endif %}
+{% for m in models %}
+<option value="{{ m.id }}" {% if m.id == current_model %}selected{% endif %}>
+    {{ m.label }}
+</option>
+{% endfor %}
+<option value="__custom__">Custom model ID...</option>

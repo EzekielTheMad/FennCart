@@ -13,6 +13,7 @@ from app.schemas.shopping import (
 )
 from app.models.cart_session import CartSession
 from app.models.cart_item import CartItem
+from app.constants import DEFAULT_LLM_PROVIDER, DEFAULT_LLM_MODEL
 from app.services.kroger_client import search_products, add_to_cart
 from app.services.llm_service import parse_shopping_list, match_products
 
@@ -31,8 +32,8 @@ class CartService:
         kroger_client_id: str,
         kroger_client_secret: str,
         llm_api_key: str,
-        llm_provider: str = "anthropic",
-        llm_model: str = "claude-haiku-4-5-20251001",
+        llm_provider: str = DEFAULT_LLM_PROVIDER,
+        llm_model: str = DEFAULT_LLM_MODEL,
         llm_ollama_base_url: Optional[str] = None,
     ):
         self.db = db
