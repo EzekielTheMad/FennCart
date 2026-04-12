@@ -111,8 +111,14 @@ class CartService:
             base_url=self.llm_ollama_base_url,
         )
 
-        # Step 4: Enrich matches with thumbnail URLs from candidates
+        # Step 4: Enrich matches with thumbnail URLs and quantities from parsed items
+        parsed_qty = {item.name: item.quantity for item in parsed_items}
         for match in match_result.matches:
+            # Carry quantity from parsed list item
+            if match.list_item in parsed_qty:
+                match.quantity = parsed_qty[match.list_item]
+
+            # Attach thumbnail from matched candidate
             if not match.selected_thumbnail:
                 item_candidates = candidates_dict.get(match.list_item, [])
                 for candidate in item_candidates:

@@ -34,6 +34,7 @@ class ItemMatch(BaseModel):
     selected_size: str = ""
     selected_price: Optional[float] = None
     selected_thumbnail: Optional[str] = None
+    quantity: int = 1
     confidence: float = Field(ge=0.0, le=1.0)
     reasoning: str
     alternatives: list[str] = Field(default_factory=list)

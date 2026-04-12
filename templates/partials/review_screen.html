@@ -14,7 +14,7 @@
             description: '{{ item.selected_description | e }}',
             brand: '{{ item.selected_brand | e }}',
             size: '{{ item.selected_size | e }}',
-            quantity: 1,
+            quantity: {{ item.quantity }},
             price: {{ item.selected_price if item.selected_price is not none else 'null' }}
         }{% if not loop.last or auto_items %},{% endif %}
         {% endfor %}
@@ -25,7 +25,7 @@
             description: '{{ item.selected_description | e }}',
             brand: '{{ item.selected_brand | e }}',
             size: '{{ item.selected_size | e }}',
-            quantity: 1,
+            quantity: {{ item.quantity }},
             price: {{ item.selected_price if item.selected_price is not none else 'null' }}
         }{% if not loop.last %},{% endif %}
         {% endfor %}
@@ -33,6 +33,10 @@
     updateItem(listItem, newUpc) {
         const idx = this.confirmedItems.findIndex(i => i.list_item === listItem);
         if (idx >= 0) { this.confirmedItems[idx].upc = newUpc; }
+    },
+    updateQty(listItem, qty) {
+        const idx = this.confirmedItems.findIndex(i => i.list_item === listItem);
+        if (idx >= 0) { this.confirmedItems[idx].quantity = qty; }
     }
 }" id="shopping-content">
 
@@ -72,7 +76,7 @@
             {% for item in review_items %}
             <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex gap-4 items-start"
                  id="card-{{ loop.index }}"
-                 x-data="{ open: false, selectedUpc: '{{ item.selected_upc }}', selectedDesc: '{{ item.selected_description | e }}', selectedBrand: '{{ item.selected_brand | e }}', selectedSize: '{{ item.selected_size | e }}', selectedPrice: {{ item.selected_price if item.selected_price is not none else 'null' }} }">
+                 x-data="{ open: false, selectedUpc: '{{ item.selected_upc }}', selectedDesc: '{{ item.selected_description | e }}', selectedBrand: '{{ item.selected_brand | e }}', selectedSize: '{{ item.selected_size | e }}', selectedPrice: {{ item.selected_price if item.selected_price is not none else 'null' }}, qty: {{ item.quantity }} }">
 
                 {# Product thumbnail #}
                 {% if item.selected_thumbnail %}
@@ -95,6 +99,15 @@
                         <span x-show="selectedPrice !== null" x-text="'$' + selectedPrice.toFixed(2)"></span>
                         {% if item.selected_price is none %}<span x-show="selectedPrice === null">—</span>{% endif %}
                     </p>
+
+                    {# Quantity controls #}
+                    <div class="flex items-center gap-2 mt-2">
+                        <button type="button" @click="qty = Math.max(1, qty - 1); $root.updateQty('{{ item.list_item | e }}', qty)"
+                                class="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-bold flex items-center justify-center">−</button>
+                        <span class="text-sm text-slate-100 w-6 text-center" x-text="qty"></span>
+                        <button type="button" @click="qty++; $root.updateQty('{{ item.list_item | e }}', qty)"
+                                class="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-bold flex items-center justify-center">+</button>
+                    </div>
 
                     {# Confidence warning #}
                     <div class="inline-flex items-center gap-1 text-sm text-amber-400 mt-2">
@@ -193,7 +206,8 @@
         <p class="text-sm text-slate-400 mb-4">These items matched with high confidence and are ready to add.</p>
         <div class="space-y-3">
             {% for item in auto_items %}
-            <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex gap-4 items-start">
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex gap-4 items-start"
+                 x-data="{ qty: {{ item.quantity }} }">
                 {% if item.selected_thumbnail %}
                 <img src="{{ item.selected_thumbnail }}"
                      alt="{{ item.selected_description }}"
@@ -207,6 +221,14 @@
                     {% if item.selected_price %}
                     <p class="text-sm font-semibold text-slate-100 mt-1">${{ "%.2f" | format(item.selected_price) }}</p>
                     {% endif %}
+                    {# Quantity controls #}
+                    <div class="flex items-center gap-2 mt-2">
+                        <button type="button" @click="qty = Math.max(1, qty - 1); $root.updateQty('{{ item.list_item | e }}', qty)"
+                                class="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-bold flex items-center justify-center">−</button>
+                        <span class="text-sm text-slate-100 w-6 text-center" x-text="qty"></span>
+                        <button type="button" @click="qty++; $root.updateQty('{{ item.list_item | e }}', qty)"
+                                class="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-bold flex items-center justify-center">+</button>
+                    </div>
                     <div class="inline-flex items-center gap-1 text-sm text-green-500 mt-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
