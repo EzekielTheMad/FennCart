@@ -1,5 +1,5 @@
 {#
-  pref_list.html — Searchable preference list rendered inside #pref-list-container.
+  pref_list.html — Preference table rendered inside #pref-list-container.
   Context vars: preferences (list[PreferenceEntry]), query (str | None),
                 save_success (bool, optional), saved_count (int, optional)
 #}
@@ -30,10 +30,81 @@
   </div>
 
 {% else %}
-  {# Preference rows #}
-  <div class="space-y-2" id="pref-rows">
-    {% for pref in preferences %}
-      {% include "partials/pref_row.html" %}
-    {% endfor %}
+  {# Preference table #}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left">
+      <thead class="text-xs text-slate-400 uppercase border-b border-slate-700">
+        <tr>
+          <th class="px-3 py-2 w-8">
+            <span class="sr-only">Select</span>
+          </th>
+          <th class="px-3 py-2">Product</th>
+          <th class="px-3 py-2">Brand</th>
+          <th class="px-3 py-2">Category</th>
+          <th class="px-3 py-2 text-center">Count</th>
+          <th class="px-3 py-2">Status</th>
+          <th class="px-3 py-2">Last Seen</th>
+          <th class="px-3 py-2 w-10">
+            <span class="sr-only">Actions</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pref in preferences %}
+        <tr id="pref-row-{{ pref.id }}"
+            class="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
+          <td class="px-3 py-2">
+            <input
+              type="checkbox"
+              class="w-4 h-4 accent-green-500 rounded cursor-pointer"
+              value="{{ pref.id }}"
+              aria-label="Select {{ pref.product_name }}"
+              @change="toggleId({{ pref.id }})"
+              :checked="selectedIds.includes({{ pref.id }})"
+            >
+          </td>
+          <td class="px-3 py-2 text-slate-100 font-medium">
+            {{ pref.product_name }}
+          </td>
+          <td class="px-3 py-2 text-slate-300">
+            {{ pref.brand or '—' }}
+          </td>
+          <td class="px-3 py-2 text-slate-400">
+            {{ pref.product_category or '—' }}
+          </td>
+          <td class="px-3 py-2 text-center text-slate-300">
+            {{ pref.purchase_count }}
+          </td>
+          <td class="px-3 py-2">
+            {% if pref.purchase_count >= 2 %}
+              <span class="text-xs text-green-500">Established</span>
+            {% else %}
+              <span class="text-xs text-amber-400">Seen once</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-2 text-xs text-slate-500">
+            {% if pref.last_seen_at %}
+              {{ pref.last_seen_at.strftime('%b %d, %Y') }}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td class="px-3 py-2">
+            <button
+              hx-get="/preferences/{{ pref.id }}/edit-form"
+              hx-target="#pref-row-{{ pref.id }}"
+              hx-swap="outerHTML"
+              class="text-slate-400 hover:text-slate-100 p-1 transition-colors"
+              aria-label="Edit {{ pref.product_name }}"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM12 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM16 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endif %}
