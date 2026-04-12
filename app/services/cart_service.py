@@ -245,13 +245,24 @@ class CartService:
         # Extract size from first item
         size: str = first_item.get("size", "")
 
-        # Extract thumbnail: first image with perspective "front", first size "thumbnail"
+        # Extract image: prefer "front" perspective, try multiple size names
         thumbnail_url: Optional[str] = None
         images = product_dict.get("images", [])
+        preferred_sizes = ["small", "thumbnail", "medium", "large", "xlarge"]
         for img in images:
             if img.get("perspective") == "front":
+                sizes_available = {sz.get("size"): sz.get("url") for sz in img.get("sizes", [])}
+                for pref in preferred_sizes:
+                    if pref in sizes_available:
+                        thumbnail_url = sizes_available[pref]
+                        break
+                if thumbnail_url:
+                    break
+        # Fallback: any perspective, any size
+        if not thumbnail_url:
+            for img in images:
                 for sz in img.get("sizes", []):
-                    if sz.get("size") == "thumbnail":
+                    if sz.get("url"):
                         thumbnail_url = sz.get("url")
                         break
                 if thumbnail_url:

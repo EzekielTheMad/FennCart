@@ -107,12 +107,13 @@ id="shopping-content">
                         {% if item.selected_price is none %}<span x-show="selectedPrice === null">—</span>{% endif %}
                     </p>
 
-                    {# Quantity controls #}
+                    {# Quantity controls — uses index into confirmedItems directly #}
+                    {% set item_idx = loop.index0 %}
                     <div class="flex items-center gap-2 mt-2">
-                        <button type="button" @click="qty = Math.max(1, qty - 1); $root.updateQty('{{ item.list_item | e }}', qty)"
+                        <button type="button" @click="qty = Math.max(1, qty - 1); Alpine.$data(document.getElementById('shopping-content')).confirmedItems[{{ item_idx }}].quantity = qty"
                                 class="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-bold flex items-center justify-center">−</button>
                         <span class="text-sm text-slate-100 w-6 text-center" x-text="qty"></span>
-                        <button type="button" @click="qty++; $root.updateQty('{{ item.list_item | e }}', qty)"
+                        <button type="button" @click="qty++; Alpine.$data(document.getElementById('shopping-content')).confirmedItems[{{ item_idx }}].quantity = qty"
                                 class="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-bold flex items-center justify-center">+</button>
                     </div>
 
@@ -213,8 +214,7 @@ id="shopping-content">
         <p class="text-sm text-slate-400 mb-4">These items matched with high confidence and are ready to add.</p>
         <div class="space-y-3">
             {% for item in auto_items %}
-            <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex gap-4 items-start"
-                 x-data="{ qty: {{ item.quantity }} }">
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex gap-4 items-start">
                 {% if item.selected_thumbnail %}
                 <img src="{{ item.selected_thumbnail }}"
                      alt="{{ item.selected_description }}"
@@ -228,12 +228,13 @@ id="shopping-content">
                     {% if item.selected_price %}
                     <p class="text-sm font-semibold text-slate-100 mt-1">${{ "%.2f" | format(item.selected_price) }}</p>
                     {% endif %}
-                    {# Quantity controls #}
+                    {# Quantity controls — reads/writes directly from confirmedItems in outer scope #}
+                    {% set item_idx = loop.index0 + (review_items | length) %}
                     <div class="flex items-center gap-2 mt-2">
-                        <button type="button" @click="qty = Math.max(1, qty - 1); $root.updateQty('{{ item.list_item | e }}', qty)"
+                        <button type="button" @click="confirmedItems[{{ item_idx }}].quantity = Math.max(1, confirmedItems[{{ item_idx }}].quantity - 1)"
                                 class="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-bold flex items-center justify-center">−</button>
-                        <span class="text-sm text-slate-100 w-6 text-center" x-text="qty"></span>
-                        <button type="button" @click="qty++; $root.updateQty('{{ item.list_item | e }}', qty)"
+                        <span class="text-sm text-slate-100 w-6 text-center" x-text="confirmedItems[{{ item_idx }}].quantity"></span>
+                        <button type="button" @click="confirmedItems[{{ item_idx }}].quantity++"
                                 class="w-7 h-7 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-bold flex items-center justify-center">+</button>
                     </div>
                     <div class="inline-flex items-center gap-1 text-sm text-green-500 mt-2">
