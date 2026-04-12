@@ -81,7 +81,7 @@ async def parse_receipt_with_llm(
                 {"role": "user", "content": f"Parse this receipt:\n\n{raw_text}"},
             ],
             response_model=ParsedReceipt,
-            max_tokens=2000,
+            max_tokens=8000,
             max_retries=2,
             api_key=api_key,
         )
