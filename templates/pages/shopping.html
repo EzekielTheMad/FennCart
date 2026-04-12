@@ -9,6 +9,9 @@
     <div x-data="{ listText: '' }" id="shopping-content">
 
         <h1 class="text-xl font-semibold text-slate-100 mb-2">What do you need?</h1>
+        {% if store_name %}
+        <p class="text-sm text-slate-400 mb-1">Shopping at <span class="text-slate-200 font-medium">{{ store_name }}</span> · <a href="/settings?section=store" class="text-green-400 hover:text-green-300 underline">change</a></p>
+        {% endif %}
         <p class="text-sm text-slate-400 mb-6">Paste your list below. One item per line works best, but natural language is fine.</p>
 
         <form hx-post="/shopping/match"

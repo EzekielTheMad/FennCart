@@ -27,7 +27,7 @@
             <label class="text-sm font-semibold text-slate-300 mb-1 block">Client ID</label>
             <input type="text"
                    name="client_id"
-                   placeholder="Enter Kroger Client ID"
+                   placeholder="{% if has_kroger_creds %}••••••••  (saved — leave blank to keep){% else %}Enter Kroger Client ID{% endif %}"
                    class="bg-slate-700 text-slate-100 border border-slate-600 rounded px-3 py-2 text-sm w-full placeholder-slate-500 focus:outline-none focus:border-slate-400">
             <p class="text-xs text-slate-500 mt-1">Leave blank to keep your current credentials.</p>
         </div>
@@ -36,7 +36,7 @@
             <label class="text-sm font-semibold text-slate-300 mb-1 block">Client Secret</label>
             <input type="password"
                    name="client_secret"
-                   placeholder="Enter Kroger Client Secret"
+                   placeholder="{% if has_kroger_creds %}••••••••  (saved — leave blank to keep){% else %}Enter Kroger Client Secret{% endif %}"
                    class="bg-slate-700 text-slate-100 border border-slate-600 rounded px-3 py-2 text-sm w-full placeholder-slate-500 focus:outline-none focus:border-slate-400">
         </div>
 

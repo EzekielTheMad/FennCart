@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.database import get_session
+from app.models.config_model import AppConfig
 from app.services.preference_service import PreferenceService
 from app.models.cart_session import CartSession
 from app.models.cart_item import CartItem
@@ -13,13 +14,23 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/")
-async def index(request: Request):
-    return templates.TemplateResponse(request, "pages/shopping.html", {"active_page": "shopping"})
+async def index(request: Request, db: AsyncSession = Depends(get_session)):
+    result = await db.execute(select(AppConfig).where(AppConfig.id == 1))
+    cfg = result.scalar_one_or_none()
+    return templates.TemplateResponse(request, "pages/shopping.html", {
+        "active_page": "shopping",
+        "store_name": cfg.store_name if cfg else None,
+    })
 
 
 @router.get("/shopping")
-async def shopping(request: Request):
-    return templates.TemplateResponse(request, "pages/shopping.html", {"active_page": "shopping"})
+async def shopping(request: Request, db: AsyncSession = Depends(get_session)):
+    result = await db.execute(select(AppConfig).where(AppConfig.id == 1))
+    cfg = result.scalar_one_or_none()
+    return templates.TemplateResponse(request, "pages/shopping.html", {
+        "active_page": "shopping",
+        "store_name": cfg.store_name if cfg else None,
+    })
 
 
 @router.get("/preferences")

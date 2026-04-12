@@ -182,81 +182,97 @@ async def preference_bulk_delete(
 @router.post("/upload", response_class=HTMLResponse)
 async def upload_receipt(
     request: Request,
-    receipt_pdf: UploadFile = File(...),
+    receipt_pdfs: list[UploadFile] = File(...),
     db: AsyncSession = Depends(get_session),
 ):
-    """Upload a receipt PDF, extract text, parse with LLM, detect contradictions.
+    """Upload one or more receipt PDFs, extract text, parse with LLM, detect contradictions.
 
+    Processes files sequentially, merging all items and warnings.
     Stores parsed items and contradictions in server-side session.
     Returns receipt_review.html partial with editable table.
     """
-    pdf_bytes = await receipt_pdf.read()
-    raw_text, extract_warnings = extract_receipt_text(pdf_bytes)
+    all_items = []
+    all_warnings = []
+    all_contradictions = []
+    last_upload_id = None
+    failed_files = []
 
-    # Guard: insufficient text extracted
-    if len(raw_text.strip()) < 50:
+    llm_cfg = await get_active_llm_config(db)
+    svc = PreferenceService(db)
+
+    for pdf_file in receipt_pdfs:
+        pdf_bytes = await pdf_file.read()
+        raw_text, extract_warnings = extract_receipt_text(pdf_bytes)
+        filename = pdf_file.filename or "receipt.pdf"
+
+        if len(raw_text.strip()) < 50:
+            failed_files.append(filename)
+            all_warnings.append(f"{filename}: could not extract text")
+            continue
+
+        try:
+            parsed = await parse_receipt_with_llm(
+                raw_text,
+                llm_cfg["api_key"],
+                llm_cfg["provider"],
+                llm_cfg["model"],
+            )
+        except RuntimeError as e:
+            failed_files.append(filename)
+            all_warnings.append(f"{filename}: {str(e)}")
+            continue
+
+        _clean_items, contradictions = await svc.detect_contradictions(parsed.items)
+
+        # Persist the upload audit record
+        file_warnings = parsed.parse_warnings + extract_warnings
+        upload = ReceiptUpload(
+            filename=filename,
+            items_extracted=len(parsed.items),
+            parse_status="parsed",
+            parse_warnings=json.dumps(file_warnings),
+        )
+        db.add(upload)
+        await db.commit()
+        await db.refresh(upload)
+
+        all_items.extend(parsed.items)
+        all_warnings.extend(file_warnings)
+        all_contradictions.extend(contradictions)
+        last_upload_id = upload.id
+
+    # If every file failed
+    if not all_items:
         return templates.TemplateResponse(
             request,
             "partials/receipt_review.html",
             {
                 "error": True,
-                "error_heading": "Could not read this receipt",
+                "error_heading": "Could not read receipts",
                 "error_body": (
-                    "FennCart couldn't extract items from this PDF. "
-                    "Try a different receipt format, or add preferences manually."
+                    f"Failed to parse {len(failed_files)} file(s). "
+                    "Try different receipts or add preferences manually."
                 ),
             },
         )
 
-    llm_cfg = await get_active_llm_config(db)
-
-    try:
-        parsed = await parse_receipt_with_llm(
-            raw_text,
-            llm_cfg["api_key"],
-            llm_cfg["provider"],
-            llm_cfg["model"],
-        )
-    except RuntimeError as e:
-        return templates.TemplateResponse(
-            request,
-            "partials/receipt_review.html",
-            {
-                "error": True,
-                "error_heading": "Could not read this receipt",
-                "error_body": f"Receipt parsing failed: {str(e)}. Try again or add preferences manually.",
-            },
-        )
-
-    svc = PreferenceService(db)
-    _clean_items, contradictions = await svc.detect_contradictions(parsed.items)
-
-    # Persist the upload audit record
-    all_warnings = parsed.parse_warnings + extract_warnings
-    upload = ReceiptUpload(
-        filename=receipt_pdf.filename or "receipt.pdf",
-        items_extracted=len(parsed.items),
-        parse_status="parsed",
-        parse_warnings=json.dumps(all_warnings),
-    )
-    db.add(upload)
-    await db.commit()
-    await db.refresh(upload)
-
     # Store parsed state in server-side session for save/resolve endpoints
-    request.session["receipt_items"] = [item.model_dump() for item in parsed.items]
-    request.session["receipt_contradictions"] = [c.model_dump() for c in contradictions]
-    request.session["receipt_upload_id"] = upload.id
+    request.session["receipt_items"] = [item.model_dump() for item in all_items]
+    request.session["receipt_contradictions"] = [c.model_dump() for c in all_contradictions]
+    request.session["receipt_upload_id"] = last_upload_id
+
+    if failed_files:
+        all_warnings.insert(0, f"{len(failed_files)} file(s) could not be parsed: {', '.join(failed_files)}")
 
     return templates.TemplateResponse(
         request,
         "partials/receipt_review.html",
         {
             "error": False,
-            "items": parsed.items,
-            "contradictions": contradictions,
+            "items": all_items,
+            "contradictions": all_contradictions,
             "warnings": all_warnings,
-            "upload_id": upload.id,
+            "upload_id": last_upload_id,
         },
     )
 
