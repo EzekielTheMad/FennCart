@@ -264,9 +264,18 @@ async def upload_receipt(
             },
         )
 
-    # Store parsed state in server-side session for save/resolve endpoints
-    request.session["receipt_items"] = [item.model_dump() for item in all_items]
-    request.session["receipt_contradictions"] = [c.model_dump() for c in all_contradictions]
+    # Store parsed state in DB (session cookies have 4KB limit, receipts exceed that)
+    if last_upload_id:
+        from sqlalchemy import select as sa_select
+        from app.models.receipt_upload import ReceiptUpload as RU
+        result = await db.execute(sa_select(RU).where(RU.id == last_upload_id))
+        upload_record = result.scalar_one_or_none()
+        if upload_record:
+            upload_record.parsed_items_json = json.dumps([item.model_dump() for item in all_items])
+            upload_record.contradictions_json = json.dumps([c.model_dump() for c in all_contradictions])
+            await db.commit()
+
+    # Store only the upload_id in session (small enough for cookie)
     request.session["receipt_upload_id"] = last_upload_id
 
     if failed_files:
@@ -293,13 +302,26 @@ async def receipt_resolve_contradiction(
 ):
     """Resolve a single contradiction ('new_preference' or 'one_time').
 
-    Updates session contradictions list and returns refreshed contradictions partial.
+    Updates contradictions in DB and returns refreshed contradictions partial.
     """
-    contradictions_raw: list[dict] = request.session.get("receipt_contradictions", [])
+    upload_id: Optional[int] = request.session.get("receipt_upload_id")
+    contradictions_raw: list[dict] = []
 
-    if 0 <= contradiction_index < len(contradictions_raw):
-        contradictions_raw[contradiction_index]["resolution"] = resolution
-        request.session["receipt_contradictions"] = contradictions_raw
+    if upload_id:
+        from sqlalchemy import select as sa_select
+        from app.models.receipt_upload import ReceiptUpload as RU
+        from app.database import get_session as _gs
+        async for db in _gs():
+            result = await db.execute(sa_select(RU).where(RU.id == upload_id))
+            upload_record = result.scalar_one_or_none()
+            if upload_record and upload_record.contradictions_json:
+                contradictions_raw = json.loads(upload_record.contradictions_json)
+
+            if 0 <= contradiction_index < len(contradictions_raw):
+                contradictions_raw[contradiction_index]["resolution"] = resolution
+                if upload_record:
+                    upload_record.contradictions_json = json.dumps(contradictions_raw)
+                    await db.commit()
 
     # Re-build ContradictionCandidate objects for template
     contradictions = [ContradictionCandidate(**c) for c in contradictions_raw]
@@ -326,9 +348,20 @@ async def receipt_save(
     Clears session keys on completion.
     Returns refreshed preference list with success message.
     """
-    items_raw: list[dict] = request.session.get("receipt_items", [])
-    contradictions_raw: list[dict] = request.session.get("receipt_contradictions", [])
     upload_id: Optional[int] = request.session.get("receipt_upload_id")
+
+    # Read parsed items from DB (not session — cookie has 4KB limit)
+    items_raw: list[dict] = []
+    contradictions_raw: list[dict] = []
+    if upload_id:
+        from sqlalchemy import select as sa_select
+        from app.models.receipt_upload import ReceiptUpload as RU
+        result = await db.execute(sa_select(RU).where(RU.id == upload_id))
+        upload_record = result.scalar_one_or_none()
+        if upload_record and upload_record.parsed_items_json:
+            items_raw = json.loads(upload_record.parsed_items_json)
+        if upload_record and upload_record.contradictions_json:
+            contradictions_raw = json.loads(upload_record.contradictions_json)
 
     # Build a mapping of item_index → is_one_time from resolved contradictions
     one_time_indices: set[int] = set()

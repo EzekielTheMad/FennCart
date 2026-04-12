@@ -13,3 +13,5 @@ class ReceiptUpload(SQLModel, table=True):
     items_confirmed: int = Field(default=0)
     parse_status: str = Field(default="pending")  # "pending","parsed","confirmed","failed"
     parse_warnings: Optional[str] = None          # JSON list of warning strings
+    parsed_items_json: Optional[str] = None       # JSON list of parsed receipt items
+    contradictions_json: Optional[str] = None     # JSON list of contradiction candidates
