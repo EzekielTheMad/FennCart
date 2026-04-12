@@ -36,14 +36,14 @@
            {% for pref in preferences %}
            {
              id: {{ pref.id }},
-             product: '{{ pref.product_name | e }}',
-             brand: '{{ (pref.brand or '') | e }}',
-             category: '{{ (pref.product_category or '') | e }}',
+             product: {{ pref.product_name | tojson }},
+             brand: {{ (pref.brand or '') | tojson }},
+             category: {{ (pref.product_category or '') | tojson }},
              count: {{ pref.purchase_count }},
-             lastSeen: '{{ pref.last_seen_at.strftime('%Y-%m-%d') if pref.last_seen_at else '' }}',
-             lastSeenDisplay: '{{ pref.last_seen_at.strftime('%b %d, %Y') if pref.last_seen_at else '—' }}',
-             source: '{{ pref.source }}',
-             notes: '{{ (pref.notes or '') | e }}'
+             lastSeen: {{ (pref.last_seen_at.strftime('%Y-%m-%d') if pref.last_seen_at else '') | tojson }},
+             lastSeenDisplay: {{ (pref.last_seen_at.strftime('%b %d, %Y') if pref.last_seen_at else '\u2014') | tojson }},
+             source: {{ pref.source | tojson }},
+             notes: {{ (pref.notes or '') | tojson }}
            }{% if not loop.last %},{% endif %}
            {% endfor %}
          ],
