@@ -21,6 +21,7 @@
       },
       clearSelected() { this.selectedIds = []; this.confirmingDelete = false; }
     }"
+    @switch-to-list-tab.window="tab = 'list'"
   >
 
     <!-- Tab bar -->
@@ -184,7 +185,10 @@
     <!-- Tab: Receipt Upload                                               -->
     <!-- ---------------------------------------------------------------- -->
     <div id="tab-upload" x-show="tab === 'upload'" style="display: none;" role="tabpanel">
-      <div id="receipt-panel">
+      <div id="receipt-panel"
+           hx-get="/preferences/upload-form"
+           hx-trigger="switchToListTab from:body"
+           hx-swap="innerHTML">
         {% include "partials/receipt_upload_form.html" %}
       </div>
     </div>

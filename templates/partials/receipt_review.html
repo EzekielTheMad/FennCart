@@ -119,7 +119,7 @@
     <div class="flex justify-end">
       <button
         hx-post="/preferences/receipt/save"
-        hx-target="#receipt-panel"
+        hx-target="#pref-list-container"
         hx-swap="innerHTML"
         :disabled="!hasItems || !allResolved"
         :class="(!hasItems || !allResolved) ? 'opacity-60 cursor-not-allowed bg-green-600 text-white font-semibold py-2 px-6 rounded-lg min-h-[44px]' : 'bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg min-h-[44px]'"

@@ -21,7 +21,7 @@
     <!-- Top line: product name + brand, category, purchase count badge -->
     <div class="flex items-center gap-2 flex-wrap">
       <span class="text-base font-semibold text-slate-100">
-        {% if pref.brand %}{{ pref.brand }} {% endif %}{{ pref.product_name }}
+        {% if pref.brand and not pref.product_name.startswith(pref.brand) %}{{ pref.brand }} {% endif %}{{ pref.product_name }}
       </span>
       <span class="text-sm text-slate-400">{{ pref.product_category }}</span>
       <span class="text-xs bg-slate-700 text-slate-300 rounded-full px-2 py-1">

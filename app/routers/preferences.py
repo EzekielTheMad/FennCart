@@ -399,8 +399,9 @@ async def receipt_save(
         request.session.pop(key, None)
 
     # Return the updated preference list with a success banner
+    # Also reset the receipt panel to the upload form for the next receipt
     entries = await svc.list_preferences()
-    return templates.TemplateResponse(
+    response = templates.TemplateResponse(
         request,
         "partials/pref_list.html",
         {
@@ -410,6 +411,9 @@ async def receipt_save(
             "saved_count": confirmed_count,
         },
     )
+    # Tell Alpine to switch to the list tab
+    response.headers["HX-Trigger"] = "switchToListTab"
+    return response
 
 
 # ---------------------------------------------------------------------------
