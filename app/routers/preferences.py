@@ -406,6 +406,7 @@ async def parse_preference_nl(
     messages = [{"role": "system", "content": system_prompt}] + conversation_history
 
     return await client.create(
+        model=model_str,
         messages=messages,
         response_model=PreferenceDelta,
         max_tokens=500,

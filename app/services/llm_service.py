@@ -85,6 +85,7 @@ async def parse_shopping_list(
         )
 
         create_kwargs: dict = {
+            "model": model_str,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": raw_text},
@@ -146,6 +147,7 @@ async def match_products(
         user_message = _build_matching_prompt(list_items, candidates)
 
         create_kwargs: dict = {
+            "model": model_str,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
