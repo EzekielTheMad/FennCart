@@ -1,5 +1,5 @@
 {#
-  pref_list.html — Preference table rendered inside #pref-list-container.
+  pref_list.html — Sortable preference table rendered inside #pref-list-container.
   Context vars: preferences (list[PreferenceEntry]), query (str | None),
                 save_success (bool, optional), saved_count (int, optional)
 #}
@@ -11,7 +11,6 @@
 {% endif %}
 
 {% if not preferences and not query %}
-  {# Empty state: no preferences at all #}
   <div class="text-slate-400 text-sm text-center py-16">
     <p>No preferences yet. Upload a receipt or use the chat to teach FennCart your habits.</p>
     <p class="mt-4">
@@ -24,86 +23,115 @@
   </div>
 
 {% elif not preferences and query %}
-  {# Empty search results #}
   <div class="text-slate-400 text-sm text-center py-8">
     No preferences match &lsquo;{{ query }}&rsquo;.
   </div>
 
 {% else %}
-  {# Preference table #}
-  <div class="overflow-x-auto">
+  <div class="overflow-x-auto"
+       x-data="{
+         sortCol: 'product',
+         sortAsc: true,
+         rows: [
+           {% for pref in preferences %}
+           {
+             id: {{ pref.id }},
+             product: '{{ pref.product_name | e }}',
+             brand: '{{ (pref.brand or '') | e }}',
+             category: '{{ (pref.product_category or '') | e }}',
+             count: {{ pref.purchase_count }},
+             lastSeen: '{{ pref.last_seen_at.strftime('%Y-%m-%d') if pref.last_seen_at else '' }}',
+             lastSeenDisplay: '{{ pref.last_seen_at.strftime('%b %d, %Y') if pref.last_seen_at else '—' }}',
+             source: '{{ pref.source }}',
+             notes: '{{ (pref.notes or '') | e }}'
+           }{% if not loop.last %},{% endif %}
+           {% endfor %}
+         ],
+         get sorted() {
+           return [...this.rows].sort((a, b) => {
+             let va = a[this.sortCol], vb = b[this.sortCol];
+             if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+             if (va < vb) return this.sortAsc ? -1 : 1;
+             if (va > vb) return this.sortAsc ? 1 : -1;
+             return 0;
+           });
+         },
+         toggleSort(col) {
+           if (this.sortCol === col) { this.sortAsc = !this.sortAsc; }
+           else { this.sortCol = col; this.sortAsc = true; }
+         },
+         sortIcon(col) {
+           if (this.sortCol !== col) return '↕';
+           return this.sortAsc ? '↑' : '↓';
+         }
+       }">
     <table class="w-full text-sm text-left">
       <thead class="text-xs text-slate-400 uppercase border-b border-slate-700">
         <tr>
           <th class="px-3 py-2 w-8">
             <span class="sr-only">Select</span>
           </th>
-          <th class="px-3 py-2">Product</th>
-          <th class="px-3 py-2">Brand</th>
-          <th class="px-3 py-2">Category</th>
-          <th class="px-3 py-2 text-center">Count</th>
-          <th class="px-3 py-2">Status</th>
-          <th class="px-3 py-2">Last Seen</th>
+          <th class="px-3 py-2 cursor-pointer hover:text-slate-200 select-none" @click="toggleSort('product')">
+            Product <span class="text-slate-500" x-text="sortIcon('product')"></span>
+          </th>
+          <th class="px-3 py-2 cursor-pointer hover:text-slate-200 select-none" @click="toggleSort('brand')">
+            Brand <span class="text-slate-500" x-text="sortIcon('brand')"></span>
+          </th>
+          <th class="px-3 py-2 cursor-pointer hover:text-slate-200 select-none" @click="toggleSort('category')">
+            Category <span class="text-slate-500" x-text="sortIcon('category')"></span>
+          </th>
+          <th class="px-3 py-2 text-center cursor-pointer hover:text-slate-200 select-none" @click="toggleSort('count')">
+            Count <span class="text-slate-500" x-text="sortIcon('count')"></span>
+          </th>
+          <th class="px-3 py-2 cursor-pointer hover:text-slate-200 select-none" @click="toggleSort('count')">
+            Status
+          </th>
+          <th class="px-3 py-2 cursor-pointer hover:text-slate-200 select-none" @click="toggleSort('lastSeen')">
+            Last Seen <span class="text-slate-500" x-text="sortIcon('lastSeen')"></span>
+          </th>
           <th class="px-3 py-2 w-10">
             <span class="sr-only">Actions</span>
           </th>
         </tr>
       </thead>
       <tbody>
-        {% for pref in preferences %}
-        <tr id="pref-row-{{ pref.id }}"
-            class="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
-          <td class="px-3 py-2">
-            <input
-              type="checkbox"
-              class="w-4 h-4 accent-green-500 rounded cursor-pointer"
-              value="{{ pref.id }}"
-              aria-label="Select {{ pref.product_name }}"
-              @change="toggleId({{ pref.id }})"
-              :checked="selectedIds.includes({{ pref.id }})"
-            >
-          </td>
-          <td class="px-3 py-2 text-slate-100 font-medium">
-            {{ pref.product_name }}
-          </td>
-          <td class="px-3 py-2 text-slate-300">
-            {{ pref.brand or '—' }}
-          </td>
-          <td class="px-3 py-2 text-slate-400">
-            {{ pref.product_category or '—' }}
-          </td>
-          <td class="px-3 py-2 text-center text-slate-300">
-            {{ pref.purchase_count }}
-          </td>
-          <td class="px-3 py-2">
-            {% if pref.purchase_count >= 2 %}
-              <span class="text-xs text-green-500">Established</span>
-            {% else %}
-              <span class="text-xs text-amber-400">Seen once</span>
-            {% endif %}
-          </td>
-          <td class="px-3 py-2 text-xs text-slate-500">
-            {% if pref.last_seen_at %}
-              {{ pref.last_seen_at.strftime('%b %d, %Y') }}
-            {% else %}
-              —
-            {% endif %}
-          </td>
-          <td class="px-3 py-2">
-            <button
-              hx-get="/preferences/{{ pref.id }}/edit-form"
-              hx-target="#pref-row-{{ pref.id }}"
-              hx-swap="outerHTML"
-              class="text-slate-400 hover:text-slate-100 p-1 transition-colors"
-              aria-label="Edit {{ pref.product_name }}"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM12 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM16 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
-              </svg>
-            </button>
-          </td>
-        </tr>
-        {% endfor %}
+        <template x-for="pref in sorted" :key="pref.id">
+          <tr :id="'pref-row-' + pref.id"
+              class="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
+            <td class="px-3 py-2">
+              <input
+                type="checkbox"
+                class="w-4 h-4 accent-green-500 rounded cursor-pointer"
+                :value="pref.id"
+                :aria-label="'Select ' + pref.product"
+                @change="toggleId(pref.id)"
+                :checked="selectedIds.includes(pref.id)"
+              >
+            </td>
+            <td class="px-3 py-2 text-slate-100 font-medium" x-text="pref.product"></td>
+            <td class="px-3 py-2 text-slate-300" x-text="pref.brand || '—'"></td>
+            <td class="px-3 py-2 text-slate-400" x-text="pref.category || '—'"></td>
+            <td class="px-3 py-2 text-center text-slate-300" x-text="pref.count"></td>
+            <td class="px-3 py-2">
+              <span x-show="pref.count >= 2" class="text-xs text-green-500">Established</span>
+              <span x-show="pref.count < 2" class="text-xs text-amber-400">Seen once</span>
+            </td>
+            <td class="px-3 py-2 text-xs text-slate-500" x-text="pref.lastSeenDisplay"></td>
+            <td class="px-3 py-2">
+              <button
+                :hx-get="'/preferences/' + pref.id + '/edit-form'"
+                :hx-target="'#pref-row-' + pref.id"
+                hx-swap="outerHTML"
+                class="text-slate-400 hover:text-slate-100 p-1 transition-colors"
+                :aria-label="'Edit ' + pref.product"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM12 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM16 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
   </div>

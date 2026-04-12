@@ -111,6 +111,15 @@ class CartService:
             base_url=self.llm_ollama_base_url,
         )
 
+        # Step 4: Enrich matches with thumbnail URLs from candidates
+        for match in match_result.matches:
+            if not match.selected_thumbnail:
+                item_candidates = candidates_dict.get(match.list_item, [])
+                for candidate in item_candidates:
+                    if candidate.upc == match.selected_upc and candidate.thumbnail_url:
+                        match.selected_thumbnail = candidate.thumbnail_url
+                        break
+
         return (match_result, candidates_dict)
 
     @property
