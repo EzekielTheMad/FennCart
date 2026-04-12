@@ -179,6 +179,12 @@ async def preference_bulk_delete(
 # ---------------------------------------------------------------------------
 
 
+@router.get("/upload-form", response_class=HTMLResponse)
+async def upload_form(request: Request):
+    """Return the receipt upload form partial (for 'Try another receipt' button)."""
+    return templates.TemplateResponse(request, "partials/receipt_upload_form.html")
+
+
 @router.post("/upload", response_class=HTMLResponse)
 async def upload_receipt(
     request: Request,
