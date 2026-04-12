@@ -17,3 +17,5 @@ class AppConfig(SQLModel, table=True):
     llm_api_key_encrypted: Optional[str] = None
     llm_ollama_base_url: Optional[str] = None
     review_mode: str = Field(default="exceptions")
+    kroger_client_id_encrypted: Optional[str] = None
+    kroger_client_secret_encrypted: Optional[str] = None

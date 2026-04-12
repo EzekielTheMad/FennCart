@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from fastapi.templating import Jinja2Templates
 from app.config import get_settings
+from app.services.kroger_config import get_active_kroger_config
 from app.services.llm_config import get_active_llm_config
 
 templates = Jinja2Templates(directory="templates")
@@ -73,8 +74,6 @@ async def shopping_match(
             },
         )
 
-    settings = get_settings()
-
     # Get store_id and LLM config from AppConfig (DB-authoritative, per D-10)
     result = await session.execute(select(AppConfig).where(AppConfig.id == 1))
     cfg = result.scalar_one_or_none()
@@ -82,12 +81,13 @@ async def shopping_match(
     review_mode = (cfg.review_mode or "exceptions") if cfg else "exceptions"
 
     llm_cfg = await get_active_llm_config(session)
+    kroger_cfg = await get_active_kroger_config(session)
 
     cart_service = CartService(
         db=session,
         location_id=location_id,
-        kroger_client_id=settings.kroger_client_id,
-        kroger_client_secret=settings.kroger_client_secret,
+        kroger_client_id=kroger_cfg["client_id"],
+        kroger_client_secret=kroger_cfg["client_secret"],
         llm_api_key=llm_cfg["api_key"],
         llm_provider=llm_cfg["provider"],
         llm_model=llm_cfg["model"],
@@ -178,18 +178,18 @@ async def shopping_add_to_cart(
             },
         )
 
-    settings = get_settings()
     result = await session.execute(select(AppConfig).where(AppConfig.id == 1))
     cfg = result.scalar_one_or_none()
     location_id = (cfg.store_id or "") if cfg else ""
 
     llm_cfg = await get_active_llm_config(session)
+    kroger_cfg = await get_active_kroger_config(session)
 
     cart_service = CartService(
         db=session,
         location_id=location_id,
-        kroger_client_id=settings.kroger_client_id,
-        kroger_client_secret=settings.kroger_client_secret,
+        kroger_client_id=kroger_cfg["client_id"],
+        kroger_client_secret=kroger_cfg["client_secret"],
         llm_api_key=llm_cfg["api_key"],
         llm_provider=llm_cfg["provider"],
         llm_model=llm_cfg["model"],

@@ -9,6 +9,8 @@ from app.config import get_settings
 from app.database import get_session
 from app.models.config_model import AppConfig
 from app.services import llm_service, kroger_client
+from app.services.kroger_config import get_active_kroger_config
+from app.services.oauth_manager import get_or_create_fernet
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -121,15 +123,26 @@ async def validate_kroger(
     request: Request,
     session: AsyncSession = Depends(get_session),
 ):
-    """Validate Kroger developer credentials. On success advance wizard to step 3."""
-    settings = get_settings()
+    """Validate Kroger developer credentials. On success advance wizard to step 3.
+
+    Reads credentials from DB first, falls back to env vars.
+    On successful validation, encrypts and saves credentials to DB.
+    """
+    kroger_cfg = await get_active_kroger_config(session)
+    client_id = kroger_cfg["client_id"]
+    client_secret = kroger_cfg["client_secret"]
+
     success, message, _token = await kroger_client.get_app_token(
-        client_id=settings.kroger_client_id,
-        client_secret=settings.kroger_client_secret,
+        client_id=client_id,
+        client_secret=client_secret,
     )
     if success:
         cfg = await _get_or_create_config(session)
         cfg.wizard_step = "kroger"
+        # Encrypt and save Kroger credentials to DB for hot-swap
+        f = get_or_create_fernet()
+        cfg.kroger_client_id_encrypted = f.encrypt(client_id.encode()).decode()
+        cfg.kroger_client_secret_encrypted = f.encrypt(client_secret.encode()).decode()
         session.add(cfg)
         await session.commit()
         return templates.TemplateResponse(
@@ -147,8 +160,8 @@ async def validate_kroger(
             "setup/step_kroger.html",
             {
                 "error": message,
-                "masked_client_id": _mask_value(settings.kroger_client_id),
-                "masked_client_secret": _mask_value(settings.kroger_client_secret),
+                "masked_client_id": _mask_value(client_id),
+                "masked_client_secret": _mask_value(client_secret),
             },
         )
 
@@ -159,11 +172,11 @@ async def search_stores(
     zip_code: str = Form(...),
     session: AsyncSession = Depends(get_session),
 ):
-    """Search for stores by zip code. Returns updated step_store.html partial."""
-    settings = get_settings()
+    """Search for stores by zip code. Returns store results partial."""
+    kroger_cfg = await get_active_kroger_config(session)
     success_token, _msg, app_token = await kroger_client.get_app_token(
-        client_id=settings.kroger_client_id,
-        client_secret=settings.kroger_client_secret,
+        client_id=kroger_cfg["client_id"],
+        client_secret=kroger_cfg["client_secret"],
     )
     if not success_token or not app_token:
         return templates.TemplateResponse(

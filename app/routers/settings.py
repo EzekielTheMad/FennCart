@@ -11,6 +11,7 @@ from app.config import get_settings
 from app.models.config_model import AppConfig
 from app.services import llm_service, kroger_client
 from app.constants import get_models_for_provider
+from app.services.kroger_config import get_active_kroger_config
 from app.services.llm_config import get_active_llm_config
 from app.services.oauth_manager import get_or_create_fernet, get_valid_access_token
 
@@ -89,12 +90,14 @@ async def settings_section(
             },
         )
     elif section == "store":
+        kroger_cfg = await get_active_kroger_config(db)
         return templates.TemplateResponse(
             request,
             "partials/settings/store.html",
             {
                 "active_section": section,
                 "cfg": cfg,
+                "has_kroger_creds": bool(kroger_cfg["client_id"]),
             },
         )
     elif section == "account":
@@ -250,12 +253,12 @@ async def settings_search_stores(
 ):
     """Search for stores by zip code (settings-specific, no wizard_step mutation)."""
     cfg = await _get_or_create_config(db)
-    settings = get_settings()
+    kroger_cfg = await get_active_kroger_config(db)
 
     # Get app token for store search
     success_token, _msg, app_token = await kroger_client.get_app_token(
-        client_id=settings.kroger_client_id,
-        client_secret=settings.kroger_client_secret,
+        client_id=kroger_cfg["client_id"],
+        client_secret=kroger_cfg["client_secret"],
     )
 
     if not success_token or not app_token:
@@ -313,6 +316,70 @@ async def settings_select_store(
             "active_section": "store",
             "cfg": cfg,
             "success": f"{store_name} saved.",
+        },
+    )
+
+
+@router.post("/settings/save-kroger", response_class=HTMLResponse)
+async def save_kroger(
+    request: Request,
+    client_id: str = Form(default=""),
+    client_secret: str = Form(default=""),
+    db: AsyncSession = Depends(get_session),
+):
+    """Save Kroger developer credentials after testing the connection."""
+    cfg = await _get_or_create_config(db)
+
+    active_id = client_id.strip()
+    active_secret = client_secret.strip()
+
+    if not active_id or not active_secret:
+        kroger_cfg = await get_active_kroger_config(db)
+        return templates.TemplateResponse(
+            request,
+            "partials/settings/store.html",
+            {
+                "active_section": "store",
+                "cfg": cfg,
+                "has_kroger_creds": bool(kroger_cfg["client_id"]),
+                "error": "Both Client ID and Client Secret are required.",
+            },
+        )
+
+    # Test connection before saving
+    success, message, _token = await kroger_client.get_app_token(
+        client_id=active_id,
+        client_secret=active_secret,
+    )
+
+    if not success:
+        kroger_cfg = await get_active_kroger_config(db)
+        return templates.TemplateResponse(
+            request,
+            "partials/settings/store.html",
+            {
+                "active_section": "store",
+                "cfg": cfg,
+                "has_kroger_creds": bool(kroger_cfg["client_id"]),
+                "error": f"Connection failed: {message}",
+            },
+        )
+
+    # Encrypt and save
+    f = get_or_create_fernet()
+    cfg.kroger_client_id_encrypted = f.encrypt(active_id.encode()).decode()
+    cfg.kroger_client_secret_encrypted = f.encrypt(active_secret.encode()).decode()
+    await db.commit()
+    await db.refresh(cfg)
+
+    return templates.TemplateResponse(
+        request,
+        "partials/settings/store.html",
+        {
+            "active_section": "store",
+            "cfg": cfg,
+            "has_kroger_creds": True,
+            "success": "Kroger credentials verified and saved.",
         },
     )
 

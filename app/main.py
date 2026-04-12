@@ -26,21 +26,29 @@ class SetupGuardMiddleware(BaseHTTPMiddleware):
                 status_code=500,
             )
 
+        # Check Kroger credentials: env vars first (no DB needed), then DB
         settings = get_settings()
-        # Check for missing Kroger credentials (D-07: serve missing config page)
-        if not settings.kroger_client_id or not settings.kroger_client_secret:
-            return templates.TemplateResponse(
-                request,
-                "missing_config.html",
-                {"missing_vars": _get_missing_vars(settings)},
-            )
+        has_kroger_creds = bool(settings.kroger_client_id and settings.kroger_client_secret)
 
-        # Check wizard completion (D-02: resumable wizard)
         from app.models.config_model import AppConfig
         from sqlalchemy import select
         async for session in get_session():
             result = await session.execute(select(AppConfig).where(AppConfig.id == 1))
             cfg = result.scalar_one_or_none()
+
+            # If env vars empty, check DB for encrypted credentials
+            if not has_kroger_creds and cfg:
+                has_kroger_creds = bool(
+                    cfg.kroger_client_id_encrypted and cfg.kroger_client_secret_encrypted
+                )
+
+            if not has_kroger_creds:
+                return templates.TemplateResponse(
+                    request,
+                    "missing_config.html",
+                    {"missing_vars": _get_missing_vars(settings)},
+                )
+
             if not cfg or not cfg.wizard_complete:
                 return RedirectResponse("/setup", status_code=302)
 
@@ -60,6 +68,7 @@ def _get_missing_vars(settings) -> list[str]:
 async def lifespan(app: FastAPI):
     await init_db()
     from app.services.oauth_manager import register_kroger_oauth
+    # Register OAuth if credentials exist in env (DB creds checked at request time)
     settings = get_settings()
     if settings.kroger_client_id and settings.kroger_client_secret:
         register_kroger_oauth()

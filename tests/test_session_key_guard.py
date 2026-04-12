@@ -32,8 +32,35 @@ async def test_missing_session_key_allows_static():
 
 @pytest.mark.anyio
 async def test_valid_session_key_does_not_show_error():
-    """When SESSION_KEY_MISSING is False, the error page is not served."""
-    with patch("app.main.SESSION_KEY_MISSING", False):
+    """When SESSION_KEY_MISSING is False, the error page is not served.
+
+    Must also patch get_settings to provide Kroger credentials so the
+    middleware doesn't block on missing config, and get_session to avoid
+    hitting the production DB path.
+    """
+    from unittest.mock import AsyncMock, MagicMock
+
+    # Create a mock session that returns a cfg with wizard_complete=True
+    mock_cfg = MagicMock()
+    mock_cfg.wizard_complete = True
+    mock_cfg.kroger_client_id_encrypted = None
+    mock_cfg.kroger_client_secret_encrypted = None
+
+    mock_result = MagicMock()
+    mock_result.scalar_one_or_none.return_value = mock_cfg
+
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(return_value=mock_result)
+
+    async def fake_get_session():
+        yield mock_session
+
+    with patch("app.main.SESSION_KEY_MISSING", False), \
+         patch("app.main.get_settings") as mock_settings, \
+         patch("app.main.get_session", fake_get_session):
+        mock_settings.return_value.kroger_client_id = "test-id"
+        mock_settings.return_value.kroger_client_secret = "test-secret"
+        mock_settings.return_value.session_secret_key = "test-key"
         from app.main import app
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
