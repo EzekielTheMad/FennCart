@@ -121,18 +121,30 @@ async def search_stores_by_zip(
     """
     try:
         async with httpx.AsyncClient() as client:
+            import logging
+            logger = logging.getLogger("fenncart.kroger")
+
+            url = f"{KROGER_BASE}/locations"
+            params = {
+                "filter.zipCode.near": zip_code,
+                "filter.radiusInMiles": 15,
+                "filter.limit": 10,
+            }
+            logger.info(f"Location search: GET {url} params={params}")
+
             resp = await client.get(
-                f"{KROGER_BASE}/locations",
-                params={
-                    "filter.zipCode.near": zip_code,
-                    "filter.radiusInMiles": 15,
-                    "filter.limit": 10,
-                },
+                url,
+                params=params,
                 headers={"Authorization": f"Bearer {app_token}"},
                 timeout=10.0,
             )
+            logger.info(f"Location search response: status={resp.status_code} body_len={len(resp.text)}")
+            if resp.status_code != 200:
+                logger.error(f"Location search error body: {resp.text[:500]}")
+
             resp.raise_for_status()
             data = resp.json().get("data", [])
+            logger.info(f"Location search: {len(data)} locations returned")
             stores = []
             for loc in data:
                 addr = loc.get("address", {})
