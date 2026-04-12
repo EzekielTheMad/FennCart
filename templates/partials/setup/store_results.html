@@ -30,6 +30,12 @@
 </div>
 {% endif %}
 
+{% if not error_message and not stores and zip_code %}
+<div class="bg-slate-700 border border-slate-600 rounded p-3 mb-4">
+    <p class="text-slate-400 text-sm">No stores found near {{ zip_code }}. Try a different zip code.</p>
+</div>
+{% endif %}
+
 {% if selected_store %}
 <div class="bg-green-950 border border-green-800 rounded p-3 mt-4">
     <p class="text-green-400 text-sm font-semibold">{{ selected_store }} selected</p>

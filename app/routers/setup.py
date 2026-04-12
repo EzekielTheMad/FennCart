@@ -173,11 +173,18 @@ async def search_stores(
     session: AsyncSession = Depends(get_session),
 ):
     """Search for stores by zip code. Returns store results partial."""
+    import logging
+    logger = logging.getLogger("fenncart.setup")
+
     kroger_cfg = await get_active_kroger_config(session)
+    logger.info(f"search-stores: zip={zip_code}, has_client_id={bool(kroger_cfg['client_id'])}")
+
     success_token, _msg, app_token = await kroger_client.get_app_token(
         client_id=kroger_cfg["client_id"],
         client_secret=kroger_cfg["client_secret"],
     )
+    logger.info(f"search-stores: token_success={success_token}, msg={_msg}")
+
     if not success_token or not app_token:
         return templates.TemplateResponse(
             request,
@@ -194,6 +201,8 @@ async def search_stores(
         zip_code=zip_code,
         app_token=app_token,
     )
+    logger.info(f"search-stores: search_success={success}, store_count={len(stores)}, msg={message}")
+
     return templates.TemplateResponse(
         request,
         "partials/setup/store_results.html",
