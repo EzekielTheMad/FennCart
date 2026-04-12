@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     kroger_client_secret: str = ""
     llm_api_key: str = ""
     llm_provider: str = "anthropic"
-    llm_model: str = "claude-3-haiku-20240307"
+    llm_model: str = "claude-haiku-4-5-20251001"
     base_url: str = "http://localhost:8000"
     session_secret_key: str = "change-me-in-production"
     port: int = 8000

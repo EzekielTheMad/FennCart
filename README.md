@@ -44,7 +44,7 @@ All configuration is via environment variables in `.env`. See `.env.example` for
 | `KROGER_CLIENT_SECRET` | Yes | From [developer.kroger.com](https://developer.kroger.com) — My Apps |
 | `LLM_API_KEY` | Yes | Your Anthropic or OpenAI key (leave blank for Ollama) |
 | `LLM_PROVIDER` | No | `anthropic` (default), `openai`, or `ollama` |
-| `LLM_MODEL` | No | Model name (default: `claude-3-haiku-20240307`) |
+| `LLM_MODEL` | No | Model name (default: `claude-haiku-4-5-20251001`) |
 | `SESSION_SECRET_KEY` | Yes | A random string for session cookie signing |
 | `BASE_URL` | Yes | URL users access the app at (default: `http://localhost:8000`) |
 | `PORT` | No | Port to expose (default: `8000`) |

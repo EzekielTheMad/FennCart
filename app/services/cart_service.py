@@ -32,7 +32,7 @@ class CartService:
         kroger_client_secret: str,
         llm_api_key: str,
         llm_provider: str = "anthropic",
-        llm_model: str = "claude-3-haiku-20240307",
+        llm_model: str = "claude-haiku-4-5-20251001",
         llm_ollama_base_url: Optional[str] = None,
     ):
         self.db = db

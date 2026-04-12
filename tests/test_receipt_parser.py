@@ -116,7 +116,7 @@ async def test_parse_receipt_with_llm():
             "FRYS FOOD STORE #123\nTILLAMOOK CHEDDAR $8.49\nORG VALLEY 2% MILK $4.99",
             api_key="fake-key",
             provider="anthropic",
-            model="claude-3-haiku-20240307",
+            model="claude-haiku-4-5-20251001",
         )
 
     assert len(result.items) == 2

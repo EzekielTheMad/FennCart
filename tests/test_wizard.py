@@ -12,7 +12,7 @@ def _mock_settings_with_creds():
     settings.kroger_client_secret = "test_client_secret"
     settings.llm_api_key = "test_llm_key"
     settings.llm_provider = "anthropic"
-    settings.llm_model = "claude-3-haiku-20240307"
+    settings.llm_model = "claude-haiku-4-5-20251001"
     settings.session_secret_key = "test_secret"
     settings.base_url = "http://localhost:8000"
     return settings

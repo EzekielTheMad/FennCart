@@ -17,7 +17,7 @@ class ParsedList(BaseModel):
 async def test_connection(
     api_key: str,
     provider: str = "anthropic",
-    model: str = "claude-3-haiku-20240307",
+    model: str = "claude-haiku-4-5-20251001",
     base_url: Optional[str] = None,
 ) -> tuple[bool, str]:
     """Test LLM API key by sending a minimal completion request.
@@ -55,7 +55,7 @@ async def parse_shopping_list(
     raw_text: str,
     api_key: str,
     provider: str = "anthropic",
-    model: str = "claude-3-haiku-20240307",
+    model: str = "claude-haiku-4-5-20251001",
     base_url: Optional[str] = None,
 ) -> list[ParsedListItem]:
     """Parse a raw natural language shopping list into structured items.
@@ -107,7 +107,7 @@ async def match_products(
     candidates: dict[str, list[ProductCandidate]],
     api_key: str,
     provider: str = "anthropic",
-    model: str = "claude-3-haiku-20240307",
+    model: str = "claude-haiku-4-5-20251001",
     preferences: Optional[dict] = None,
     base_url: Optional[str] = None,
 ) -> MatchResult:

@@ -23,7 +23,7 @@ async def test_llm_config_env_fallback(test_db, test_settings):
         cfg = await get_active_llm_config(test_db)
 
     assert cfg["provider"] == "anthropic"
-    assert cfg["model"] == "claude-3-haiku-20240307"
+    assert cfg["model"] == "claude-haiku-4-5-20251001"
     assert cfg["api_key"] == "test_llm_key"
     assert cfg["ollama_base_url"] is None
 

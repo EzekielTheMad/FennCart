@@ -26,7 +26,7 @@ def upgrade() -> None:
         sa.Column("store_name", sa.String(), nullable=True),
         sa.Column("store_zip", sa.String(), nullable=True),
         sa.Column("llm_provider", sa.String(), nullable=False, server_default="anthropic"),
-        sa.Column("llm_model", sa.String(), nullable=False, server_default="claude-3-haiku-20240307"),
+        sa.Column("llm_model", sa.String(), nullable=False, server_default="claude-haiku-4-5-20251001"),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(

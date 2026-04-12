@@ -29,7 +29,7 @@ def _mock_settings():
     settings.kroger_client_secret = "test_client_secret"
     settings.llm_api_key = "test_llm_key"
     settings.llm_provider = "anthropic"
-    settings.llm_model = "claude-3-haiku-20240307"
+    settings.llm_model = "claude-haiku-4-5-20251001"
     settings.session_secret_key = "test_secret"
     settings.base_url = "http://testserver"
     return settings
@@ -42,7 +42,7 @@ async def _seed_config(db, **overrides) -> AppConfig:
         wizard_step="complete",
         wizard_complete=True,
         llm_provider="anthropic",
-        llm_model="claude-3-haiku-20240307",
+        llm_model="claude-haiku-4-5-20251001",
         llm_api_key_encrypted=None,
         llm_ollama_base_url=None,
         review_mode="exceptions",

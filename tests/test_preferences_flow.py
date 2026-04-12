@@ -22,7 +22,7 @@ def _mock_settings():
     settings.kroger_client_secret = "test_client_secret"
     settings.llm_api_key = "test_llm_key"
     settings.llm_provider = "anthropic"
-    settings.llm_model = "claude-3-haiku-20240307"
+    settings.llm_model = "claude-haiku-4-5-20251001"
     settings.session_secret_key = "test_secret"
     settings.base_url = "http://testserver"
     return settings
@@ -39,7 +39,7 @@ async def _seed_app_config(db):
         store_id="70100153",
         store_name="Fry's Marketplace",
         llm_provider="anthropic",
-        llm_model="claude-3-haiku-20240307",
+        llm_model="claude-haiku-4-5-20251001",
     )
     db.add(config)
     await db.commit()
@@ -75,7 +75,7 @@ def _make_cart_service(test_db) -> CartService:
         kroger_client_secret="fake_client_secret",
         llm_api_key="fake_llm_key",
         llm_provider="anthropic",
-        llm_model="claude-3-haiku-20240307",
+        llm_model="claude-haiku-4-5-20251001",
     )
 
 

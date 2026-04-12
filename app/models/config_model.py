@@ -11,7 +11,7 @@ class AppConfig(SQLModel, table=True):
     store_name: Optional[str] = None
     store_zip: Optional[str] = None
     llm_provider: str = Field(default="anthropic")
-    llm_model: str = Field(default="claude-3-haiku-20240307")
+    llm_model: str = Field(default="claude-haiku-4-5-20251001")
     llm_api_key_encrypted: Optional[str] = None
     llm_ollama_base_url: Optional[str] = None
     review_mode: str = Field(default="exceptions")

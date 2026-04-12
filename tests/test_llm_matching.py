@@ -194,13 +194,13 @@ async def test_provider_model_strings():
 
     with patch("app.services.llm_service.instructor.from_provider", side_effect=capture_from_provider):
         # anthropic
-        await parse_shopping_list("milk", api_key="k", provider="anthropic", model="claude-3-haiku-20240307")
+        await parse_shopping_list("milk", api_key="k", provider="anthropic", model="claude-haiku-4-5-20251001")
         # openai
         await parse_shopping_list("milk", api_key="k", provider="openai", model="gpt-4o-mini")
         # ollama
         await parse_shopping_list("milk", api_key="k", provider="ollama", model="llama3")
 
-    assert captured_provider_args[0] == "litellm/anthropic/claude-3-haiku-20240307"
+    assert captured_provider_args[0] == "litellm/anthropic/claude-haiku-4-5-20251001"
     assert captured_provider_args[1] == "litellm/openai/gpt-4o-mini"
     assert captured_provider_args[2] == "litellm/ollama/llama3"
 

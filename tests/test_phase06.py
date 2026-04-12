@@ -18,7 +18,7 @@ def _mock_settings():
     s.kroger_client_secret = "test_client_secret"
     s.llm_api_key = "test_llm_key"
     s.llm_provider = "anthropic"
-    s.llm_model = "claude-3-haiku-20240307"
+    s.llm_model = "claude-haiku-4-5-20251001"
     s.session_secret_key = "test_secret"
     s.base_url = "http://testserver"
     return s
@@ -118,7 +118,7 @@ async def test_review_mode_full_from_db(client, test_db):
          patch("app.routers.shopping.get_active_llm_config", new_callable=AsyncMock) as mock_llm:
         mock_llm.return_value = {
             "api_key": "k", "provider": "anthropic",
-            "model": "claude-3-haiku-20240307", "ollama_base_url": None,
+            "model": "claude-haiku-4-5-20251001", "ollama_base_url": None,
         }
         instance = MockCS.return_value
         instance.process_list = AsyncMock(return_value=(match_result, candidates))
@@ -147,7 +147,7 @@ async def test_review_mode_exceptions_default(client, test_db):
          patch("app.routers.shopping.get_active_llm_config", new_callable=AsyncMock) as mock_llm:
         mock_llm.return_value = {
             "api_key": "k", "provider": "anthropic",
-            "model": "claude-3-haiku-20240307", "ollama_base_url": None,
+            "model": "claude-haiku-4-5-20251001", "ollama_base_url": None,
         }
         instance = MockCS.return_value
         instance.process_list = AsyncMock(return_value=(match_result, candidates))

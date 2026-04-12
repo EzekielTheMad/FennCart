@@ -56,7 +56,7 @@ def _make_cart_service(test_db) -> CartService:
         kroger_client_secret="fake_client_secret",
         llm_api_key="fake_llm_key",
         llm_provider="anthropic",
-        llm_model="claude-3-haiku-20240307",
+        llm_model="claude-haiku-4-5-20251001",
     )
 
 
