@@ -37,7 +37,7 @@ def register_kroger_oauth():
         client_secret=settings.kroger_client_secret,
         authorize_url="https://api.kroger.com/v1/connect/oauth2/authorize",
         access_token_url="https://api.kroger.com/v1/connect/oauth2/token",
-        client_kwargs={"scope": "openid profile cart.basic:write product.compact"},
+        client_kwargs={"scope": "cart.basic:write product.compact"},
     )
 
 
