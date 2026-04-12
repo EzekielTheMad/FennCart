@@ -168,10 +168,10 @@ async def search_stores(
     if not success_token or not app_token:
         return templates.TemplateResponse(
             request,
-            "setup/step_store.html",
+            "partials/setup/store_results.html",
             {
                 "stores": [],
-                "message": "Could not authenticate with Kroger API. Please go back and re-verify your credentials.",
+                "error_message": "Could not authenticate with Kroger API. Please go back and re-verify your credentials.",
                 "selected_store": None,
                 "zip_code": zip_code,
             },
@@ -183,10 +183,10 @@ async def search_stores(
     )
     return templates.TemplateResponse(
         request,
-        "setup/step_store.html",
+        "partials/setup/store_results.html",
         {
             "stores": stores,
-            "message": message if not success else None,
+            "error_message": message if not success else None,
             "selected_store": None,
             "zip_code": zip_code,
         },
