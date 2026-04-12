@@ -249,6 +249,7 @@ async def upload_receipt(
 
     # If every file failed
     if not all_items:
+        error_detail = "; ".join(all_warnings) if all_warnings else "Unknown error"
         return templates.TemplateResponse(
             request,
             "partials/receipt_review.html",
@@ -257,6 +258,7 @@ async def upload_receipt(
                 "error_heading": "Could not read receipts",
                 "error_body": (
                     f"Failed to parse {len(failed_files)} file(s). "
+                    f"{error_detail}. "
                     "Try different receipts or add preferences manually."
                 ),
             },
