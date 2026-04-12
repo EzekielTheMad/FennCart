@@ -125,8 +125,8 @@ async def search_stores_by_zip(
                 f"{KROGER_BASE}/locations",
                 params={
                     "filter.zipCode.near": zip_code,
+                    "filter.radiusInMiles": 15,
                     "filter.limit": 10,
-                    "filter.chain": "Fry's",
                 },
                 headers={"Authorization": f"Bearer {app_token}"},
                 timeout=10.0,
@@ -136,17 +136,19 @@ async def search_stores_by_zip(
             stores = []
             for loc in data:
                 addr = loc.get("address", {})
+                chain = loc.get("chain", "")
                 stores.append(
                     {
                         "locationId": loc.get("locationId", ""),
                         "name": loc.get("name", "Unknown"),
+                        "chain": chain,
                         "address": f"{addr.get('addressLine1', '')}, {addr.get('city', '')}",
                     }
                 )
             if not stores:
                 return (
                     True,
-                    "No Fry's stores found near that zip code. Try a nearby zip code.",
+                    "No stores found near that zip code. Try a different zip code or increase the radius.",
                     [],
                 )
             return True, f"Found {len(stores)} stores", stores
