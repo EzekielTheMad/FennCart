@@ -75,7 +75,6 @@ async def parse_receipt_with_llm(
         )
 
         result = await client.create(
-            model=f"litellm/{model_str}",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Parse this receipt:\n\n{raw_text}"},
